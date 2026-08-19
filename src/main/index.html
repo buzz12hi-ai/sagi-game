@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>だまされるな！1週間チャレンジ</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-shell" id="app-shell">
+
+    <!-- 曜日・所持金を表示する常設ステータスバー -->
+    <header id="status-bar" class="status-bar hidden">
+      <div class="day-tracker" id="day-tracker"></div>
+      <div class="status-right">
+        <!-- 目標商品の常時表示エリア（高齢者モード時は非表示） -->
+        <div id="target-item-display" class="target-item-chip is-hidden">
+          <span class="target-label">目標:</span>
+          <span id="target-item-name" class="target-name"></span>
+        </div>
+        <div class="wallet-chip" id="wallet-chip-box">
+          <span class="wallet-icon">💰</span>
+          <span id="money-display">50,000</span><span class="yen">円</span>
+          <span id="money-pop" class="money-pop is-hidden"></span>
+        </div>
+        <button id="btn-retire" class="retire-btn" type="button">リタイア</button>
+      </div>
+    </header>
+
+    <main id="screen-area">
+
+      <!-- ① タイトル画面 -->
+      <section id="screen-title" class="screen active">
+        <div class="title-bg-patterns" aria-hidden="true">
+          <span class="bg-icon icon-1">📱</span>
+          <span class="bg-icon icon-2">✉️</span>
+          <span class="bg-icon icon-3">🔔</span>
+          <span class="bg-icon icon-4">⚠️</span>
+          <span class="bg-icon icon-5">🛡️</span>
+          <span class="bg-icon icon-6">🔒</span>
+          <span class="bg-icon icon-7">✨</span>
+          <span class="bg-icon icon-8">⭐</span>
+          <span class="bg-icon icon-9">💬</span>
+          <span class="bg-icon icon-10">🚨</span>
+        </div>
+
+        <div class="title-card title-card-full">
+          <p class="eyebrow">🛡️ 詐欺対策アドベンチャー</p>
+          
+          <div class="title-header-wrapper">
+            <h1 class="game-title">だまされるな！<br><span class="title-highlight">1週間チャレンジ</span></h1>
+          </div>
+          
+          <div class="title-main-hero">
+            <div class="title-hero-glow"></div>
+            <img id="title-joe-image" class="title-char-joe-hero" alt="ジョーくん">
+          </div>
+
+          <p class="game-lead">
+            話さない・騙されない・渡さない。<br>
+            キミが、1週間の中で出会う「詐欺」と「本物」を見分けよう。
+          </p>
+          
+          <button id="btn-start" class="btn btn-primary btn-title-start">🎮 はじめる</button>
+        </div>
+      </section>
+
+      <!-- ①.1 対象者モード選択画面 -->
+      <section id="screen-mode-select" class="screen">
+        <div class="mode-select-container">
+          <h2 class="mode-select-title">どのモードで遊びますか？</h2>
+          <p class="mode-select-sub">対象者を選んでチャレンジをはじめよう！</p>
+          
+          <div class="mode-select-grid">
+            <!-- 一般モード -->
+            <button id="btn-mode-general" class="mode-card" type="button">
+              <div class="mode-badge badge-general">🏫 一般（中・高校生〜大人）</div>
+              <p class="mode-card-desc">リアルな詐欺や通知を見抜いて目標の買い物を目指そう！（全9問）</p>
+            </button>
+
+            <!-- 小学生モード -->
+            <button id="btn-mode-elementary" class="mode-card" type="button">
+              <div class="mode-badge badge-elementary">🎒 小学生モード</div>
+              <p class="mode-card-desc">やさしい言葉とふりがな付きで安心チャレンジ！（全9問）</p>
+            </button>
+
+            <!-- 高齢者モード -->
+            <button id="btn-mode-senior" class="mode-card" type="button">
+              <div class="mode-badge badge-senior">👵 高齢者モード</div>
+              <p class="mode-card-desc">身近な電話・点検・SMS詐欺から資産を守る実践編！（1日1問・全7問）</p>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ①.2 プレイヤー名前入力画面（高齢者モード時はスキップ） -->
+      <section id="screen-name-input" class="screen">
+        <div class="story-stage" id="name-input-stage">
+          <img id="name-guide-image" class="story-player-image is-center" alt="ジョーくん">
+          <div class="story-textbox">
+            <p class="story-textbox-speaker">ジョーくん</p>
+            <p class="story-textbox-text">こんにちは！<br>君の名前を教えて！</p>
+          </div>
+        </div>
+        <div class="name-input-panel">
+          <p id="name-input-error" class="name-input-error is-hidden">⚠️ 名前を入力してください！</p>
+          <input type="text" id="input-player-name" class="name-input-field" placeholder="名前を入力してください" maxlength="10">
+          <button id="btn-name-submit" class="btn btn-primary">決定</button>
+        </div>
+      </section>
+
+      <!-- ①.5 ジョーくん自己紹介画面 -->
+      <section id="screen-intro" class="screen">
+        <div class="story-stage" id="intro-stage">
+          <img id="intro-bg-image" class="story-bg-image is-hidden" alt="">
+          <img id="intro-guide-image" class="story-player-image is-center is-hidden" alt="ジョーくん">
+          <div class="story-textbox">
+            <p class="story-textbox-speaker">ジョーくん</p>
+            <p class="story-textbox-text" id="intro-text"></p>
+          </div>
+        </div>
+        <button id="btn-intro-next" class="btn btn-primary">次へ進む</button>
+      </section>
+
+      <!-- ② 欲しい物を選択する画面（高齢者モード時はスキップ） -->
+      <section id="screen-item" class="screen">
+        <div class="item-intro">
+          <h2 class="item-intro-title">1週間後、欲しいものを買えるかな？</h2>
+          <p class="item-intro-sub">今週のおこづかい50,000円を守って、買い物に挑戦しよう！</p>
+        </div>
+        <div class="guide-strip">
+          <img id="item-guide-image" class="guide-strip-image is-hidden" alt="ジョーくん">
+          <div class="guide-bubble guide-bubble-inline">
+            <p class="guide-bubble-line">何を買いたい？目標を選ぼう！</p>
+          </div>
+        </div>
+        <div id="item-list" class="item-grid"></div>
+      </section>
+
+      <!-- ③ あらすじ画面 -->
+      <section id="screen-synopsis" class="screen">
+        <div class="story-stage" id="synopsis-stage">
+          <img id="synopsis-bg-image" class="story-bg-image is-hidden" alt="">
+
+          <div class="story-panel synopsis-full-scroll-panel">
+            <p class="story-panel-title">これまでのあらすじ</p>
+            <div class="story-panel-scroll synopsis-scroll-box">
+              <p class="story-panel-text synopsis-large-text" id="synopsis-card"></p>
+            </div>
+          </div>
+        </div>
+        <button id="btn-synopsis-next" class="btn btn-primary">月曜日へ</button>
+      </section>
+
+      <!-- ④ 曜日の始まりを知らせる画面 -->
+      <section id="screen-dayintro" class="screen">
+        <div class="story-stage dayintro-stage-dark" id="dayintro-stage">
+          <img id="dayintro-bg-image" class="story-bg-image is-hidden" alt="">
+          
+          <div class="dayintro-banner-container" id="dayintro-banner">
+            <div class="dayintro-shine"></div>
+            <p class="dayintro-daynum" id="dayintro-daynum"></p>
+            <p class="dayintro-title" id="dayintro-label"></p>
+          </div>
+
+          <img id="dayintro-guide-image" class="story-player-image is-bottom-left is-hidden" alt="ジョーくん">
+          <div class="story-textbox">
+            <p class="story-textbox-speaker">ジョーくん</p>
+            <p class="story-textbox-text" id="dayintro-comment"></p>
+          </div>
+        </div>
+        <button id="btn-dayintro-next" class="btn btn-primary">次へ</button>
+      </section>
+
+      <!-- ④.5 日常行動選択画面（一般・小学生モードのみ） -->
+      <section id="screen-daily-action" class="screen">
+        <div class="story-stage">
+          <img id="action-bg-image" class="story-bg-image is-hidden" alt="">
+          <img id="action-guide-image" class="story-player-image is-bottom-left is-hidden" alt="ジョーくん">
+
+          <div class="action-choice-overlay" id="action-choice-overlay">
+            <p class="choice-prompt">今日の行動を選ぼう！（正解・不正解はありません）</p>
+            <div class="action-choice-grid" id="action-choice-list"></div>
+          </div>
+
+          <div class="story-textbox">
+            <p class="story-textbox-speaker">ジョーくん</p>
+            <p class="story-textbox-text" id="action-prompt-text">学校が終わったよ！この後はどうする？</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑤ ナレーション画面 -->
+      <section id="screen-narration" class="screen">
+        <div class="story-stage" id="narration-stage">
+          <img id="narration-bg-image" class="story-bg-image is-hidden" alt="">
+          <p class="scene-daylabel" id="narration-daylabel"></p>
+          <img id="narration-guide-image" class="story-player-image is-bottom-left is-hidden" alt="ジョーくん">
+          <div class="story-textbox">
+            <p class="story-textbox-speaker">ジョーくん</p>
+            <div class="narration-scroll" id="narration-scroll">
+              <p class="narration-text" id="narration-text"></p>
+            </div>
+          </div>
+        </div>
+        <button id="btn-narration-next" class="btn btn-primary">次へ</button>
+      </section>
+
+      <!-- ⑥ キャラクター会話画面（主人公＝左側固定） -->
+      <section id="screen-dialogue" class="screen">
+        <div class="story-stage" id="dialogue-stage">
+          <img id="dialogue-bg-image" class="story-bg-image is-hidden" alt="">
+          <img id="dialogue-left-image" class="story-player-image dialogue-left is-hidden" alt="">
+          <img id="dialogue-right-image" class="story-player-image dialogue-right is-hidden" alt="">
+          <div class="story-textbox">
+            <p class="story-textbox-speaker" id="dialogue-speaker"></p>
+            <p class="story-textbox-text" id="dialogue-line"></p>
+          </div>
+        </div>
+        <button id="btn-dialogue-next" class="btn btn-primary">次へ</button>
+      </section>
+
+      <!-- ⑦ スマホ通知画面 -->
+      <section id="screen-notification" class="screen">
+        <div class="phone-screen-container">
+          <div class="smartphone-frame tall-phone">
+            <div class="phone-header-bar">
+              <span class="phone-clock">09:41</span>
+              <div class="phone-notch"></div>
+              <div class="phone-icons">
+                <span>📶</span>
+                <span>🔋 88%</span>
+              </div>
+            </div>
+
+            <div class="phone-wallpaper">
+              <img id="notification-bg-image" class="phone-bg-img" alt="背景">
+              <img id="notification-player-image" class="phone-player-img" alt="主人公">
+            </div>
+
+            <div class="phone-lock-clock">
+              <p class="phone-big-time">12:34</p>
+              <p class="phone-date-text">10月15日(月)</p>
+            </div>
+
+            <div class="phone-notification-card pikon-anim-super" id="notification-toast">
+              <div class="phone-app-header">
+                <span class="app-icon">💬</span>
+                <span class="app-name">メッセージ</span>
+                <span class="app-time">たった今</span>
+              </div>
+              <div class="phone-card-body">
+                <span class="notification-icon" id="notification-icon">🔔</span>
+                <p class="notification-text" id="notification-text"></p>
+              </div>
+            </div>
+
+            <div class="phone-bottom-bubble">
+              <p class="guide-bubble-line">あ、スマホが鳴った！通知をチェックしよう。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑧ イベント画面（問題） -->
+      <section id="screen-event" class="screen">
+        <div class="event-context">
+          <span id="event-daylabel" class="event-daylabel"></span>
+          <span id="event-progress" class="event-progress"></span>
+        </div>
+
+        <div class="event-layout">
+          <div class="event-visual" id="event-visual">
+            <img id="event-bg-image" class="event-bg-image" alt="背景">
+            <img id="event-character-image" class="event-character-image is-hidden" alt="人物">
+            <img id="event-screenshot-image" class="event-screenshot-image is-hidden" alt="画面">
+            
+            <div class="joe-support-bubble" id="joe-support-bubble">
+              <span class="joe-support-icon">🤖</span>
+              <span class="joe-support-text" id="joe-support-text">落ち着いて判断しよう！</span>
+            </div>
+          </div>
+
+          <div class="event-panel choice-center-box">
+            <div class="event-source" id="event-source"></div>
+
+            <div class="chat-bubble" id="event-bubble">
+              <p class="bubble-title" id="event-title"></p>
+              <p class="bubble-text" id="event-desc"></p>
+            </div>
+
+            <p class="choice-prompt">あなたなら、どうする？</p>
+            <div id="choice-list" class="choice-list choice-center-list"></div>
+          </div>
+        </div>
+
+        <div class="thinking-overlay is-hidden" id="thinking-overlay">
+          <div class="thinking-card">
+            <div class="spinner"></div>
+            <p class="thinking-text">判断中...</p>
+          </div>
+        </div>
+
+        <div class="instant-pop-overlay is-hidden" id="instant-pop-overlay">
+          <div class="instant-pop-card" id="instant-pop-card">
+            <p class="instant-pop-badge" id="instant-pop-badge"></p>
+            <p class="instant-pop-money" id="instant-pop-money"></p>
+            <p class="instant-pop-sub" id="instant-pop-sub"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑨ 選択後の解説画面 -->
+      <section id="screen-result" class="screen">
+        <div class="result-card result-center-card" id="result-card">
+          <img id="result-character-image" class="result-character-image is-hidden" alt="">
+          
+          <p class="result-badge-large" id="result-badge"></p>
+          <p class="result-reaction" id="result-reaction"></p>
+          <p class="result-money-large" id="result-money"></p>
+
+          <p class="result-damage-alert is-hidden" id="result-damage-alert"></p>
+
+          <p class="result-current-money" id="result-current-money"></p>
+
+          <div class="guide-strip result-guide-strip">
+            <img id="result-guide-image" class="guide-strip-image is-hidden" alt="ジョーくん">
+            <div class="guide-bubble guide-bubble-inline">
+              <p class="story-textbox-speaker">ジョーくん</p>
+              <p class="guide-bubble-line" id="result-explain"></p>
+            </div>
+          </div>
+
+          <div class="result-point-panel">
+            <p class="result-point-title" id="result-point-title">今回のポイント</p>
+            <p class="result-point-text" id="result-point"></p>
+          </div>
+
+          <button id="btn-next" class="btn btn-primary">次の日へ</button>
+        </div>
+      </section>
+
+      <!-- ⑨.5 週末のふりかえり画面 -->
+      <section id="screen-week-recap" class="screen">
+        <div class="story-stage" id="week-recap-stage">
+          <img id="week-recap-bg-image" class="story-bg-image is-hidden" alt="">
+          <img id="week-recap-player-image" class="story-player-image is-center is-hidden" alt="">
+          <img id="week-recap-guide-image" class="story-player-image is-bottom-left is-hidden" alt="ジョーくん">
+          <div class="story-textbox">
+            <p class="narration-text" id="week-recap-text"></p>
+          </div>
+        </div>
+        <button id="btn-week-recap-next" class="btn btn-primary">次へ進む</button>
+      </section>
+
+      <!-- ⑩ 買い物イベント（高齢者モードはスキップ） -->
+      <section id="screen-shopping" class="screen">
+        <h2 class="screen-heading">日曜日：お買い物タイム</h2>
+        <div class="story-stage" id="shopping-stage">
+          <img id="shopping-bg-image" class="story-bg-image is-hidden" alt="">
+          <img id="shopping-player-image" class="story-player-image is-center is-hidden" alt="">
+          <div class="shopping-card" id="shopping-card"></div>
+        </div>
+        <button id="btn-ending" class="btn btn-primary">結果を見る</button>
+      </section>
+
+      <!-- ⑪ エンディング画面 -->
+      <section id="screen-ending" class="screen">
+        <div class="guide-strip">
+          <img id="ending-guide-image" class="guide-strip-image is-hidden" alt="ジョーくん">
+          <div class="guide-bubble guide-bubble-inline">
+            <p class="guide-bubble-line" id="ending-joe-comment">1週間、よく頑張ったね！</p>
+          </div>
+        </div>
+        <div class="ending-card" id="ending-card"></div>
+        <button id="btn-restart" class="btn btn-primary">もう一度遊ぶ</button>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="js/assets.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/story.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
