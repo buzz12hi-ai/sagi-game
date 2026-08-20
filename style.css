@@ -1,6 +1,6 @@
 /* =========================================================
    だまされるな！1週間チャレンジ - スタイルシート
-   （資料スクロール閲覧・キャラ最適配置・完全レスポンシブ）
+   （キャラ重なりゼロ・問題資料特大スクロール・完全レスポンシブ）
    ========================================================= */
 
 :root {
@@ -24,7 +24,7 @@
 
   --gradient-dark-stage: linear-gradient(160deg, #0F1830, #1B2A4A);
   --overlay-dark: rgba(18, 24, 42, 0.85);
-  --overlay-light: rgba(255, 255, 255, 0.94);
+  --overlay-light: rgba(255, 255, 255, 0.96);
 
   --ease-gentle: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -110,7 +110,7 @@ rt {
     padding: 16px 12px;
   }
   .app-shell {
-    max-width: 820px;
+    max-width: 840px;
     min-height: 94vh;
     border-radius: 28px;
     overflow: hidden;
@@ -126,7 +126,7 @@ rt {
   }
 }
 
-/* ★ スマホ版デザイン強制モード（PCでもスマホ縦枠で遊ぶ場合） ★ */
+/* ★ スマホ版デザイン強制モード ★ */
 .app-shell.layout-mobile {
   max-width: 480px !important;
   min-height: 92vh;
@@ -139,12 +139,7 @@ rt {
 
 .app-shell.layout-mobile .event-visual {
   width: 100% !important;
-  height: 280px !important;
-}
-
-.app-shell.layout-mobile .story-textbox {
-  height: 120px !important;
-  max-height: 120px !important;
+  height: 340px !important;
 }
 
 /* ★ iPad・パソコン版デザイン強制モード ★ */
@@ -271,13 +266,18 @@ rt {
   max-height: 135px;
 }
 
+.app-shell.is-senior-mode .story-player-image {
+  bottom: 135px !important;
+  height: calc(100% - 145px) !important;
+}
+
 .app-shell.is-senior-mode .story-textbox-speaker {
   font-size: 15px !important;
 }
 
 .app-shell.is-senior-mode .story-textbox-text {
   font-size: 20px !important;
-  line-height: 1.7 !important;
+  line-height: 1.65 !important;
 }
 
 .app-shell.is-senior-mode .story-panel-title {
@@ -335,7 +335,11 @@ rt {
 @media (min-width: 768px) {
   .app-shell.is-senior-mode .story-textbox {
     height: auto;
-    max-height: 52%;
+    max-height: 50%;
+  }
+  .app-shell.is-senior-mode .story-player-image {
+    bottom: 0 !important;
+    height: 84% !important;
   }
 }
 
@@ -553,6 +557,8 @@ rt {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 480px) {
@@ -570,7 +576,7 @@ rt {
 .screen {
   display: none;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   flex: 1;
   min-height: 0;
   animation: fadeIn 0.3s var(--ease-gentle);
@@ -992,12 +998,12 @@ rt {
 
 /* =========================================================
    あらすじ・自己紹介・ステージ
-   ★ 立ち絵を自然な高さに配置（下がりすぎ解消） ★
+   ★ キャラクターとセリフ枠の重なりを完全解消 ★
    ========================================================= */
 .story-stage {
   position: relative;
   flex: 1;
-  min-height: 330px;
+  min-height: 350px;
   border-radius: var(--radius-md);
   overflow: hidden;
   background: linear-gradient(160deg, #E4E9F3, #D6DEEC);
@@ -1017,13 +1023,13 @@ rt {
   z-index: 1;
 }
 
-/* ★ 立ち絵キャラクター：下がりすぎを防ぎ、顔・上半身を中央〜上部へ引き上げ ★ */
+/* ★ 立ち絵：セリフ枠（115px）の上に接地させ、被りをゼロにして大きく表示 ★ */
 .story-player-image {
   position: absolute;
-  bottom: 30px !important;
-  height: 86% !important;
+  bottom: 115px !important;
+  height: calc(100% - 120px) !important;
   width: auto;
-  max-width: 62%;
+  max-width: 68%;
   object-fit: contain;
   object-position: bottom center;
   z-index: 2;
@@ -1034,21 +1040,19 @@ rt {
 .story-player-image.is-center {
   left: 50%;
   transform: translateX(-50%);
-  max-width: 82%;
-  height: 88% !important;
+  max-width: 85%;
+  height: calc(100% - 120px) !important;
 }
 
 .story-player-image.is-bottom-left {
   left: 3%;
-  max-width: 56%;
-  height: 85% !important;
+  max-width: 58%;
 }
 
 .story-player-image.dialogue-left {
   left: 2% !important;
   right: auto !important;
   max-width: 55%;
-  height: 86% !important;
   object-position: bottom left;
 }
 
@@ -1056,7 +1060,6 @@ rt {
   right: 2% !important;
   left: auto !important;
   max-width: 55%;
-  height: 86% !important;
   object-position: bottom right;
 }
 
@@ -1075,19 +1078,19 @@ rt {
   .story-player-image.dialogue-right { right: 4% !important; height: 84% !important; }
 }
 
-/* ★ コメント欄（文章表示エリア） ★ */
+/* ★ セリフ枠（文章表示エリア）：高さ115pxで下部に固定 ★ */
 .story-textbox {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 5;
-  height: 120px;
-  max-height: 120px;
+  height: 115px;
+  max-height: 115px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   background: var(--overlay-light);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
   border-top: 2px solid var(--color-border);
   padding: 10px 14px 14px;
   display: flex;
@@ -1112,14 +1115,13 @@ rt {
 
 .story-textbox-text {
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.65;
   color: var(--color-navy-soft);
   white-space: pre-line;
   margin: 0;
   flex: 1;
 }
 
-/* タブレット・PCでは自然な高さに拡張 */
 @media (min-width: 768px) {
   .story-textbox {
     height: auto;
@@ -1419,13 +1421,19 @@ rt {
 
 /* =========================================================
    イベント（問題）画面
-   ★ 携帯画面・資料スクロール閲覧対応 ★
+   ★ 全体縦スクロール形式＆資料・携帯画面特大化（380px） ★
    ========================================================= */
+#screen-event {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .event-context {
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-family: var(--font-display);
+  margin-bottom: 6px;
 }
 
 .event-daylabel { font-size: 15px; font-weight: 700; }
@@ -1440,48 +1448,46 @@ rt {
 .event-layout {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  flex: 1;
-  min-height: 0;
+  gap: 14px;
+  width: 100%;
 }
 
 @media (min-width: 768px) {
   .event-layout {
     flex-direction: row;
     gap: 18px;
+    align-items: stretch;
   }
 }
 
-/* ★ 資料・携帯画面枠：スクロール可能で全体が読める構造 ★ */
+/* ★ 資料・携帯画面枠：高さを380px（PC420px）に特大化 ★ */
 .event-visual {
   position: relative;
   width: 100%;
-  height: 280px;
+  height: 380px;
   border-radius: var(--radius-md);
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   background: linear-gradient(160deg, #E4E9F3, #D6DEEC);
   border: 2px solid var(--color-border);
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(27, 42, 74, 0.08);
 }
 
-@media (min-height: 700px) {
-  .event-visual { height: 320px; }
+@media (min-height: 750px) {
+  .event-visual { height: 420px; }
 }
 
 @media (min-width: 768px) {
   .event-visual {
-    width: 46%;
+    width: 48%;
     height: auto;
-    min-height: 380px;
+    min-height: 440px;
   }
 }
 
 .event-bg-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-/* 立ち絵キャラクター */
+/* 立ち絵キャラクター：大きく表示 */
 .event-character-image {
   position: absolute;
   bottom: 0;
@@ -1496,28 +1502,25 @@ rt {
 .event-visual.is-screenshot-mode {
   background: #12182A;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   padding: 8px;
 }
 
-/* スクリーンショット画像：縮小しすぎずスクロールして読める構造 */
+/* スクリーンショット画像：枠いっぱいに大きく表示 */
 .event-screenshot-image {
+  height: 100%;
   width: 100%;
   max-width: 100%;
-  height: auto;
-  min-height: 100%;
   border-radius: var(--radius-sm);
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.6));
 }
 
 .joe-support-bubble {
-  position: sticky;
+  position: absolute;
   top: 8px;
-  align-self: flex-end;
-  margin-right: 8px;
+  right: 8px;
   z-index: 10;
   background: var(--overlay-light);
   border: 1.5px solid var(--color-money);
@@ -1536,23 +1539,22 @@ rt {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 10px;
-  flex: 1;
+  gap: 12px;
+  width: 100%;
   background: var(--color-surface);
   border-radius: var(--radius-md);
-  padding: 14px 14px;
+  padding: 16px 14px;
   box-shadow: var(--shadow-card);
   border: 2px solid var(--color-money);
-  overflow-y: auto;
 }
 
 @media (min-width: 768px) {
-  .choice-center-box { padding: 20px 18px; gap: 14px; }
-}
-
-@keyframes choicePopCenter {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  .choice-center-box {
+    width: 52%;
+    padding: 20px 18px;
+    gap: 14px;
+    overflow-y: auto;
+  }
 }
 
 .event-source {
@@ -1578,7 +1580,7 @@ rt {
 .choice-prompt {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 14.5px;
+  font-size: 16px;
   color: var(--color-navy);
   text-align: center;
   margin: 2px 0 0;
@@ -1587,7 +1589,7 @@ rt {
 .choice-center-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
   width: 100%;
 }
 
@@ -1597,7 +1599,7 @@ rt {
   font-weight: 500;
   line-height: 1.5;
   text-align: center;
-  padding: 13px 14px;
+  padding: 14px 16px;
   border-radius: var(--radius-sm);
   border: 2px solid var(--color-navy-soft);
   background: var(--color-surface);
@@ -1609,7 +1611,7 @@ rt {
 @media (min-width: 480px) {
   .choice-btn {
     font-size: 17.5px;
-    padding: 14px 18px;
+    padding: 15px 18px;
   }
 }
 
@@ -1624,7 +1626,7 @@ rt {
    判定ポップアップ & 思考演出
    ========================================================= */
 .thinking-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 120;
   background: rgba(18, 24, 42, 0.88);
@@ -1665,7 +1667,7 @@ rt {
 }
 
 .instant-pop-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 100;
   background: rgba(18, 24, 42, 0.85);
