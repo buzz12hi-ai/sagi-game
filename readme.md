@@ -1,1 +1,1 @@
-![サイトQR](リソース/画像/画像のファイル名.png)
+![サイトQR](resource/qr/qr.png)
