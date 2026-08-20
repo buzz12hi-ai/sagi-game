@@ -1,6 +1,6 @@
 /* =========================================================
    だまされるな！1週間チャレンジ - スタイルシート
-   （スマホ2行スクロール・重なり防止・アンケート対応・完全レスポンシブ）
+   （高齢者特大文字強化・スマホ2行スクロール・完全レスポンシブ）
    ========================================================= */
 
 :root {
@@ -125,42 +125,115 @@ rt {
   }
 }
 
-/* ★ 高齢者モード時の大文字・高視認性スタイル ★ */
+/* ★ 高齢者モード時の特大文字・高視認性スタイル ★ */
 .app-shell.is-senior-mode {
-  font-size: 17.5px;
+  font-size: 19px;
 }
 
 .app-shell.is-senior-mode .bubble-title {
-  font-size: 20px !important;
+  font-size: 22.5px !important;
   line-height: 1.5 !important;
+  font-weight: 900 !important;
 }
 
 .app-shell.is-senior-mode .bubble-text,
 .app-shell.is-senior-mode .narration-text {
-  font-size: 18px !important;
-  line-height: 1.95 !important;
+  font-size: 20px !important;
+  line-height: 2.0 !important;
   font-weight: 500 !important;
 }
 
+.app-shell.is-senior-mode .choice-prompt {
+  font-size: 17px !important;
+}
+
 .app-shell.is-senior-mode .choice-btn {
-  font-size: 17.5px !important;
+  font-size: 19.5px !important;
   line-height: 1.6 !important;
   padding: 16px 18px !important;
   font-weight: 700 !important;
 }
 
-.app-shell.is-senior-mode .story-panel-text {
-  font-size: 19px !important;
-  line-height: 2.05 !important;
+.app-shell.is-senior-mode .story-textbox {
+  height: 96px;
+  max-height: 96px;
+}
+
+.app-shell.is-senior-mode .story-player-image {
+  bottom: 96px;
+  height: calc(100% - 106px);
+}
+
+.app-shell.is-senior-mode .story-textbox-speaker {
+  font-size: 13.5px !important;
+}
+
+.app-shell.is-senior-mode .story-textbox-text {
+  font-size: 17.5px !important;
+  line-height: 1.7 !important;
+}
+
+.app-shell.is-senior-mode .story-panel-title {
+  font-size: 21px !important;
+}
+
+.app-shell.is-senior-mode .story-panel-text,
+.app-shell.is-senior-mode .synopsis-large-text {
+  font-size: 21px !important;
+  line-height: 2.1 !important;
 }
 
 .app-shell.is-senior-mode .guide-bubble-line {
-  font-size: 16.5px !important;
+  font-size: 18px !important;
+  line-height: 1.7 !important;
+}
+
+.app-shell.is-senior-mode .result-badge-large {
+  font-size: 32px !important;
+}
+
+.app-shell.is-senior-mode .result-reaction {
+  font-size: 16px !important;
+}
+
+.app-shell.is-senior-mode .result-money-large {
+  font-size: 27px !important;
+}
+
+.app-shell.is-senior-mode .result-point-title {
+  font-size: 16px !important;
 }
 
 .app-shell.is-senior-mode .result-point-text {
-  font-size: 16px !important;
-  line-height: 1.85 !important;
+  font-size: 18px !important;
+  line-height: 1.9 !important;
+}
+
+.app-shell.is-senior-mode .dayintro-daynum {
+  font-size: 22px !important;
+}
+
+.app-shell.is-senior-mode .dayintro-title {
+  font-size: 42px !important;
+}
+
+.app-shell.is-senior-mode .ending-title {
+  font-size: 22px !important;
+}
+
+.app-shell.is-senior-mode .ending-stat-value {
+  font-size: 18px !important;
+}
+
+@media (min-width: 768px) {
+  .app-shell.is-senior-mode .story-textbox {
+    height: auto;
+    max-height: 52%;
+  }
+  .app-shell.is-senior-mode .story-player-image {
+    bottom: 0;
+    height: 76%;
+  }
 }
 
 /* =========================================================
@@ -844,7 +917,7 @@ rt {
 /* スマホでの立ち絵配置：文章枠の上に固定配置して隠れを防止 */
 .story-player-image {
   position: absolute;
-  bottom: 84px; /* スマホ時のテキスト枠高さを除外した位置 */
+  bottom: 84px;
   height: calc(100% - 94px);
   width: auto;
   max-width: 48%;
