@@ -1,7 +1,7 @@
 /* =========================================================
    main.js
    -----------------------------------------------------------
-   モード分岐・動的4択・判定演出・エンディング制御（全漢字ルビ対応）
+   モード分岐・動的4択・判定演出・エンディング・アンケート制御
    ========================================================= */
 
 function renderTitleVisual() {
@@ -592,6 +592,28 @@ function showEnding() {
   showScreen("screen-ending");
 }
 
+// 最終アンケート画面の表示
+function showSurveyScreen() {
+  const bgImg = document.getElementById("survey-bg-image");
+  const guideImg = document.getElementById("survey-guide-image");
+  const surveyTextEl = document.getElementById("survey-text");
+
+  setImageSafely(bgImg, IMAGE_ASSETS.backgrounds.schoolRoute);
+  
+  setJoeExpression("cheer");
+  setImageSafely(guideImg, getJoeImage("cheer"));
+  applyCharacterBlend(guideImg, getJoeImage("cheer"));
+
+  if (surveyTextEl) {
+    surveyTextEl.innerHTML = `
+      最後にアンケートに協力してほしいジョー！<br>
+      ゲームをプレイして感じたことを教えてね！
+    `;
+  }
+
+  showScreen("screen-survey");
+}
+
 function handleRetire() {
   if (confirm("途中でリタイアして最初からやり直しますか？")) {
     restartGame();
@@ -639,6 +661,7 @@ document.getElementById("btn-week-recap-next").addEventListener("click", () => {
 });
 
 document.getElementById("btn-ending").addEventListener("click", showEnding);
+document.getElementById("btn-to-survey").addEventListener("click", showSurveyScreen);
 document.getElementById("btn-restart").addEventListener("click", restartGame);
 
 const retireBtn = document.getElementById("btn-retire");

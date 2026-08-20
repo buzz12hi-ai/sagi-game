@@ -1,7 +1,7 @@
 /* =========================================================
    data.js
    -----------------------------------------------------------
-   モード別問題プール定義（小学生モード全漢字ルビ化対応）
+   問題プール定義（全問題画像整合性・小学生全ルビ・高齢者15問）
    ========================================================= */
 
 const ITEMS = [
@@ -669,7 +669,7 @@ const QUESTIONS_SENIOR = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: null,
+    screenshot: IMAGE_ASSETS.screenshots.phoneCall,
     desc: "警察を名乗る電話で「口座が悪用されている。職員がカードを預かりに行くので暗証番号を渡して」と言われた。",
     correctChoices: [
       { text: "「一度電話を切り、自分で警察署の代表電話へかけ直して確認します」と伝えて電話を切る", money: 0, explain: "正解！ 警察がカードや暗証番号を求めることは絶対にありません。自ら調べた番号で確認が鉄則です。" },
@@ -692,7 +692,7 @@ const QUESTIONS_SENIOR = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: null,
+    screenshot: IMAGE_ASSETS.screenshots.phoneCall,
     desc: "市役所を名乗り「医療費の還付金がある。携帯を持ってATMへ行って指示通り操作して」と案内された。",
     correctChoices: [
       { text: "「ATMで還付金の受け取りはできない」と判断し、電話を切って市役所の公式窓口へ照会する", money: 0, explain: "正解！ ATM操作で還付金が受け取れることは100%ありません！見事に詐欺を防ぎました。" },
@@ -761,7 +761,7 @@ const QUESTIONS_SENIOR = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: null,
+    screenshot: IMAGE_ASSETS.screenshots.phoneCall,
     desc: "「電気代が安くなる」と電話があり、検針票のお客様番号や契約者情報の読み上げを要求された。",
     correctChoices: [
       { text: "「電話での契約変更はしません。書面を送ってください」と断り、検針票の番号は教えない", money: 0, explain: "正解！ 検針票の情報は重要な個人情報です。安易に教えないことで勝手な契約変更を防げます。" },
@@ -807,7 +807,7 @@ const QUESTIONS_SENIOR = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: null,
+    screenshot: IMAGE_ASSETS.screenshots.adScam,
     desc: "「ウイルス感染！PCが破壊されます」と大音量で警告画面が表示され、電話をかけるよう要求されている。",
     correctChoices: [
       { text: "画面の電話番号には絶対にかけず、ブラウザを閉じる（またはPCを再起動する）", money: 0, explain: "正解！ 画面に表示されているだけの偽警告です。電話をかけずに画面を閉じれば被害はありません。" },
@@ -869,7 +869,7 @@ const QUESTIONS_SENIOR = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
-    screenshot: null,
+    screenshot: IMAGE_ASSETS.screenshots.lineOfficial,
     desc: "クレジットカード会社から「今月のご利用明細が確定しました。公式サイトよりご確認ください」と届いた。",
     correctChoices: [
       { text: "ブラウザのブックマークに保存してあるカード会社の会員サイトへログインして明細を確認する", money: 300, explain: "正解！ 正規の案内を自ら安全なブックマーク経由で確認できました。（+300円）" }
@@ -957,7 +957,7 @@ const QUESTIONS_SENIOR = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
-    screenshot: null,
+    screenshot: IMAGE_ASSETS.screenshots.phoneShop,
     desc: "取引銀行の支店担当者から「定期預金の満期書類をお送りしましたのでご確認ください」と連絡があった。",
     correctChoices: [
       { text: "郵送されてきた書類を確認し、必要に応じて店舗窓口へ出向いて手続きする", money: 300, explain: "正解！ 正規の案内を正しく受け取り、安全に対応できました。（+300円）" }
@@ -978,7 +978,7 @@ const QUESTIONS_SENIOR = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: null,
+    screenshot: IMAGE_ASSETS.screenshots.phoneCall,
     desc: "息子を名乗る人物から「カバンを落とした。番号が変わった。同僚が金を取りに行く」と電話があった。",
     correctChoices: [
       { text: "一度電話を切り、あらかじめ知っている息子の本当の携帯電話番号へかけて確認する", money: 0, explain: "正解！ 「電話番号が変わった」と言われても元の番号にかけるのがオレオレ詐欺を100%防ぐ鉄則です！" },

@@ -379,7 +379,28 @@
           </div>
         </div>
         <div class="ending-card" id="ending-card"></div>
-        <button id="btn-restart" class="btn btn-primary">もう一度遊ぶ</button>
+        <button id="btn-to-survey" class="btn btn-primary">アンケートへ進む</button>
+      </section>
+
+      <!-- ⑫ 最終アンケート案内画面（新設） -->
+      <section id="screen-survey" class="screen">
+        <div class="story-stage" id="survey-stage">
+          <img id="survey-bg-image" class="story-bg-image is-hidden" alt="">
+          <img id="survey-guide-image" class="story-player-image is-center is-hidden" alt="ジョーくん">
+          <div class="story-textbox">
+            <p class="story-textbox-speaker">ジョーくん</p>
+            <p class="story-textbox-text" id="survey-text">
+              最後にアンケートに協力してほしいジョー！<br>
+              ゲームをプレイして感じたことを教えてね！
+            </p>
+          </div>
+        </div>
+        <div class="survey-action-panel">
+          <a id="btn-survey-link" class="btn btn-survey" href="https://forms.gle/HNpjkvkHrDYGNGbE7" target="_blank" rel="noopener noreferrer">
+            📋 アンケートに答える
+          </a>
+          <button id="btn-restart" class="btn btn-secondary">🎮 もう一度遊ぶ</button>
+        </div>
       </section>
 
     </main>
