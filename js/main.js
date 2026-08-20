@@ -1,7 +1,7 @@
 /* =========================================================
    main.js
    -----------------------------------------------------------
-   デバイス選択・モード分岐・動的4択・判定演出・アンケート制御
+   デバイス選択・モード分岐・動的4択・判定・アンケート・モーダル制御
    ========================================================= */
 
 function renderTitleVisual() {
@@ -691,6 +691,25 @@ document.getElementById("btn-restart").addEventListener("click", restartGame);
 const retireBtn = document.getElementById("btn-retire");
 if (retireBtn) {
   retireBtn.addEventListener("click", handleRetire);
+}
+
+// ★ 画像拡大モーダルの閉じるイベント登録 ★
+const closeImageModalBtn = document.getElementById("btn-close-image-modal");
+if (closeImageModalBtn) {
+  closeImageModalBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeImageModal();
+  });
+}
+
+const imageModalOverlay = document.getElementById("image-modal");
+if (imageModalOverlay) {
+  imageModalOverlay.addEventListener("click", (e) => {
+    // 背景（ダイアログ外）をクリックした場合にも閉じる
+    if (e.target === imageModalOverlay) {
+      closeImageModal();
+    }
+  });
 }
 
 renderTitleVisual();

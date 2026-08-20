@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- キャッシュを強制クリアして最新CSSを適用 (?v=20260820) -->
-<link rel="stylesheet" href="style.css?v=20260820">
+<!-- キャッシュ強制クリア (?v=20260820_pop) -->
+<link rel="stylesheet" href="style.css?v=20260820_pop">
 </head>
 <body>
 
@@ -299,11 +299,16 @@
         </div>
 
         <div class="event-layout">
+          <!-- ビジュアル枠（タップで拡大可能） -->
           <div class="event-visual" id="event-visual">
             <img id="event-bg-image" class="event-bg-image" alt="背景">
             <img id="event-character-image" class="event-character-image is-hidden" alt="人物">
             <img id="event-screenshot-image" class="event-screenshot-image is-hidden" alt="画面">
             
+            <div class="zoom-hint-badge is-hidden" id="zoom-hint-badge">
+              <span>🔍 タップで拡大</span>
+            </div>
+
             <div class="joe-support-bubble" id="joe-support-bubble">
               <span class="joe-support-icon">🤖</span>
               <span class="joe-support-text" id="joe-support-text">落ち着いて判断しよう！</span>
@@ -427,14 +432,24 @@
       </section>
 
     </main>
+
+    <!-- ★ 特大画像ポップアップモーダル（新設） ★ -->
+    <div id="image-modal" class="image-modal-overlay is-hidden">
+      <div class="image-modal-dialog">
+        <button id="btn-close-image-modal" class="image-modal-close" type="button">✕ 閉じる</button>
+        <div class="image-modal-body">
+          <img id="image-modal-img" src="" alt="拡大画像">
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- JavaScriptファイルもキャッシュを強制クリアして最新を読み込ませる (?v=20260820) -->
-  <script src="js/assets.js?v=20260820"></script>
-  <script src="js/data.js?v=20260820"></script>
-  <script src="js/state.js?v=20260820"></script>
-  <script src="js/ui.js?v=20260820"></script>
-  <script src="js/story.js?v=20260820"></script>
-  <script src="js/main.js?v=20260820"></script>
+  <script src="js/assets.js?v=20260820_pop"></script>
+  <script src="js/data.js?v=20260820_pop"></script>
+  <script src="js/state.js?v=20260820_pop"></script>
+  <script src="js/ui.js?v=20260820_pop"></script>
+  <script src="js/story.js?v=20260820_pop"></script>
+  <script src="js/main.js?v=20260820_pop"></script>
 </body>
 </html>

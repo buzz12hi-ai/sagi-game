@@ -1,7 +1,7 @@
 /* =========================================================
    ui.js
    -----------------------------------------------------------
-   UI描画・主人公立ち絵切替（学生/高齢者）・不透明合成
+   UI描画・主人公立ち絵切替・資料タップ拡大モーダル制御
    ========================================================= */
 
 function showScreen(screenId) {
@@ -57,7 +57,8 @@ function setJoeExpression(expression) {
   const targetImgIds = [
     "item-guide-image", "synopsis-guide-image", "dayintro-guide-image",
     "narration-guide-image", "result-guide-image", "week-recap-guide-image",
-    "ending-guide-image", "intro-guide-image", "action-guide-image", "title-joe-image"
+    "ending-guide-image", "intro-guide-image", "action-guide-image", "title-joe-image",
+    "survey-guide-image"
   ];
 
   targetImgIds.forEach(id => {
@@ -229,11 +230,30 @@ function showDayIntro(label, onNext, comment) {
   document.getElementById("btn-dayintro-next").onclick = onNext;
 }
 
+/* ★ 資料・画像ポップアップモーダル制御 ★ */
+function openImageModal(imgSrc) {
+  if (!imgSrc) return;
+  const modal = document.getElementById("image-modal");
+  const modalImg = document.getElementById("image-modal-img");
+  if (!modal || !modalImg) return;
+
+  setImageSafely(modalImg, imgSrc);
+  modal.classList.remove("is-hidden");
+}
+
+function closeImageModal() {
+  const modal = document.getElementById("image-modal");
+  if (modal) {
+    modal.classList.add("is-hidden");
+  }
+}
+
 function renderEventVisual(question) {
   const screenshotImg = document.getElementById("event-screenshot-image");
   const bgImg = document.getElementById("event-bg-image");
   const characterImg = document.getElementById("event-character-image");
   const visual = document.getElementById("event-visual");
+  const zoomBadge = document.getElementById("zoom-hint-badge");
 
   if (question.screenshot) {
     visual.classList.add("is-screenshot-mode");
@@ -241,11 +261,19 @@ function renderEventVisual(question) {
     setImageSafely(bgImg, null);
     setImageSafely(characterImg, null);
     applyCharacterBlend(characterImg, null);
+    
+    if (zoomBadge) zoomBadge.classList.remove("is-hidden");
+
+    // 画像タップで特大拡大モーダルを開く
+    visual.onclick = () => openImageModal(question.screenshot);
     return;
   }
 
   visual.classList.remove("is-screenshot-mode");
   setImageSafely(screenshotImg, null);
+  visual.onclick = null;
+  
+  if (zoomBadge) zoomBadge.classList.add("is-hidden");
   
   const effectiveBg = question.bg || IMAGE_ASSETS.backgrounds.livingRoom;
   setImageSafely(bgImg, effectiveBg);

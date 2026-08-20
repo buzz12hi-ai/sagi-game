@@ -1,6 +1,6 @@
 /* =========================================================
    だまされるな！1週間チャレンジ - スタイルシート
-   （キャラ重なりゼロ・問題資料特大スクロール・完全レスポンシブ）
+   （資料ポップアップ拡大・閉じるボタン・完全レスポンシブ）
    ========================================================= */
 
 :root {
@@ -139,7 +139,7 @@ rt {
 
 .app-shell.layout-mobile .event-visual {
   width: 100% !important;
-  height: 340px !important;
+  height: 320px !important;
 }
 
 /* ★ iPad・パソコン版デザイン強制モード ★ */
@@ -998,7 +998,7 @@ rt {
 
 /* =========================================================
    あらすじ・自己紹介・ステージ
-   ★ キャラクターとセリフ枠の重なりを完全解消 ★
+   ★ 立ち絵自然配置 ＆ セリフ枠との重なり完全ゼロ ★
    ========================================================= */
 .story-stage {
   position: relative;
@@ -1023,7 +1023,7 @@ rt {
   z-index: 1;
 }
 
-/* ★ 立ち絵：セリフ枠（115px）の上に接地させ、被りをゼロにして大きく表示 ★ */
+/* ★ 立ち絵：セリフ枠の上に接地させ、被りをゼロにして大きく表示 ★ */
 .story-player-image {
   position: absolute;
   bottom: 115px !important;
@@ -1421,7 +1421,7 @@ rt {
 
 /* =========================================================
    イベント（問題）画面
-   ★ 全体縦スクロール形式＆資料・携帯画面特大化（380px） ★
+   ★ 携帯画面特大化 ＆ タップ拡大対応 ★
    ========================================================= */
 #screen-event {
   overflow-y: auto;
@@ -1460,7 +1460,7 @@ rt {
   }
 }
 
-/* ★ 資料・携帯画面枠：高さを380px（PC420px）に特大化 ★ */
+/* ★ 資料・携帯画面枠 ★ */
 .event-visual {
   position: relative;
   width: 100%;
@@ -1487,7 +1487,7 @@ rt {
 
 .event-bg-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-/* 立ち絵キャラクター：大きく表示 */
+/* 立ち絵キャラクター */
 .event-character-image {
   position: absolute;
   bottom: 0;
@@ -1505,9 +1505,10 @@ rt {
   align-items: center;
   justify-content: center;
   padding: 8px;
+  cursor: pointer; /* タップで拡大可能 */
 }
 
-/* スクリーンショット画像：枠いっぱいに大きく表示 */
+/* スクリーンショット画像 */
 .event-screenshot-image {
   height: 100%;
   width: 100%;
@@ -1515,6 +1516,36 @@ rt {
   border-radius: var(--radius-sm);
   object-fit: contain;
   filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.6));
+  transition: transform 0.2s ease;
+}
+
+.event-visual.is-screenshot-mode:hover .event-screenshot-image {
+  transform: scale(1.02);
+}
+
+/* ★ 「🔍 タップで拡大」ガイドバッジ ★ */
+.zoom-hint-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+  background: rgba(27, 42, 74, 0.88);
+  backdrop-filter: blur(4px);
+  border: 1.5px solid var(--color-money);
+  border-radius: 999px;
+  padding: 5px 12px;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  animation: pulseZoom 1.8s infinite alternate;
+}
+
+@keyframes pulseZoom {
+  0% { transform: scale(0.96); opacity: 0.85; }
+  100% { transform: scale(1.04); opacity: 1; }
 }
 
 .joe-support-bubble {
@@ -1620,6 +1651,77 @@ rt {
   background: #FFF9E6;
   transform: scale(1.01);
   box-shadow: 0 4px 10px rgba(245, 166, 35, 0.2);
+}
+
+/* =========================================================
+   ★ 特大画像ポップアップモーダル ★
+   ========================================================= */
+.image-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10, 15, 30, 0.94);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  animation: fadeIn 0.25s var(--ease-gentle);
+  touch-action: pan-y;
+}
+
+.image-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 94vh;
+  max-height: 94dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-modal-close {
+  align-self: flex-end;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 900;
+  color: #FFFFFF;
+  background: #E85C4A;
+  border: 2px solid #FFFFFF;
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(232, 92, 74, 0.5);
+  margin-bottom: 8px;
+  transition: transform 0.15s ease;
+}
+
+.image-modal-close:active {
+  transform: scale(0.95);
+}
+
+.image-modal-body {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #0B1426;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-money);
+  padding: 10px;
+}
+
+#image-modal-img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
 }
 
 /* =========================================================
