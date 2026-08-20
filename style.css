@@ -1,6 +1,6 @@
 /* =========================================================
    だまされるな！1週間チャレンジ - スタイルシート
-   （高齢者基準・一般/小学生−5px調整・完全レスポンシブ）
+   （デバイス選択・レイアウト切替・キャラ特大・完全レスポンシブ）
    ========================================================= */
 
 :root {
@@ -42,7 +42,7 @@ html, body {
   background: linear-gradient(160deg, #DDE5F3 0%, #EDF1F7 60%);
   font-family: var(--font-body);
   color: var(--color-navy);
-  font-size: 16px; /* 高齢者(21px) - 5px */
+  font-size: 16px;
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
 }
@@ -86,7 +86,7 @@ rt {
 }
 
 /* =========================================================
-   基本レイアウト & アプリシェル（レスポンシブ）
+   基本レイアウト & アプリシェル（レスポンシブ & 切替対応）
    ========================================================= */
 .app-shell {
   width: 100%;
@@ -99,8 +99,10 @@ rt {
   flex-direction: column;
   position: relative;
   box-shadow: none;
+  transition: max-width 0.3s ease;
 }
 
+/* iPad・パソコン版選択時（または大画面標準） */
 @media (min-width: 768px) {
   body {
     display: flex;
@@ -125,7 +127,123 @@ rt {
   }
 }
 
-/* ★ 高齢者モード時の基準超特大文字スタイル ★ */
+/* ★ スマホ版デザイン強制モード（PCでもスマホ縦枠で遊ぶ場合） ★ */
+.app-shell.layout-mobile {
+  max-width: 480px !important;
+  min-height: 92vh;
+  border-radius: 28px;
+}
+
+.app-shell.layout-mobile .event-layout {
+  flex-direction: column !important;
+}
+
+.app-shell.layout-mobile .event-visual {
+  width: 100% !important;
+  height: 280px !important;
+}
+
+.app-shell.layout-mobile .story-textbox {
+  height: 125px !important;
+  max-height: 125px !important;
+}
+
+.app-shell.layout-mobile .story-player-image {
+  bottom: 0 !important;
+  height: 94% !important;
+}
+
+/* ★ iPad・パソコン版デザイン強制モード ★ */
+.app-shell.layout-desktop {
+  max-width: 1000px !important;
+}
+
+/* =========================================================
+   デバイス選択画面スタイル
+   ========================================================= */
+.device-select-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 10px 4px;
+  flex: 1;
+  justify-content: center;
+}
+
+.device-select-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 23px;
+  color: var(--color-navy);
+  margin: 0;
+  text-align: center;
+}
+
+@media (min-width: 480px) {
+  .device-select-title { font-size: 26px; }
+}
+
+.device-select-sub {
+  font-size: 14.5px;
+  color: var(--color-navy-soft);
+  margin: -4px 0 6px;
+  text-align: center;
+}
+
+.device-select-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.device-card {
+  background: var(--color-surface);
+  border: 2.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s var(--ease-gentle);
+  box-shadow: var(--shadow-card);
+}
+
+.device-card:hover {
+  border-color: var(--color-money);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(245, 166, 35, 0.25);
+  background: #FFF9E6;
+}
+
+.device-badge {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 17px;
+  padding: 5px 16px;
+  border-radius: 999px;
+  color: #fff;
+}
+
+.badge-mobile { background: linear-gradient(135deg, #2E9E82, #24826B); }
+.badge-desktop { background: linear-gradient(135deg, #1B2A4A, #2E4374); }
+
+.device-card-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-navy-soft);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ★ 高齢者モード時の超特大文字スタイル ★ */
 .app-shell.is-senior-mode {
   font-size: 21px;
 }
@@ -481,7 +599,7 @@ rt {
 .btn {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 16.5px; /* 高齢者(21.5px) - 5px */
+  font-size: 16.5px;
   border: none;
   border-radius: 999px;
   padding: 15px 26px;
@@ -987,7 +1105,7 @@ rt {
   display: inline-block;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 12px; /* 高齢者(15px) - 3px */
+  font-size: 12px;
   color: var(--color-navy);
   background: rgba(245, 166, 35, 0.28);
   padding: 2px 10px;
@@ -998,7 +1116,7 @@ rt {
 }
 
 .story-textbox-text {
-  font-size: 15px; /* 高齢者(20px) - 5px */
+  font-size: 15px;
   line-height: 1.7;
   color: var(--color-navy-soft);
   white-space: pre-line;
@@ -1044,7 +1162,7 @@ rt {
 }
 
 .narration-text {
-  font-size: 17px; /* 高齢者(22px) - 5px */
+  font-size: 17px;
   line-height: 1.8;
   color: var(--color-navy-soft);
   margin: 0;
@@ -1075,7 +1193,7 @@ rt {
 .story-panel-title {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 19px; /* 高齢者(24px) - 5px */
+  font-size: 19px;
   margin: 0 0 6px;
   color: var(--color-navy);
 }
@@ -1088,7 +1206,7 @@ rt {
 }
 
 .synopsis-large-text {
-  font-size: 18px !important; /* 高齢者(23px) - 5px */
+  font-size: 18px !important;
   line-height: 2.0 !important;
   color: var(--color-navy) !important;
   font-weight: 500 !important;
@@ -1152,7 +1270,7 @@ rt {
 .dayintro-daynum {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 19px; /* 高齢者(24px) - 5px */
+  font-size: 19px;
   letter-spacing: 0.12em;
   color: var(--color-money);
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
@@ -1162,7 +1280,7 @@ rt {
 .dayintro-title {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 41px; /* 高齢者(46px) - 5px */
+  font-size: 41px;
   color: #FFFFFF;
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(245, 166, 35, 0.6);
   letter-spacing: 0.06em;
@@ -1250,7 +1368,7 @@ rt {
 }
 
 .guide-bubble-line {
-  font-size: 15px; /* 高齢者(20px) - 5px */
+  font-size: 15px;
   font-weight: 700;
   color: var(--color-navy);
   line-height: 1.65;
@@ -1454,13 +1572,13 @@ rt {
   padding: 10px 12px;
 }
 
-.bubble-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; /* 高齢者(25px) - 5px */ margin: 0 0 4px; }
-.bubble-text { font-size: 17px; /* 高齢者(22px) - 5px */ line-height: 1.75; margin: 0; color: var(--color-navy-soft); white-space: pre-line; }
+.bubble-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; margin: 0 0 4px; }
+.bubble-text { font-size: 17px; line-height: 1.75; margin: 0; color: var(--color-navy-soft); white-space: pre-line; }
 
 .choice-prompt {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 14.5px; /* 高齢者(19.5px) - 5px */
+  font-size: 14.5px;
   color: var(--color-navy);
   text-align: center;
   margin: 2px 0 0;
@@ -1475,7 +1593,7 @@ rt {
 
 .choice-btn {
   font-family: var(--font-body);
-  font-size: 16.5px; /* 高齢者(21.5px) - 5px */
+  font-size: 16.5px;
   font-weight: 500;
   line-height: 1.5;
   text-align: center;
@@ -1592,7 +1710,7 @@ rt {
 .instant-pop-badge {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 31px; /* 高齢者(36px) - 5px */
+  font-size: 31px;
   margin: 0;
   line-height: 1.2;
 }
@@ -1604,7 +1722,7 @@ rt {
 .instant-pop-money {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 25px; /* 高齢者(30px) - 5px */
+  font-size: 25px;
   margin: 0;
 }
 
@@ -1643,7 +1761,7 @@ rt {
 .result-badge-large {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 31px; /* 高齢者(36px) - 5px */
+  font-size: 31px;
   margin: 0;
 }
 
@@ -1651,12 +1769,12 @@ rt {
 .result-badge-large.is-partial { color: var(--color-money); }
 .result-badge-large.is-wrong   { color: var(--color-danger); }
 
-.result-reaction { font-size: 13.5px; /* 高齢者(18px) - 4.5px */ font-weight: 700; background: var(--color-bg); padding: 4px 14px; border-radius: 999px; margin: 0; }
+.result-reaction { font-size: 13.5px; font-weight: 700; background: var(--color-bg); padding: 4px 14px; border-radius: 999px; margin: 0; }
 
 .result-money-large {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 25px; /* 高齢者(30px) - 5px */
+  font-size: 25px;
   margin: 0;
 }
 
@@ -1678,8 +1796,8 @@ rt {
 .result-current-money { font-family: var(--font-display); font-weight: 700; font-size: 15px; background: var(--color-bg); padding: 4px 12px; border-radius: 999px; margin: 0; }
 
 .result-point-panel { width: 100%; text-align: left; background: rgba(245, 166, 35, 0.12); border: 1px solid rgba(245, 166, 35, 0.35); border-radius: var(--radius-sm); padding: 10px 12px; }
-.result-point-title { font-family: var(--font-display); font-weight: 700; font-size: 14px; /* 高齢者(19px) - 5px */ margin: 0 0 3px; }
-.result-point-text { font-size: 15px; /* 高齢者(20px) - 5px */ line-height: 1.75; color: var(--color-navy-soft); white-space: pre-line; margin: 0; }
+.result-point-title { font-family: var(--font-display); font-weight: 700; font-size: 14px; margin: 0 0 3px; }
+.result-point-text { font-size: 15px; line-height: 1.75; color: var(--color-navy-soft); white-space: pre-line; margin: 0; }
 
 /* =========================================================
    買い物 & エンディング画面
@@ -1739,9 +1857,9 @@ rt {
 .ending-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; margin-top: 2px; }
 .ending-stat { background: var(--color-bg); border-radius: var(--radius-sm); padding: 8px; display: flex; flex-direction: column; gap: 2px; text-align: center; }
 .ending-stat-label { font-size: 12px; color: var(--color-navy-soft); }
-.ending-stat-value { font-family: var(--font-display); font-size: 15px; /* 高齢者(20px) - 5px */ font-weight: 700; }
+.ending-stat-value { font-family: var(--font-display); font-size: 15px; font-weight: 700; }
 
-.ending-title { font-family: var(--font-display); font-weight: 900; font-size: 20px; /* 高齢者(25px) - 5px */ margin: 2px 0; }
+.ending-title { font-family: var(--font-display); font-weight: 900; font-size: 20px; margin: 2px 0; }
 .ending-title.is-good { color: var(--color-safe); }
 .ending-title.is-bad { color: var(--color-danger); }
 

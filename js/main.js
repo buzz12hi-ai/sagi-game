@@ -1,7 +1,7 @@
 /* =========================================================
    main.js
    -----------------------------------------------------------
-   モード分岐・動的4択・判定演出・エンディング・アンケート制御
+   デバイス選択・モード分岐・動的4択・判定演出・アンケート制御
    ========================================================= */
 
 function renderTitleVisual() {
@@ -12,12 +12,31 @@ function renderTitleVisual() {
   }
 }
 
-// 「はじめる」クリックでモード選択画面へ
+// ① 「はじめる」クリックで「表示デザイン選択画面」へ
 function handleStartClick() {
+  showScreen("screen-device-select");
+}
+
+// ①.05 表示デザイン（デバイスレイアウト）選択処理
+function handleSelectDevice(selectedDevice) {
+  state.deviceLayout = selectedDevice;
+  const shell = document.getElementById("app-shell");
+
+  if (shell) {
+    if (selectedDevice === "mobile") {
+      shell.classList.add("layout-mobile");
+      shell.classList.remove("layout-desktop");
+    } else {
+      shell.classList.add("layout-desktop");
+      shell.classList.remove("layout-mobile");
+    }
+  }
+
+  // デバイス選択後、モード選択画面へ遷移
   showScreen("screen-mode-select");
 }
 
-// モード選択処理
+// ①.1 モード選択処理
 function handleSelectMode(selectedMode) {
   state.mode = selectedMode;
 
@@ -642,6 +661,11 @@ function restartGame() {
    ========================================================= */
 document.getElementById("btn-start").addEventListener("click", handleStartClick);
 
+// デバイスレイアウト選択ボタン
+document.getElementById("btn-device-mobile").addEventListener("click", () => handleSelectDevice("mobile"));
+document.getElementById("btn-device-desktop").addEventListener("click", () => handleSelectDevice("desktop"));
+
+// モード選択ボタン
 document.getElementById("btn-mode-general").addEventListener("click", () => handleSelectMode("general"));
 document.getElementById("btn-mode-elementary").addEventListener("click", () => handleSelectMode("elementary"));
 document.getElementById("btn-mode-senior").addEventListener("click", () => handleSelectMode("senior"));

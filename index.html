@@ -71,6 +71,28 @@
         </div>
       </section>
 
+      <!-- ①.05 デバイス/レイアウト選択画面（新設） -->
+      <section id="screen-device-select" class="screen">
+        <div class="device-select-container">
+          <h2 class="device-select-title">表示デザインを選んでください</h2>
+          <p class="device-select-sub">お使いの端末や好みの画面デザインを選んでね！</p>
+          
+          <div class="device-select-grid">
+            <!-- スマホ版デザイン -->
+            <button id="btn-device-mobile" class="device-card" type="button">
+              <div class="device-badge badge-mobile">📱 スマホ版デザイン</div>
+              <p class="device-card-desc">スマートフォンにぴったりの縦型コンパクト表示</p>
+            </button>
+
+            <!-- iPad・パソコン版デザイン -->
+            <button id="btn-device-desktop" class="device-card" type="button">
+              <div class="device-badge badge-desktop">💻 iPad・パソコン版デザイン</div>
+              <p class="device-card-desc">タブレットやPC画面にぴったりの見やすいワイド表示</p>
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- ①.1 対象者モード選択画面 -->
       <section id="screen-mode-select" class="screen">
         <div class="mode-select-container">
@@ -382,7 +404,7 @@
         <button id="btn-to-survey" class="btn btn-primary">アンケートへ進む</button>
       </section>
 
-      <!-- ⑫ 最終アンケート案内画面（新設） -->
+      <!-- ⑫ 最終アンケート案内画面 -->
       <section id="screen-survey" class="screen">
         <div class="story-stage" id="survey-stage">
           <img id="survey-bg-image" class="story-bg-image is-hidden" alt="">

@@ -1,11 +1,12 @@
 /* =========================================================
    state.js
    -----------------------------------------------------------
-   ゲーム状態管理・モード別日程＆完全ランダム抽出ロジック
+   ゲーム状態管理・デバイス設定・モード別日程＆完全ランダム抽出
    ========================================================= */
 
 const state = {
-  mode: "general", // "general" | "elementary" | "senior"
+  deviceLayout: "mobile", // "mobile" | "desktop"
+  mode: "general",        // "general" | "elementary" | "senior"
   playerName: "",
   money: 50000,
   selectedItem: null,
