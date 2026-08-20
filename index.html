@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="style.css">
+<!-- キャッシュを強制クリアして最新CSSを適用 (?v=20260820) -->
+<link rel="stylesheet" href="style.css?v=20260820">
 </head>
 <body>
 
@@ -71,7 +72,7 @@
         </div>
       </section>
 
-      <!-- ①.05 デバイス/レイアウト選択画面（新設） -->
+      <!-- ①.05 デバイス/レイアウト選択画面 -->
       <section id="screen-device-select" class="screen">
         <div class="device-select-container">
           <h2 class="device-select-title">表示デザインを選んでください</h2>
@@ -428,11 +429,12 @@
     </main>
   </div>
 
-  <script src="js/assets.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/story.js"></script>
-  <script src="js/main.js"></script>
+  <!-- JavaScriptファイルもキャッシュを強制クリアして最新を読み込ませる (?v=20260820) -->
+  <script src="js/assets.js?v=20260820"></script>
+  <script src="js/data.js?v=20260820"></script>
+  <script src="js/state.js?v=20260820"></script>
+  <script src="js/ui.js?v=20260820"></script>
+  <script src="js/story.js?v=20260820"></script>
+  <script src="js/main.js?v=20260820"></script>
 </body>
 </html>
