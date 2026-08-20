@@ -1,1 +1,1 @@
-![サイトQR](resource/qr/qr.png)
+![サイトQR](/resource/qr/qr.png)
