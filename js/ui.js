@@ -2,7 +2,11 @@
    ui.js
    -----------------------------------------------------------
    UI描画・4モード表示制御・資料タップ拡大モーダル制御
+   デバッグ情報出力（MODE, QUESTION ID, IMAGE照合）機能搭載
    ========================================================= */
+
+// デバッグモード設定（trueでコンソールおよびデバッグ表示を有効化、本番時はfalseに設定可能）
+window.DEBUG_MODE = true;
 
 function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach((el) => {
@@ -249,7 +253,22 @@ function closeImageModal() {
   }
 }
 
+/* ★ デバッグ情報ログ＆画面照合出力（⑪） ★ */
+function outputDebugQuestionInfo(question) {
+  if (!window.DEBUG_MODE || !question) return;
+
+  const imageFileName = question.screenshot 
+    ? question.screenshot.split("/").pop() 
+    : (question.character ? question.character.split("/").pop() : "なし");
+
+  const debugText = `[DEBUG] MODE: ${state.mode} | QUESTION ID: ${question.id} | IMAGE: ${decodeURIComponent(imageFileName)}`;
+  console.log(`%c${debugText}`, "color: #00e676; background: #1B2A4A; font-weight: bold; padding: 4px 8px; border-radius: 4px;");
+}
+
 function renderEventVisual(question) {
+  // デバッグ情報の出力実行
+  outputDebugQuestionInfo(question);
+
   const screenshotImg = document.getElementById("event-screenshot-image");
   const bgImg = document.getElementById("event-bg-image");
   const characterImg = document.getElementById("event-character-image");

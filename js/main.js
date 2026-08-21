@@ -373,7 +373,7 @@ function handleChoice(choice) {
     popSub.textContent = `被害：${Math.abs(choice.money).toLocaleString("ja-JP")}円！`;
     setJoeExpression("sad");
 
-    if (popOverlay) popOverlay.classList.add("is-danger-flash");
+    if (popOverlay) popOverlay.classList.remove("is-danger-flash");
   }
 
   if (choice.money > 0) {
