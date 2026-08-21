@@ -1,7 +1,7 @@
 /* =========================================================
    assets.js
    -----------------------------------------------------------
-   画像パス定義（Finder最新画像素材・拡張子完全同期版）
+   画像パス定義（実在ファイル名・半角スペース・拡張子完全同期版）
    ========================================================= */
 
 const IMG_BASE = "images/";
@@ -58,7 +58,7 @@ const IMAGE_ASSETS = {
     seniorWalking:     IMG_BASE + "高齢者.png",
     seniorSmartphone:  IMG_BASE + "高齢者笑顔.png",
 
-    // NPC・親・詐欺師（実在拡張子に完全同期）
+    // NPC・親・詐欺師
     suspiciousVisitor: IMG_BASE + "点検商法詐欺師.png",
     workerGas:         IMG_BASE + "コンビニ店員.png",
     elderlyWomanCane:  IMG_BASE + "困っている高齢者.png",
@@ -69,45 +69,44 @@ const IMAGE_ASSETS = {
     silhouette:        IMG_BASE + "シルエット.png"
   },
 
-  // スマホ画面・スクリーンショット・資料画像（新規追加分を完全網羅）
+  // スマホ画面・スクリーンショット・資料画像（実ファイル名完全一致）
   screenshots: {
-    // 既存素材
-    gmailPolice:        IMG_BASE + "偽警察詐欺.png",
-    gmailDelivery:      IMG_BASE + "宅配メール.png",
-    instagram:          IMG_BASE + "なりすまし詐欺.png",
-    gameAppNotice:      IMG_BASE + "ゲーム広告本物.png",
-    shoppingAd:         IMG_BASE + "ショッピング広告詐欺.jpg",
-    lineSidejob:        IMG_BASE + "投資詐欺.png",
-    lineOfficial:       IMG_BASE + "LINE公式.jpg",
-    phoneCall:          IMG_BASE + "詐欺電話.png",
-    phoneShop:          IMG_BASE + "携帯ショップ電話.png",
-    romanceHome:        IMG_BASE + "ロマンス詐欺ホーム.jpg",
-    romanceTalk:        IMG_BASE + "ロマンス詐欺トーク.png",
-    favGoods:           IMG_BASE + "推し活ショッピング詐欺.jpg",
-    adScam:             IMG_BASE + "広告詐欺？ .png",
-    tiktokAd:           IMG_BASE + "TikTok広告詐欺.jpg",
-    youtuberScam:       IMG_BASE + "YouTuberなりすまし詐欺.jpg",
-    gameAdScam:         IMG_BASE + "ゲーム広告詐欺.jpg",
-    dataNotice:         IMG_BASE + "通信量通知本物.jpg",
+    gmailPolice:          IMG_BASE + "偽警察詐欺.png",
+    gmailDelivery:        IMG_BASE + "宅配メール.png",
+    instagram:            IMG_BASE + "なりすまし詐欺.png",
+    gameAppNotice:        IMG_BASE + "ゲーム広告本物.png",
+    shoppingAd:           IMG_BASE + "ショッピング広告詐欺.jpg",
+    lineSidejob:          IMG_BASE + "投資詐欺.png",
+    lineOfficial:         IMG_BASE + "LINE公式.jpg",
+    phoneCall:            IMG_BASE + "詐欺電話.png",
+    phoneShop:            IMG_BASE + "携帯ショップ電話.png",
+    romanceHome:          IMG_BASE + "ロマンス詐欺ホーム.jpg",
+    romanceTalk:          IMG_BASE + "ロマンス詐欺トーク.png",
+    favGoods:             IMG_BASE + "推し活ショッピング詐欺.jpg",
+    adScam:               IMG_BASE + "広告詐欺？ .png",
+    tiktokAd:             IMG_BASE + "TikTok広告詐欺.jpg",
+    youtuberScam:         IMG_BASE + "YouTuberなりすまし詐欺.jpg",
+    gameAdScam:           IMG_BASE + "ゲーム広告詐欺.jpg",
+    dataNotice:           IMG_BASE + "通信量通知本物.jpg",
 
-    // 新規追加素材（Finder実ファイル名と完全一致）
-    gameCoinScam:       IMG_BASE + "ゲームコイン裏ワザ詐欺.jpg",
-    youtuberDmScam:     IMG_BASE + "YouTuber サイン DM 詐欺.jpg",
-    gachaCodeScam:      IMG_BASE + "無料ガチャコード詐欺.jpg",
-    darkJobScam:        IMG_BASE + "闇バイト募集詐欺.jpg",
-    ticketResaleScam:   IMG_BASE + "チケット転売詐欺.jpg",
-    copyrightDmScam:    IMG_BASE + "著作権警告詐欺.jpg",
-    aiFakeAdScam:       IMG_BASE + "AI 有名人偽広告.jpg",
-    etaxScam:           IMG_BASE + "eTax還付金詐欺.jpg",
-    mynaPortalScam:     IMG_BASE + "マイナポータル詐欺.jpg",
-    bankOtpScam:        IMG_BASE + "銀行ワンタイム詐欺.jpg",
-    utilityScam:        IMG_BASE + "電気ガス供給停止詐欺.jpg",
-    cryptoStakingScam:  IMG_BASE + "暗号資産ステーキング詐欺.jpg",
-    travelCancelScam:   IMG_BASE + "偽ホテル予約キャンセル詐欺.jpg",
-    policeOrgScam:      IMG_BASE + "警察機関偽装詐欺.jpg",
-    customsScam:        IMG_BASE + "税関関税未納詐欺.jpg",
-    seniorTaxScam:      IMG_BASE + "国税庁差押メール.jpg",
-    seniorPensionSms:   IMG_BASE + "年金給付金SMS.jpg",
+    // 新規作成追加素材
+    gameCoinScam:         IMG_BASE + "ゲームコイン裏ワザ詐欺.jpg",
+    youtuberDmScam:       IMG_BASE + "YouTuber サイン DM 詐欺.jpg",
+    gachaCodeScam:        IMG_BASE + "無料ガチャコード詐欺.jpg",
+    darkJobScam:          IMG_BASE + "闇バイト募集詐欺.jpg",
+    ticketResaleScam:     IMG_BASE + "チケット転売詐欺.jpg",
+    copyrightDmScam:      IMG_BASE + "著作権警告詐欺.jpg",
+    aiFakeAdScam:         IMG_BASE + "AI 有名人偽広告.jpg",
+    etaxScam:             IMG_BASE + "eTax還付金詐欺.jpg",
+    mynaPortalScam:       IMG_BASE + "マイナポータル詐欺.jpg",
+    bankOtpScam:          IMG_BASE + "銀行ワンタイム詐欺.jpg",
+    utilityScam:          IMG_BASE + "電気ガス供給停止詐欺.jpg",
+    cryptoStakingScam:    IMG_BASE + "暗号資産ステーキング詐欺.jpg",
+    travelCancelScam:     IMG_BASE + "偽ホテル予約キャンセル詐欺.jpg",
+    policeOrgScam:        IMG_BASE + "警察機関偽装詐欺.jpg",
+    customsScam:          IMG_BASE + "税関関税未納詐欺.jpg",
+    seniorTaxScam:        IMG_BASE + "国税庁差押メール.jpg",
+    seniorPensionSms:     IMG_BASE + "年金給付金SMS.jpg",
     seniorPipeCleanFlyer: IMG_BASE + "排水管清掃チラシ.jpg"
   }
 };
