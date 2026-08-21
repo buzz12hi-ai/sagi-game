@@ -1,7 +1,7 @@
 /* =========================================================
    story.js
    -----------------------------------------------------------
-   会話・あらすじ・自己紹介・通知（小学生全漢字ルビ対応版）
+   会話・あらすじ・自己紹介・通知（4モード対応・ルビinnerHTML対応）
    ========================================================= */
 
 const FALLBACK_SCENE_BG = IMAGE_ASSETS.backgrounds.livingRoom;
@@ -27,6 +27,12 @@ function showJoeIntro(onNext) {
         この1週間、あなたの生活に潜む「詐欺の手口」を見抜くお手伝いをします。<br>
         大切なお金と暮らしを守るため、一緒に落ち着いて見分けていきましょう！
       `;
+    } else if (state.mode === "adult") {
+      introTextEl.innerHTML = `
+        はじめまして！ 僕はジョーくん！<br><br>
+        この1週間、${getPlayerDisplayName()}の防犯チャレンジをサポートするよ！<br>
+        税金・投資・サブスク・ビジネスなど、日常に潜む巧妙な詐欺やトラブルを一緒に見抜いていこう！
+      `;
     } else if (state.mode === "elementary") {
       introTextEl.innerHTML = `
         はじめまして！ ぼくは ジョーくんだよ！<br><br>
@@ -34,10 +40,11 @@ function showJoeIntro(onNext) {
         あやしい<ruby>詐欺<rt>さぎ</rt></ruby>（うそ）を<ruby>見<rt>み</rt></ruby>ぬく<ruby>力<rt>ちから</rt></ruby>を いっしょに <ruby>身<rt>み</rt></ruby>につけよう！
       `;
     } else {
+      // 中高生モード (teen)
       introTextEl.innerHTML = `
         はじめまして！ 僕はジョーくん！<br><br>
         この1週間、${getPlayerDisplayName()}をしっかりサポートするよ！<br>
-        街やスマホに潜む詐欺を見抜く力を一緒に身につけよう！
+        SNSやゲーム、ネットに潜む詐欺やトラブルを見抜く力を一緒に身につけよう！
       `;
     }
   }
@@ -52,8 +59,8 @@ function startEventFlow() {
   const slot = currentScheduleSlot();
   const weekdayName = slot.weekdayName;
   
-  // 一般・小学生モードかつ特定曜日のみ日常行動を表示（高齢者モードはスキップ）
-  if (state.mode !== "senior" && !slot.isSunday && slot.isFirstOfSlot && DAILY_ACTIONS_BY_DAY[weekdayName]) {
+  // 小学生・中高生モードかつ特定曜日のみ日常行動を表示（大人・高齢者モードはスキップ）
+  if ((state.mode === "elementary" || state.mode === "teen") && !slot.isSunday && slot.isFirstOfSlot && DAILY_ACTIONS_BY_DAY[weekdayName]) {
     showDailyActionChoice(weekdayName);
   } else {
     continueEventFlow();
@@ -232,6 +239,13 @@ function showWeekRecap() {
         日常に潜むさまざまな手口に、落ち着いて対処することができましたね。<br><br>
         それでは、この1週間の防犯判定と成果を確認しましょう！
       `;
+    } else if (state.mode === "adult") {
+      recapTextEl.innerHTML = `
+        1週間の防犯チャレンジ、お疲れさまでした！<br><br>
+        巧妙な税務・行政通知、サブスク架空請求、職場のサポート詐欺、投資勧誘など……<br>
+        日常やビジネスに潜む数々の落とし穴に、冷静に向き合うことができましたね。<br><br>
+        それでは、1週間の防犯診断結果を確認しましょう！
+      `;
     } else if (state.mode === "elementary") {
       recapTextEl.innerHTML = `
         1<ruby>週間<rt>しゅうかん</rt></ruby>、お<ruby>疲<rt>つか</rt></ruby>れさま！<br><br>
@@ -240,6 +254,7 @@ function showWeekRecap() {
         さあ、さいごは お<ruby>買<rt>か</rt></ruby>いものの <ruby>時間<rt>じかん</rt></ruby>だよ！
       `;
     } else {
+      // 中高生モード (teen)
       recapTextEl.innerHTML = `
         1週間、お疲れさま！<br><br>
         届いたメール、SNSのDM、怪しい広告、そして困っている人……<br>

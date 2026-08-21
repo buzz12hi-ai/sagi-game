@@ -1,7 +1,7 @@
 /* =========================================================
    main.js
    -----------------------------------------------------------
-   デバイス選択・モード分岐・動的4択・判定・アンケート・モーダル制御
+   4モード分岐・動的4択・判定演出・エンディング・アンケート・モーダル制御
    ========================================================= */
 
 function renderTitleVisual() {
@@ -36,7 +36,7 @@ function handleSelectDevice(selectedDevice) {
   showScreen("screen-mode-select");
 }
 
-// ①.1 モード選択処理
+// ①.1 モード選択処理（4モード）
 function handleSelectMode(selectedMode) {
   state.mode = selectedMode;
 
@@ -54,20 +54,28 @@ function handleSelectMode(selectedMode) {
     state.playerName = "あなた";
     state.selectedItem = null;
     showJoeIntro(startSeniorWeek);
+  } else if (selectedMode === "adult") {
+    // 一般（大人）モード：名前入力へ進み、欲しい物選択はスキップ
+    state.selectedItem = null;
+    openNameInput();
   } else {
-    // 一般・小学生モード：名前入力へ
-    const nameInputImg = document.getElementById("name-guide-image");
-    setImageSafely(nameInputImg, getJoeImage("happy"));
-    applyCharacterBlend(nameInputImg, getJoeImage("happy"));
-
-    const inputEl = document.getElementById("input-player-name");
-    if (inputEl) inputEl.value = "";
-
-    const errorEl = document.getElementById("name-input-error");
-    if (errorEl) errorEl.classList.add("is-hidden");
-
-    showScreen("screen-name-input");
+    // 小学生・中高生モード：名前入力へ進み、欲しい物選択も行う
+    openNameInput();
   }
+}
+
+function openNameInput() {
+  const nameInputImg = document.getElementById("name-guide-image");
+  setImageSafely(nameInputImg, getJoeImage("happy"));
+  applyCharacterBlend(nameInputImg, getJoeImage("happy"));
+
+  const inputEl = document.getElementById("input-player-name");
+  if (inputEl) inputEl.value = "";
+
+  const errorEl = document.getElementById("name-input-error");
+  if (errorEl) errorEl.classList.add("is-hidden");
+
+  showScreen("screen-name-input");
 }
 
 function handleNameSubmit() {
@@ -84,7 +92,13 @@ function handleNameSubmit() {
   if (errorEl) errorEl.classList.add("is-hidden");
   state.playerName = typedName;
 
-  showJoeIntro(goToItemSelect);
+  if (state.mode === "adult") {
+    // 大人モードは欲しい物選択をスキップしてあらすじへ
+    showJoeIntro(startAdultWeek);
+  } else {
+    // 小学生・中高生モードは欲しい物選択へ
+    showJoeIntro(goToItemSelect);
+  }
 }
 
 function goToItemSelect() {
@@ -119,6 +133,11 @@ function startWeek(item) {
   showSynopsis();
 }
 
+function startAdultWeek() {
+  initGameState();
+  showSynopsis();
+}
+
 function startSeniorWeek() {
   initGameState();
   showSynopsis();
@@ -149,6 +168,12 @@ function showSynopsis() {
       警察や市役所を騙る電話、突然の訪問業者、携帯電話への不審なメッセージなど、詐欺は日常のふとした瞬間にやってきます。<br><br>
       大切なお金と安心を守るため、これから始まる1週間（全7問）の詐欺対策チャレンジに挑戦しましょう！
     `;
+  } else if (state.mode === "adult") {
+    card.innerHTML = `
+      ${getPlayerDisplayName()}の1週間の防犯チャレンジが始まります。<br><br>
+      税金の還付や未納通知、サブスクリプションの自動更新トラブル、銀行を騙る不正アクセス、巧妙な投資・副業勧誘など、大人の日常やビジネスには巧妙な罠が潜んでいます。<br><br>
+      手元資金50,000円を守り抜きながら、1日1問（全7問）のリアルな詐欺・正規通知を正しく見極めましょう！
+    `;
   } else if (state.mode === "elementary") {
     const item = state.selectedItem;
     card.innerHTML = `
@@ -159,12 +184,13 @@ function showSynopsis() {
       さあ、${getPlayerDisplayName()}の 1<ruby>週間<rt>しゅうかん</rt></ruby>が、いま スタート！
     `;
   } else {
+    // 中高生モード (teen)
     const item = state.selectedItem;
     card.innerHTML = `
-      キミの名前は「${getPlayerRawName()}」。この春、新しい生活が始まったばかり。<br><br>
+      キミの名前は「${getPlayerRawName()}」。<br><br>
       ずっと欲しかった「${item.name}（¥${item.price.toLocaleString("ja-JP")}）」を、自分のお小遣いで買うと決めた。<br>
       50,000円を守りながら、1週間を過ごすことになる。<br><br>
-      でも、街にもスマホの中にも、色々な「落とし穴」が潜んでいる……。<br>
+      でも、街にもSNSやネットの中にも、色々な「落とし穴」が潜んでいる……。<br>
       さあ、${getPlayerDisplayName()}の1週間が、いま始まる。
     `;
   }
@@ -180,7 +206,7 @@ function showSynopsis() {
 
 function showEvent() {
   if (state.slotIndex >= state.weeklyQuestions.length) {
-    if (state.mode === "senior") {
+    if (state.mode === "senior" || state.mode === "adult") {
       showWeekRecap();
     } else {
       showShoppingScreen();
@@ -270,7 +296,7 @@ function handleChoiceWithDelay(choice) {
 function getNextButtonLabel() {
   const nextIndex = state.slotIndex + 1;
   if (nextIndex >= state.weeklyQuestions.length) {
-    return state.mode === "senior" ? "結果発表へ" : "買い物へ";
+    return (state.mode === "senior" || state.mode === "adult") ? "結果発表へ" : "買い物へ";
   }
 
   const currentWeekday = state.daySchedule[state.slotIndex].weekdayIndex;
@@ -482,23 +508,28 @@ function showEnding() {
   const totalQuestions = state.weeklyQuestions.length;
   const rankInfo = calculateRank(state.correctCount, totalQuestions);
 
-  const isSenior = state.mode === "senior";
+  const isNoShopMode = (state.mode === "senior" || state.mode === "adult");
   const item = state.selectedItem;
-  const canAfford = isSenior ? (state.money === 50000) : (state.money >= (item ? item.price : 0));
+  const canAfford = isNoShopMode ? (state.money === 50000) : (state.money >= (item ? item.price : 0));
 
   const endingCharacter = getPlayerImage(canAfford ? "playerHappy" : "playerSad");
 
   const joeCommentEl = document.getElementById("ending-joe-comment");
   if (joeCommentEl) {
-    if (isSenior) {
+    if (state.mode === "senior") {
       joeCommentEl.textContent = canAfford
         ? `見事全問正解です！ 1週間、大切な資産を完璧に守り抜きましたね！`
         : `1週間お疲れさまでした。学んだ防犯知識をぜひ日頃の防犯にお役立てください！`;
+    } else if (state.mode === "adult") {
+      joeCommentEl.textContent = canAfford
+        ? `${getPlayerDisplayName()}、見事全問正解です！ 巧妙な詐欺手口を完璧に見抜きました！`
+        : `${getPlayerDisplayName()}、1週間お疲れさまでした。身につけた知識を日常のリスク管理に活かしてください！`;
     } else if (state.mode === "elementary") {
       joeCommentEl.innerHTML = canAfford
         ? `${getPlayerDisplayName()}、1<ruby>週間<rt>しゅうかん</rt></ruby><ruby>本当<rt>ほんとう</rt></ruby>によく<ruby>頑張<rt>がんば</rt></ruby>ったね！ すばらしい<ruby>防犯<rt>ぼうはん</rt></ruby>パワーだよ！`
         : `${getPlayerDisplayName()}、<ruby>今回<rt>こんかい</rt></ruby>は<ruby>残念<rt>ざんねん</rt></ruby>だったね。でも<ruby>学<rt>まな</rt></ruby>んだことは <ruby>次<rt>つぎ</rt></ruby>にかならず<ruby>役立<rt>やくだ</rt></ruby>つよ！`;
     } else {
+      // teen
       joeCommentEl.textContent = canAfford
         ? `${getPlayerDisplayName()}、1週間本当によく頑張ったね！素晴らしい防犯意識だよ！`
         : `${getPlayerDisplayName()}、今回は残念だったね。でも学んだ知識は必ず次につながるよ！`;
@@ -550,7 +581,7 @@ function showEnding() {
   let visualHTML = "";
   let titleHTML = "";
 
-  if (isSenior) {
+  if (isNoShopMode) {
     visualHTML = `
       <div class="ending-visual">
         <img class="ending-character-image" src="${endingCharacter}" alt="結果">
@@ -558,7 +589,7 @@ function showEnding() {
     `;
     titleHTML = `
       <p class="ending-title ${canAfford ? 'is-good' : 'is-bad'}">
-        ${canAfford ? `🎉 資産防衛 成功！` : `資産防衛 結果発表`}
+        ${canAfford ? `🎉 資産防衛・リスク回避 成功！` : `防犯診断 結果発表`}
       </p>
     `;
   } else {
@@ -665,9 +696,10 @@ document.getElementById("btn-start").addEventListener("click", handleStartClick)
 document.getElementById("btn-device-mobile").addEventListener("click", () => handleSelectDevice("mobile"));
 document.getElementById("btn-device-desktop").addEventListener("click", () => handleSelectDevice("desktop"));
 
-// モード選択ボタン
-document.getElementById("btn-mode-general").addEventListener("click", () => handleSelectMode("general"));
+// モード選択ボタン（4モード）
 document.getElementById("btn-mode-elementary").addEventListener("click", () => handleSelectMode("elementary"));
+document.getElementById("btn-mode-teen").addEventListener("click", () => handleSelectMode("teen"));
+document.getElementById("btn-mode-adult").addEventListener("click", () => handleSelectMode("adult"));
 document.getElementById("btn-mode-senior").addEventListener("click", () => handleSelectMode("senior"));
 
 document.getElementById("btn-name-submit").addEventListener("click", handleNameSubmit);
@@ -677,7 +709,7 @@ document.getElementById("btn-dialogue-next").addEventListener("click", goToDialo
 document.getElementById("btn-next").addEventListener("click", goToNextDay);
 
 document.getElementById("btn-week-recap-next").addEventListener("click", () => {
-  if (state.mode === "senior") {
+  if (state.mode === "senior" || state.mode === "adult") {
     showEnding();
   } else {
     showShoppingScreen();
@@ -693,7 +725,7 @@ if (retireBtn) {
   retireBtn.addEventListener("click", handleRetire);
 }
 
-// ★ 画像拡大モーダルの閉じるイベント登録 ★
+// 画像拡大モーダルの閉じるイベント登録
 const closeImageModalBtn = document.getElementById("btn-close-image-modal");
 if (closeImageModalBtn) {
   closeImageModalBtn.addEventListener("click", (e) => {
@@ -705,7 +737,6 @@ if (closeImageModalBtn) {
 const imageModalOverlay = document.getElementById("image-modal");
 if (imageModalOverlay) {
   imageModalOverlay.addEventListener("click", (e) => {
-    // 背景（ダイアログ外）をクリックした場合にも閉じる
     if (e.target === imageModalOverlay) {
       closeImageModal();
     }

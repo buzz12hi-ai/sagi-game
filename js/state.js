@@ -1,12 +1,12 @@
 /* =========================================================
    state.js
    -----------------------------------------------------------
-   ゲーム状態管理・デバイス設定・モード別日程＆完全ランダム抽出
+   ゲーム状態管理・4モード日程＆出題バランス抽出ロジック
    ========================================================= */
 
 const state = {
   deviceLayout: "mobile", // "mobile" | "desktop"
-  mode: "general",        // "general" | "elementary" | "senior"
+  mode: "adult",          // "elementary" | "teen" | "adult" | "senior"
   playerName: "",
   money: 50000,
   selectedItem: null,
@@ -42,7 +42,7 @@ function getPlayerRawName() {
 }
 
 const WEEKDAY_LABELS = ["月", "火", "水", "木", "金", "土"];
-const SENIOR_WEEKDAY_LABELS = ["月", "火", "水", "木", "金", "土", "日"];
+const SEVEN_DAY_LABELS = ["月", "火", "水", "木", "金", "土", "日"];
 const SHOPPING_LABEL = "日";
 
 function shuffleArray(array) {
@@ -58,20 +58,20 @@ function shuffleArray(array) {
 function buildDaySchedule(mode) {
   const schedule = [];
 
-  if (mode === "senior") {
-    // 高齢者モード：月〜日 1日1問（計7問）
+  if (mode === "senior" || mode === "adult") {
+    // 高齢者・一般大人モード：月〜日 1日1問（計7問）
     for (let day = 0; day < 7; day++) {
       schedule.push({
         weekdayIndex: day,
         dayNumber: `DAY${day + 1}`,
-        weekdayName: SENIOR_WEEKDAY_LABELS[day],
+        weekdayName: SEVEN_DAY_LABELS[day],
         periodLabel: "",
         isFirstOfSlot: true,
         isSunday: day === 6
       });
     }
   } else {
-    // 一般・小学生モード：月(2), 火(2), 水(1), 木(2), 金(1), 土(1) 計9問
+    // 小学生・中高生モード：月(2), 火(2), 水(1), 木(2), 金(1), 土(1) 計9問
     const doubleDayIndexes = new Set([0, 1, 3]);
 
     for (let day = 0; day < 6; day++) {
@@ -95,24 +95,33 @@ function buildDaySchedule(mode) {
 /* モード別問題の完全ランダム抽出 */
 function pickWeeklyQuestions(mode) {
   if (mode === "senior") {
-    // 高齢者モード：3ジャンル（電話・訪問、メール・SMS、公的機関）からバランスよく計7問を抽出
+    // 高齢者モード：3ジャンルからバランスよく計7問抽出（助けるなし）
     const byGenre = (g) => QUESTIONS_SENIOR.filter(q => q.genre === g);
 
-    const phonePicked = shuffleArray(byGenre("phone_visit")).slice(0, 3);
-    const mailPicked  = shuffleArray(byGenre("mail_sms")).slice(0, 2);
+    const phonePicked  = shuffleArray(byGenre("phone_visit")).slice(0, 3);
+    const mailPicked   = shuffleArray(byGenre("mail_sms")).slice(0, 2);
     const publicPicked = shuffleArray(byGenre("public_service")).slice(0, 2);
 
     return shuffleArray([...phonePicked, ...mailPicked, ...publicPicked]);
-  } else if (mode === "elementary") {
-    // 小学生モード：全12問プールから9問をランダム抽出
-    const pool = shuffleArray(QUESTIONS_ELEMENTARY);
+  } else if (mode === "adult") {
+    // 一般（大人）モード：助ける問題1問 ＋ 詐欺/本物問題6問（計7問）
+    const helpPool = shuffleArray(QUESTIONS_ADULT.filter(q => q.category === "help"));
+    const otherPool = shuffleArray(QUESTIONS_ADULT.filter(q => q.category !== "help"));
+
+    const helpPicked = helpPool.slice(0, 1);
+    const otherPicked = otherPool.slice(0, 6);
+
+    return shuffleArray([...helpPicked, ...otherPicked]);
+  } else if (mode === "teen") {
+    // 中高生モード：全16問プールから9問抽出（詐欺4・本物3・助ける2）
+    const pool = shuffleArray(QUESTIONS_TEEN);
     const scamPicked = pool.filter(q => q.category === "scam").slice(0, 4);
     const realPicked = pool.filter(q => q.category === "real").slice(0, 3);
     const helpPicked = pool.filter(q => q.category === "help").slice(0, 2);
     return shuffleArray([...scamPicked, ...realPicked, ...helpPicked]);
   } else {
-    // 一般モード：全12問プールから9問をランダム抽出（詐欺4・本物3・助ける2）
-    const pool = shuffleArray(QUESTIONS_GENERAL);
+    // 小学生モード：全16問プールから9問抽出（詐欺4・本物3・助ける2）
+    const pool = shuffleArray(QUESTIONS_ELEMENTARY);
     const scamPicked = pool.filter(q => q.category === "scam").slice(0, 4);
     const realPicked = pool.filter(q => q.category === "real").slice(0, 3);
     const helpPicked = pool.filter(q => q.category === "help").slice(0, 2);

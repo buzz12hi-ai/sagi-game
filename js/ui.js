@@ -1,7 +1,7 @@
 /* =========================================================
    ui.js
    -----------------------------------------------------------
-   UI描画・主人公立ち絵切替・資料タップ拡大モーダル制御
+   UI描画・4モード表示制御・資料タップ拡大モーダル制御
    ========================================================= */
 
 function showScreen(screenId) {
@@ -70,7 +70,7 @@ function setJoeExpression(expression) {
   });
 }
 
-// 主人公画像（学生 / 高齢者モード切替対応）
+// 主人公画像（モード別切替対応）
 function getPlayerImage(expressionType) {
   if (state.mode === "senior") {
     const map = {
@@ -154,7 +154,8 @@ function updateTargetItemDisplay() {
   const nameEl = document.getElementById("target-item-name");
   if (!chip || !nameEl) return;
 
-  if (state.mode !== "senior" && state.selectedItem) {
+  // 小学生・中高生モードのみ目標商品を表示
+  if ((state.mode === "elementary" || state.mode === "teen") && state.selectedItem) {
     nameEl.textContent = state.selectedItem.name;
     chip.classList.remove("is-hidden");
   } else {
@@ -170,8 +171,8 @@ function renderDayTracker() {
   const slot = currentScheduleSlot();
   const currentWeekdayIndex = slot.weekdayIndex;
 
-  const allLabels = state.mode === "senior"
-    ? SENIOR_WEEKDAY_LABELS
+  const allLabels = (state.mode === "senior" || state.mode === "adult")
+    ? SEVEN_DAY_LABELS
     : [...WEEKDAY_LABELS, SHOPPING_LABEL];
 
   allLabels.forEach((label, i) => {
@@ -264,7 +265,7 @@ function renderEventVisual(question) {
     
     if (zoomBadge) zoomBadge.classList.remove("is-hidden");
 
-    // 画像タップで特大拡大モーダルを開く
+    // PC・iPad・スマホ共通でクリック/タップ拡大モーダルを開く
     visual.onclick = () => openImageModal(question.screenshot);
     return;
   }

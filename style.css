@@ -1,6 +1,6 @@
 /* =========================================================
    だまされるな！1週間チャレンジ - スタイルシート
-   （資料ポップアップ拡大・閉じるボタン・完全レスポンシブ）
+   （PC・iPad・スマホ全対応拡大モーダル・4モード対応版）
    ========================================================= */
 
 :root {
@@ -24,7 +24,7 @@
 
   --gradient-dark-stage: linear-gradient(160deg, #0F1830, #1B2A4A);
   --overlay-dark: rgba(18, 24, 42, 0.85);
-  --overlay-light: rgba(255, 255, 255, 0.96);
+  --overlay-light: rgba(255, 255, 255, 0.94);
 
   --ease-gentle: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -139,7 +139,7 @@ rt {
 
 .app-shell.layout-mobile .event-visual {
   width: 100% !important;
-  height: 320px !important;
+  height: 340px !important;
 }
 
 /* ★ iPad・パソコン版デザイン強制モード ★ */
@@ -230,6 +230,104 @@ rt {
   color: var(--color-navy-soft);
   margin: 0;
   font-weight: 500;
+}
+
+/* =========================================================
+   モード選択画面スタイル（4モード）
+   ========================================================= */
+.mode-select-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 4px 2px;
+  flex: 1;
+  justify-content: center;
+}
+
+.mode-select-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--color-navy);
+  margin: 0;
+  text-align: center;
+}
+
+@media (min-width: 480px) {
+  .mode-select-title { font-size: 25px; }
+}
+
+.mode-select-sub {
+  font-size: 14px;
+  color: var(--color-navy-soft);
+  margin: -4px 0 4px;
+  text-align: center;
+}
+
+.mode-select-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.mode-card {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 13px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s var(--ease-gentle);
+  box-shadow: var(--shadow-card);
+}
+
+@media (min-width: 480px) {
+  .mode-card {
+    padding: 15px 20px;
+    gap: 5px;
+  }
+}
+
+.mode-card:hover {
+  border-color: var(--color-money);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 166, 35, 0.22);
+  background: #FFF9E6;
+}
+
+.mode-badge {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 15.5px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  color: #fff;
+}
+
+.badge-elementary { background: #2E9E82; }
+.badge-teen       { background: #1B2A4A; }
+.badge-adult      { background: #4A5A7C; }
+.badge-senior     { background: #E85C4A; }
+
+.mode-card-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-navy-soft);
+  margin: 0;
+  font-weight: 500;
+}
+
+@media (min-width: 480px) {
+  .mode-card-desc { font-size: 14px; }
 }
 
 /* ★ 高齢者モード時の超特大文字スタイル ★ */
@@ -335,7 +433,7 @@ rt {
 @media (min-width: 768px) {
   .app-shell.is-senior-mode .story-textbox {
     height: auto;
-    max-height: 50%;
+    max-height: 52%;
   }
   .app-shell.is-senior-mode .story-player-image {
     bottom: 0 !important;
@@ -849,107 +947,6 @@ rt {
 }
 
 /* =========================================================
-   モード選択画面
-   ========================================================= */
-.mode-select-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  max-width: 540px;
-  margin: 0 auto;
-  padding: 6px 2px;
-  flex: 1;
-  justify-content: center;
-}
-
-.mode-select-title {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 22px;
-  color: var(--color-navy);
-  margin: 0;
-  text-align: center;
-}
-
-@media (min-width: 480px) {
-  .mode-select-title { font-size: 25px; }
-}
-
-.mode-select-sub {
-  font-size: 14px;
-  color: var(--color-navy-soft);
-  margin: -4px 0 4px;
-  text-align: center;
-}
-
-.mode-select-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.mode-card {
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.2s var(--ease-gentle);
-  box-shadow: var(--shadow-card);
-}
-
-@media (min-width: 480px) {
-  .mode-card {
-    padding: 18px 22px;
-    gap: 7px;
-  }
-}
-
-.mode-card:hover {
-  border-color: var(--color-money);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(245, 166, 35, 0.22);
-  background: #FFF9E6;
-}
-
-.mode-badge {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 16px;
-  padding: 4px 14px;
-  border-radius: 999px;
-  color: #fff;
-}
-
-@media (min-width: 480px) {
-  .mode-badge { font-size: 17px; }
-}
-
-.badge-elementary { background: #2E9E82; }
-.badge-general { background: #1B2A4A; }
-.badge-senior { background: #E85C4A; }
-
-.mode-card-desc {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-navy-soft);
-  margin: 0;
-  font-weight: 500;
-}
-
-@media (min-width: 480px) {
-  .mode-card-desc { font-size: 15px; }
-}
-
-/* =========================================================
    名前入力画面
    ========================================================= */
 .name-input-panel {
@@ -1421,7 +1418,7 @@ rt {
 
 /* =========================================================
    イベント（問題）画面
-   ★ 携帯画面特大化 ＆ タップ拡大対応 ★
+   ★ PC・iPad・スマホ全対応拡大ポップアップ対応 ★
    ========================================================= */
 #screen-event {
   overflow-y: auto;
@@ -1460,7 +1457,6 @@ rt {
   }
 }
 
-/* ★ 資料・携帯画面枠 ★ */
 .event-visual {
   position: relative;
   width: 100%;
@@ -1487,7 +1483,6 @@ rt {
 
 .event-bg-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-/* 立ち絵キャラクター */
 .event-character-image {
   position: absolute;
   bottom: 0;
@@ -1505,10 +1500,9 @@ rt {
   align-items: center;
   justify-content: center;
   padding: 8px;
-  cursor: pointer; /* タップで拡大可能 */
+  cursor: pointer; /* PC/iPadでも拡大可能 */
 }
 
-/* スクリーンショット画像 */
 .event-screenshot-image {
   height: 100%;
   width: 100%;
@@ -1523,7 +1517,7 @@ rt {
   transform: scale(1.02);
 }
 
-/* ★ 「🔍 タップで拡大」ガイドバッジ ★ */
+/* ★ 「🔍 クリック/タップで拡大」ガイドバッジ ★ */
 .zoom-hint-badge {
   position: absolute;
   bottom: 10px;
@@ -1654,7 +1648,7 @@ rt {
 }
 
 /* =========================================================
-   ★ 特大画像ポップアップモーダル ★
+   特大画像ポップアップモーダル（PC/iPad/スマホ完全対応）
    ========================================================= */
 .image-modal-overlay {
   position: fixed;
@@ -1673,7 +1667,7 @@ rt {
 .image-modal-dialog {
   position: relative;
   width: 100%;
-  max-width: 600px;
+  max-width: 650px;
   height: 94vh;
   max-height: 94dvh;
   display: flex;

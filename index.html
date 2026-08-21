@@ -9,8 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- キャッシュ強制クリア (?v=20260820_pop) -->
-<link rel="stylesheet" href="style.css?v=20260820_pop">
+<link rel="stylesheet" href="style.css?v=20260820_final">
 </head>
 <body>
 
@@ -20,7 +19,7 @@
     <header id="status-bar" class="status-bar hidden">
       <div class="day-tracker" id="day-tracker"></div>
       <div class="status-right">
-        <!-- 目標商品の常時表示エリア（高齢者モード時は非表示） -->
+        <!-- 目標商品の常時表示エリア（欲しい物選択時のみ表示） -->
         <div id="target-item-display" class="target-item-chip is-hidden">
           <span class="target-label">目標:</span>
           <span id="target-item-name" class="target-name"></span>
@@ -79,13 +78,11 @@
           <p class="device-select-sub">お使いの端末や好みの画面デザインを選んでね！</p>
           
           <div class="device-select-grid">
-            <!-- スマホ版デザイン -->
             <button id="btn-device-mobile" class="device-card" type="button">
               <div class="device-badge badge-mobile">📱 スマホ版デザイン</div>
               <p class="device-card-desc">スマートフォンにぴったりの縦型コンパクト表示</p>
             </button>
 
-            <!-- iPad・パソコン版デザイン -->
             <button id="btn-device-desktop" class="device-card" type="button">
               <div class="device-badge badge-desktop">💻 iPad・パソコン版デザイン</div>
               <p class="device-card-desc">タブレットやPC画面にぴったりの見やすいワイド表示</p>
@@ -94,23 +91,29 @@
         </div>
       </section>
 
-      <!-- ①.1 対象者モード選択画面 -->
+      <!-- ①.1 対象者モード選択画面（4モード対応） -->
       <section id="screen-mode-select" class="screen">
         <div class="mode-select-container">
           <h2 class="mode-select-title">どのモードで遊びますか？</h2>
-          <p class="mode-select-sub">対象者を選んでチャレンジをはじめよう！</p>
+          <p class="mode-select-sub">自分に合ったモードを選んでチャレンジしよう！</p>
           
           <div class="mode-select-grid">
-            <!-- 一般モード -->
-            <button id="btn-mode-general" class="mode-card" type="button">
-              <div class="mode-badge badge-general">🏫 一般（中・高校生〜大人）</div>
-              <p class="mode-card-desc">リアルな詐欺や通知を見抜いて目標の買い物を目指そう！（全9問）</p>
-            </button>
-
             <!-- 小学生モード -->
             <button id="btn-mode-elementary" class="mode-card" type="button">
               <div class="mode-badge badge-elementary">🎒 小学生モード</div>
               <p class="mode-card-desc">やさしい言葉とふりがな付きで安心チャレンジ！（全9問）</p>
+            </button>
+
+            <!-- 中高生モード -->
+            <button id="btn-mode-teen" class="mode-card" type="button">
+              <div class="mode-badge badge-teen">🏫 中高生モード</div>
+              <p class="mode-card-desc">SNS・ゲーム・バイト・友達トラブルを見抜こう！（全9問）</p>
+            </button>
+
+            <!-- 一般（大人）モード -->
+            <button id="btn-mode-adult" class="mode-card" type="button">
+              <div class="mode-badge badge-adult">👔 一般（大人）モード</div>
+              <p class="mode-card-desc">税金・投資・サブスク・ビジネスに潜む巧妙な手口を見抜く！（1日1問・全7問）</p>
             </button>
 
             <!-- 高齢者モード -->
@@ -151,7 +154,7 @@
         <button id="btn-intro-next" class="btn btn-primary">次へ進む</button>
       </section>
 
-      <!-- ② 欲しい物を選択する画面（高齢者モード時はスキップ） -->
+      <!-- ② 欲しい物を選択する画面（小学生・中高生モードのみ） -->
       <section id="screen-item" class="screen">
         <div class="item-intro">
           <h2 class="item-intro-title">1週間後、欲しいものを買えるかな？</h2>
@@ -201,7 +204,7 @@
         <button id="btn-dayintro-next" class="btn btn-primary">次へ</button>
       </section>
 
-      <!-- ④.5 日常行動選択画面（一般・小学生モードのみ） -->
+      <!-- ④.5 日常行動選択画面（小学生・中高生モードのみ） -->
       <section id="screen-daily-action" class="screen">
         <div class="story-stage">
           <img id="action-bg-image" class="story-bg-image is-hidden" alt="">
@@ -299,14 +302,14 @@
         </div>
 
         <div class="event-layout">
-          <!-- ビジュアル枠（タップで拡大可能） -->
+          <!-- ビジュアル枠（タップ・クリックで全画面拡大可能） -->
           <div class="event-visual" id="event-visual">
             <img id="event-bg-image" class="event-bg-image" alt="背景">
             <img id="event-character-image" class="event-character-image is-hidden" alt="人物">
             <img id="event-screenshot-image" class="event-screenshot-image is-hidden" alt="画面">
             
             <div class="zoom-hint-badge is-hidden" id="zoom-hint-badge">
-              <span>🔍 タップで拡大</span>
+              <span>🔍 クリック/タップで拡大</span>
             </div>
 
             <div class="joe-support-bubble" id="joe-support-bubble">
@@ -387,7 +390,7 @@
         <button id="btn-week-recap-next" class="btn btn-primary">次へ進む</button>
       </section>
 
-      <!-- ⑩ 買い物イベント（高齢者モードはスキップ） -->
+      <!-- ⑩ 買い物イベント（小学生・中高生モードのみ） -->
       <section id="screen-shopping" class="screen">
         <h2 class="screen-heading">日曜日：お買い物タイム</h2>
         <div class="story-stage" id="shopping-stage">
@@ -433,7 +436,7 @@
 
     </main>
 
-    <!-- ★ 特大画像ポップアップモーダル（新設） ★ -->
+    <!-- ★ 特大画像ポップアップモーダル（全デバイス対応） ★ -->
     <div id="image-modal" class="image-modal-overlay is-hidden">
       <div class="image-modal-dialog">
         <button id="btn-close-image-modal" class="image-modal-close" type="button">✕ 閉じる</button>
@@ -445,11 +448,11 @@
 
   </div>
 
-  <script src="js/assets.js?v=20260820_pop"></script>
-  <script src="js/data.js?v=20260820_pop"></script>
-  <script src="js/state.js?v=20260820_pop"></script>
-  <script src="js/ui.js?v=20260820_pop"></script>
-  <script src="js/story.js?v=20260820_pop"></script>
-  <script src="js/main.js?v=20260820_pop"></script>
+  <script src="js/assets.js?v=20260820_final"></script>
+  <script src="js/data.js?v=20260820_final"></script>
+  <script src="js/state.js?v=20260820_final"></script>
+  <script src="js/ui.js?v=20260820_final"></script>
+  <script src="js/story.js?v=20260820_final"></script>
+  <script src="js/main.js?v=20260820_final"></script>
 </body>
 </html>
