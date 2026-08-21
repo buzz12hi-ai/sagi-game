@@ -2,7 +2,7 @@
    ui.js
    -----------------------------------------------------------
    UI描画・4モード表示制御・資料タップ拡大モーダル制御
-   デバッグ情報出力 ＆ 全問リアルモック画面即時フォールバック完全対応
+   デバッグ情報出力 ＆ 画像未作成時リアルモック画面自動生成対応
    ========================================================= */
 
 // デバッグモード設定（trueでコンソール出力有効化）
@@ -244,6 +244,7 @@ function openImageModal(imgSrc, mockHTML) {
   const modalBody = modal ? modal.querySelector(".image-modal-body") : null;
   if (!modal || !modalBody) return;
 
+  // 既存のモック画面があれば消去
   const oldMock = modalBody.querySelector(".modal-mock-container");
   if (oldMock) oldMock.remove();
 
@@ -258,7 +259,6 @@ function openImageModal(imgSrc, mockHTML) {
     mockContainer.className = "modal-mock-container";
     mockContainer.style.width = "100%";
     mockContainer.style.height = "100%";
-    mockContainer.style.overflow = "auto";
     mockContainer.innerHTML = mockHTML;
     modalBody.appendChild(mockContainer);
   }
@@ -285,70 +285,43 @@ function outputDebugQuestionInfo(question) {
   console.log(`%c${debugText}`, "color: #00e676; background: #1B2A4A; font-weight: bold; padding: 4px 8px; border-radius: 4px;");
 }
 
-/* ★ 全問題対応：超リアルモック画面HTML生成カタログ ★ */
+/* ★ 画像未作成時・リアルモック画面HTML生成フォールバック ★ */
 function generateFallbackMockHTML(question) {
   const qId = question.id;
 
-  // 1. サポート詐欺（Microsoft/ウイルス警告画面）
+  // 1. サポート詐欺（Microsoft偽警告）
   if (qId === "q_adult_colleague_help" || qId === "q_senior_web_support") {
     return `
-      <div style="background:#B30000; color:#fff; width:100%; height:100%; min-height:280px; padding:16px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:inset 0 0 20px rgba(0,0,0,0.5);">
-        <div style="border-bottom:2px solid #fff; padding-bottom:6px;">
-          <div style="font-size:18px; font-weight:bold; display:flex; align-items:center; gap:6px;">
-            <span>🚨</span> Microsoft セキュリティ警告
-          </div>
-          <div style="font-size:11px; opacity:0.9;">エラーコード: 0x80070422 - スパイウェア検出</div>
+      <div style="background:#C00000; color:#fff; width:100%; height:100%; padding:16px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div style="border-bottom:2px solid #fff; padding-bottom:8px;">
+          <div style="font-size:18px; font-weight:bold;">⚠️ Microsoft セキュリティ警告</div>
+          <div style="font-size:12px; opacity:0.9;">システムアラート: 0x80070422 - Trojanスパイウェア検出</div>
         </div>
-        <div style="background:#FFFFFF; color:#222; padding:12px; border-radius:6px; font-size:13px; line-height:1.5; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
-          <strong style="color:#C00000; font-size:15px;">【緊急】システムがロックされました</strong><br>
-          個人情報・パスワードが漏洩する危険があります。<br>
+        <div style="background:#fff; color:#000; padding:12px; border-radius:6px; font-size:13px; line-height:1.5;">
+          <strong style="color:#C00000; font-size:15px;">お使いのPCはロックされました</strong><br>
+          個人情報・パスワードが流出する恐れがあります。<br>
           直ちに下記のサポート窓口へお電話ください。<br>
-          <div style="text-align:center; margin-top:8px; font-size:18px; font-weight:bold; color:#0055AA; background:#EBF3FA; padding:6px; border-radius:4px;">
-            📞 050-3196-XXXX（通話無料）
+          <div style="text-align:center; margin-top:8px; font-size:18px; font-weight:bold; color:#0055AA;">
+            📞 050-3196-XXXX（フリーダイヤル）
           </div>
         </div>
-        <div style="font-size:11px; opacity:0.9; text-align:center; background:rgba(0,0,0,0.3); padding:4px; border-radius:4px;">
-          ※電源を切るとPCが完全に破壊されます
-        </div>
+        <div style="font-size:11px; opacity:0.85; text-align:center;">※電源を切るとPCが完全に破壊されます</div>
       </div>
     `;
   }
 
-  // 2. 警察・PayPay不正利用
-  if (qId === "q_adult_police_paypay_scam" || qId === "q_elem_police_mail" || qId === "q_teen_police_mail") {
-    return `
-      <div style="background:#FFFFFF; color:#111; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; border:2px solid #1B2A4A; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="background:#1B2A4A; color:#fff; padding:8px 12px; border-radius:4px; font-size:13.5px; font-weight:bold; display:flex; justify-content:space-between;">
-          <span>サイバー犯罪対策課 通達</span>
-          <span style="color:#FF4D4D;">緊急</span>
-        </div>
-        <div style="font-size:12.5px; line-height:1.6; padding:8px 4px;">
-          <strong>差出人:</strong> police-alert@secure-check.com<br>
-          <strong>件名:</strong> 【重要】特殊詐欺口座利用の検知と法的措置<br>
-          <div style="margin-top:6px; background:#F5F7FA; padding:8px; border-left:4px solid #1B2A4A; font-size:12px;">
-            あなた名義のアカウントが特殊詐欺に悪用された疑いがあります。<br>
-            24時間以内に本人認証を行わない場合、全口座を凍結し法的措置へ移行します。
-          </div>
-        </div>
-        <div style="background:#FF0033; color:#fff; text-align:center; padding:9px; border-radius:6px; font-weight:bold; font-size:13px;">
-          緊急本人確認リンク（認証へ）
-        </div>
-      </div>
-    `;
-  }
-
-  // 3. 銀行ワンタイム・OTP詐欺
+  // 2. 銀行ワンタイム・OTP詐欺
   if (qId === "q_adult_bank_otp_scam") {
     return `
-      <div style="background:#F2F4F8; color:#333; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div style="background:#F2F4F8; color:#333; width:100%; height:100%; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="background:#1B2A4A; color:#fff; padding:8px 12px; border-radius:4px; font-weight:bold; font-size:14px;">
           都市銀行 セキュリティ認証
         </div>
         <div style="background:#fff; border:1px solid #DCE3EE; padding:12px; border-radius:6px; font-size:12.5px; line-height:1.6;">
-          <div style="color:#E85C4A; font-weight:bold; margin-bottom:4px;">【重要】取引規制解除の手続き</div>
+          <div style="color:#E85C4A; font-weight:bold; margin-bottom:6px;">【重要】取引規制解除の手続き</div>
           第三者による不正アクセスを検知しました。<br>
-          解除のため、届いた<strong>ワンタイムパスワード（6桁）</strong>を入力してください。
-          <div style="margin-top:8px; background:#F8FAFC; border:1.5px dashed #4A5A7C; padding:6px; text-align:center; font-size:16px; font-weight:bold; letter-spacing:4px;">
+          本人認証のため、スマホに届いた<strong>ワンタイムパスワード（6桁）</strong>を入力してください。
+          <div style="margin-top:10px; background:#F8FAFC; border:1.5px dashed #4A5A7C; padding:8px; text-align:center; font-size:16px; font-weight:bold; letter-spacing:4px;">
             [ _ _ _ _ _ _ ]
           </div>
         </div>
@@ -357,31 +330,31 @@ function generateFallbackMockHTML(question) {
     `;
   }
 
-  // 4. 国税庁・e-Tax 還付金 / 差押え
+  // 3. 国税庁・e-Tax 還付金
   if (qId === "q_adult_etax_scam" || qId === "q_senior_mail_tax") {
     return `
-      <div style="background:#FFFFFF; color:#222; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; border:2px solid #005A9C; display:flex; flex-direction:column; justify-content:space-between;">
+      <div style="background:#FFFFFF; color:#222; width:100%; height:100%; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; border:2px solid #005A9C; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="border-bottom:2px solid #005A9C; padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
           <span style="font-weight:bold; color:#005A9C; font-size:15px;">国税庁 e-Tax 電子納税</span>
           <span style="font-size:11px; background:#E5F0FA; color:#005A9C; padding:2px 6px; border-radius:4px;">重要通達</span>
         </div>
         <div style="font-size:12.5px; line-height:1.6;">
-          <strong>【重要なお知らせ】</strong><br>
-          未納または過年度還付の手続きが必要です。<br>
-          期限：<strong>本日24時まで</strong><br>
-          下記ボタンより口座情報およびクレジットカード情報を入力してください。
+          <strong>【過年度税金還付通知】</strong><br>
+          過年度確定申告に伴う還付金：<strong>38,400円</strong><br>
+          払戻口座の有効期限が迫っております。<br>
+          下記ボタンより口座番号・暗証番号を入力してください。
         </div>
-        <div style="background:#005A9C; color:#fff; text-align:center; padding:9px; border-radius:6px; font-weight:bold; font-size:13.5px;">
-          e-Tax オンライン払戻・納付手続き
+        <div style="background:#005A9C; color:#fff; text-align:center; padding:10px; border-radius:6px; font-weight:bold; font-size:14px;">
+          還付金受取口座を登録する
         </div>
       </div>
     `;
   }
 
-  // 5. 闇バイト
+  // 4. 闇バイト
   if (qId === "q_teen_dark_job") {
     return `
-      <div style="background:#111; color:#fff; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div style="background:#111; color:#fff; width:100%; height:100%; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="display:flex; align-items:center; gap:8px;">
           <div style="width:36px; height:36px; border-radius:50%; background:#FFD700; color:#000; display:flex; align-items:center; justify-content:center; font-weight:bold;">即</div>
           <div>
@@ -401,115 +374,17 @@ function generateFallbackMockHTML(question) {
     `;
   }
 
-  // 6. チケット転売
-  if (qId === "q_teen_ticket_scam") {
-    return `
-      <div style="background:#0F172A; color:#fff; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="display:flex; align-items:center; gap:8px; border-bottom:1px solid #334155; padding-bottom:6px;">
-          <div style="font-size:20px;">🎫</div>
-          <div style="font-weight:bold; font-size:14px;">チケット譲渡【公式トレード外】</div>
-        </div>
-        <div style="font-size:12.5px; line-height:1.6; background:#1E293B; padding:10px; border-radius:6px;">
-          【譲】〇〇 TOUR 2026 アリーナ最前列 2連番<br>
-          【求】定価（1枚 12,000円）<br><br>
-          急用で行けなくなりました😭<br>
-          PayPay送金確認後に電子チケット分配します！
-        </div>
-        <div style="text-align:center; color:#38BDF8; font-size:12px; font-weight:bold;">💬 DMにて取引詳細</div>
-      </div>
-    `;
-  }
-
-  // 7. 著作権侵害警告DM
-  if (qId === "q_teen_copyright_dm") {
-    return `
-      <div style="background:#000; color:#fff; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="display:flex; align-items:center; gap:8px; border-bottom:1px solid #333; padding-bottom:6px;">
-          <span style="font-size:18px;">⚠️</span>
-          <span style="font-weight:bold; font-size:14px;">Copyright Support Team</span>
-        </div>
-        <div style="font-size:12.5px; line-height:1.6; background:#1A1A1A; padding:10px; border-radius:6px;">
-          【重要】あなたの投稿について著作権侵害の通報がありました。<br>
-          24時間以内に下記URLより異議申し立てを行わない場合、アカウントが永久削除されます。<br><br>
-          <span style="color:#0095F6; text-decoration:underline;">https://instagram-copyright-appeal.com</span>
-        </div>
-        <div style="text-align:center; color:#888; font-size:11px;">Instagram Official Bot</div>
-      </div>
-    `;
-  }
-
-  // 8. マイナポータル
-  if (qId === "q_adult_myna_scam") {
-    return `
-      <div style="background:#FFF9E6; color:#222; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; border:2px solid #E5A000; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="background:#D97706; color:#fff; padding:6px 10px; border-radius:4px; font-weight:bold; font-size:13.5px;">
-          デジタル庁 マイナポータル通達
-        </div>
-        <div style="font-size:12.5px; line-height:1.6; padding:4px;">
-          <strong>【電子証明書 有効期限切れ警告】</strong><br>
-          マイナンバーカードの電子証明書の有効期限が切れています。<br>
-          本日中に更新されない場合、保険証連携および公金口座受取が停止されます。<br>
-          更新URL: http://myna-portal-auth.com
-        </div>
-        <div style="background:#D97706; color:#fff; text-align:center; padding:9px; border-radius:6px; font-weight:bold; font-size:13px;">
-          暗証番号を再登録して更新する
-        </div>
-      </div>
-    `;
-  }
-
-  // 9. 電気ガスライフライン停止
-  if (qId === "q_adult_utility_scam") {
-    return `
-      <div style="background:#1C1917; color:#fff; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; border:2px solid #EA580C; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="background:#EA580C; color:#fff; padding:6px 10px; border-radius:4px; font-weight:bold; font-size:13.5px;">
-          電力供給センター【緊急予告】
-        </div>
-        <div style="font-size:12.5px; line-height:1.6; background:#292524; padding:10px; border-radius:6px;">
-          電気料金（4,980円）の未払いが確認されました。<br>
-          <strong>本日18:00</strong> までにお支払いが確認できない場合、電力の供給を停止いたします。<br><br>
-          支払いサイト: http://power-pay-bill.net
-        </div>
-        <div style="background:#EA580C; color:#fff; text-align:center; padding:9px; border-radius:6px; font-weight:bold; font-size:13px;">
-          今すぐクレジットカードで決済する
-        </div>
-      </div>
-    `;
-  }
-
-  // 10. 排水管清掃チラシ
-  if (qId === "q_senior_visit_pipe_clean") {
-    return `
-      <div style="background:#FFFFFF; color:#222; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; border:3px dashed #0284C7; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="background:#0284C7; color:#fff; text-align:center; padding:6px; border-radius:4px; font-weight:bold; font-size:14px;">
-          地域一斉 排水管高圧洗浄キャンペーン！
-        </div>
-        <div style="text-align:center; padding:8px 0;">
-          <div style="font-size:13px; color:#555;">通常価格 25,000円のところ</div>
-          <div style="font-size:26px; font-weight:900; color:#DC2626;">特別価格 3,000円！</div>
-          <div style="font-size:11px; color:#666; margin-top:4px;">※近隣一括施工のため本日限りの破格値！</div>
-        </div>
-        <div style="font-size:11.5px; background:#F0F9FF; padding:8px; border-radius:4px; color:#0369A1; text-align:center;">
-          📞 0120-XXX-XXX（今すぐお電話を！）
-        </div>
-      </div>
-    `;
-  }
-
-  // 汎用リッチモック（SMS / DM / 公式通知風カード）
+  // 汎用モック（SMS / 通知画面風）
   return `
-    <div style="background:#1B2A4A; color:#fff; width:100%; height:100%; min-height:280px; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between; border:2px solid #F5A623;">
-      <div style="border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:6px; font-weight:bold; font-size:14px; color:#F5A623; display:flex; justify-content:space-between;">
-        <span>📍 ${question.source || "通知"}</span>
-        <span style="font-size:11px; background:rgba(255,255,255,0.2); padding:2px 6px; border-radius:4px;">未読</span>
+    <div style="background:#1B2A4A; color:#fff; width:100%; height:100%; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div style="border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:6px; font-weight:bold; font-size:14px; color:#F5A623;">
+        📍 ${question.source || "通知"}
       </div>
-      <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:6px; font-size:13px; line-height:1.6; margin:8px 0;">
-        <div style="font-weight:bold; font-size:14.5px; margin-bottom:6px; color:#FFFFFF;">${question.title.replace(/<[^>]+>/g, '')}</div>
-        <div style="opacity:0.95; font-size:12.5px;">${question.desc ? question.desc.replace(/<[^>]+>/g, '') : "届いた内容を慎重に確認してください。"}</div>
+      <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:6px; font-size:13px; line-height:1.6;">
+        <div style="font-weight:bold; font-size:14px; margin-bottom:4px;">${question.title.replace(/<[^>]+>/g, '')}</div>
+        ${question.desc ? question.desc.replace(/<[^>]+>/g, '') : "画面の指示内容を確認してください。"}
       </div>
-      <div style="font-size:11.5px; color:#F5A623; text-align:center; background:rgba(0,0,0,0.3); padding:5px; border-radius:4px;">
-        🔍 タップ / クリックで資料を拡大表示
-      </div>
+      <div style="font-size:11px; opacity:0.8; text-align:center;">🔍 クリック / タップで拡大</div>
     </div>
   `;
 }
@@ -523,7 +398,7 @@ function renderEventVisual(question) {
   const visual = document.getElementById("event-visual");
   const zoomBadge = document.getElementById("zoom-hint-badge");
 
-  // 既存のモックHTMLを初期化
+  // 既存のモックHTMLがあれば除去
   const existingMock = visual.querySelector(".event-mock-container");
   if (existingMock) existingMock.remove();
 
@@ -535,40 +410,28 @@ function renderEventVisual(question) {
 
     if (zoomBadge) zoomBadge.classList.remove("is-hidden");
 
-    // ★ 解決策：画像チェック前にまずリアルモック画面を即時描画（真っ黒になる瞬間をゼロにする）
-    const mockHTML = generateFallbackMockHTML(question);
-    const mockContainer = document.createElement("div");
-    mockContainer.className = "event-mock-container";
-    mockContainer.style.width = "100%";
-    mockContainer.style.height = "100%";
-    mockContainer.style.display = "flex";
-    mockContainer.innerHTML = mockHTML;
-    visual.appendChild(mockContainer);
-
-    screenshotImg.classList.add("is-hidden");
-    visual.onclick = () => openImageModal(null, mockHTML);
-
-    // ★ プリロードで実在ファイルが存在する場合のみ画像に自動切り替え
-    const imgTester = new Image();
-    imgTester.onload = () => {
-      // 画像が存在する場合はモックを消して本物の画像を表示
-      mockContainer.remove();
-      screenshotImg.src = question.screenshot;
-      screenshotImg.classList.remove("is-hidden");
-      visual.onclick = () => openImageModal(question.screenshot, null);
-    };
-    imgTester.onerror = () => {
-      // 画像が存在しない場合はモック画面のまま維持
+    // 画像読み込み失敗時のフォールバック処理を登録
+    setImageSafely(screenshotImg, question.screenshot, () => {
+      // 画像が存在しない場合はリアルモック画面を自動生成して表示
       screenshotImg.classList.add("is-hidden");
-    };
-    imgTester.src = question.screenshot;
+      const mockHTML = generateFallbackMockHTML(question);
+      const mockContainer = document.createElement("div");
+      mockContainer.className = "event-mock-container";
+      mockContainer.style.width = "100%";
+      mockContainer.style.height = "100%";
+      mockContainer.innerHTML = mockHTML;
+      visual.appendChild(mockContainer);
 
+      visual.onclick = () => openImageModal(null, mockHTML);
+    });
+
+    visual.onclick = () => openImageModal(question.screenshot, null);
     return;
   }
 
   // screenshot がない問題（背景＋立ち絵）
   visual.classList.remove("is-screenshot-mode");
-  screenshotImg.classList.add("is-hidden");
+  setImageSafely(screenshotImg, null);
   visual.onclick = null;
   
   if (zoomBadge) zoomBadge.classList.add("is-hidden");
