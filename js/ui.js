@@ -1,8 +1,8 @@
 /* =========================================================
    ui.js
    -----------------------------------------------------------
-   UI描画・4モード表示制御・資料タップ拡大モーダル制御
-   デバッグ情報出力 ＆ 画像未作成時リアルモック画面自動生成対応
+   UI描画・4モード表示制御・携帯画面表示・資料タップ拡大モーダル制御
+   デバッグ情報出力 ＆ 画像自動フォールバック対応
    ========================================================= */
 
 // デバッグモード設定（trueでコンソール出力有効化）
@@ -14,7 +14,7 @@ function showScreen(screenId) {
   });
 }
 
-function setImageSafely(imgElement, src, onFail) {
+function setImageSafely(imgElement, src) {
   if (!imgElement) return;
   if (!src) {
     imgElement.removeAttribute("src");
@@ -26,15 +26,18 @@ function setImageSafely(imgElement, src, onFail) {
 
   imgElement.onerror = () => {
     const currentSrc = imgElement.getAttribute("src") || "";
-    if (currentSrc.startsWith("images/")) {
+
+    // パス差異やファイル名ブレ（スペース・記号・拡張子）を順次フォールバック
+    if (currentSrc.includes("広告詐欺？ .png")) {
+      imgElement.src = currentSrc.replace("広告詐欺？ .png", "広告詐欺.png");
+    } else if (currentSrc.includes("広告詐欺.png")) {
+      imgElement.src = currentSrc.replace("広告詐欺.png", "広告詐欺？.png");
+    } else if (currentSrc.startsWith("images/")) {
       imgElement.src = "../resource/images/" + currentSrc.replace("images/", "");
     } else if (currentSrc.startsWith("../resource/images/")) {
       imgElement.src = "resource/images/" + currentSrc.replace("../resource/images/", "");
     } else {
       imgElement.classList.add("is-hidden");
-      if (typeof onFail === "function") {
-        onFail();
-      }
     }
   };
 
@@ -238,31 +241,13 @@ function showDayIntro(label, onNext, comment) {
 }
 
 /* ★ 資料・画像ポップアップモーダル制御 ★ */
-function openImageModal(imgSrc, mockHTML) {
+function openImageModal(imgSrc) {
+  if (!imgSrc) return;
   const modal = document.getElementById("image-modal");
   const modalImg = document.getElementById("image-modal-img");
-  const modalBody = modal ? modal.querySelector(".image-modal-body") : null;
-  if (!modal || !modalBody) return;
+  if (!modal || !modalImg) return;
 
-  // 既存のモック画面があれば消去
-  const oldMock = modalBody.querySelector(".modal-mock-container");
-  if (oldMock) oldMock.remove();
-
-  if (imgSrc) {
-    if (modalImg) {
-      modalImg.classList.remove("is-hidden");
-      setImageSafely(modalImg, imgSrc);
-    }
-  } else if (mockHTML) {
-    if (modalImg) modalImg.classList.add("is-hidden");
-    const mockContainer = document.createElement("div");
-    mockContainer.className = "modal-mock-container";
-    mockContainer.style.width = "100%";
-    mockContainer.style.height = "100%";
-    mockContainer.innerHTML = mockHTML;
-    modalBody.appendChild(mockContainer);
-  }
-
+  setImageSafely(modalImg, imgSrc);
   modal.classList.remove("is-hidden");
 }
 
@@ -285,110 +270,7 @@ function outputDebugQuestionInfo(question) {
   console.log(`%c${debugText}`, "color: #00e676; background: #1B2A4A; font-weight: bold; padding: 4px 8px; border-radius: 4px;");
 }
 
-/* ★ 画像未作成時・リアルモック画面HTML生成フォールバック ★ */
-function generateFallbackMockHTML(question) {
-  const qId = question.id;
-
-  // 1. サポート詐欺（Microsoft偽警告）
-  if (qId === "q_adult_colleague_help" || qId === "q_senior_web_support") {
-    return `
-      <div style="background:#C00000; color:#fff; width:100%; height:100%; padding:16px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="border-bottom:2px solid #fff; padding-bottom:8px;">
-          <div style="font-size:18px; font-weight:bold;">⚠️ Microsoft セキュリティ警告</div>
-          <div style="font-size:12px; opacity:0.9;">システムアラート: 0x80070422 - Trojanスパイウェア検出</div>
-        </div>
-        <div style="background:#fff; color:#000; padding:12px; border-radius:6px; font-size:13px; line-height:1.5;">
-          <strong style="color:#C00000; font-size:15px;">お使いのPCはロックされました</strong><br>
-          個人情報・パスワードが流出する恐れがあります。<br>
-          直ちに下記のサポート窓口へお電話ください。<br>
-          <div style="text-align:center; margin-top:8px; font-size:18px; font-weight:bold; color:#0055AA;">
-            📞 050-3196-XXXX（フリーダイヤル）
-          </div>
-        </div>
-        <div style="font-size:11px; opacity:0.85; text-align:center;">※電源を切るとPCが完全に破壊されます</div>
-      </div>
-    `;
-  }
-
-  // 2. 銀行ワンタイム・OTP詐欺
-  if (qId === "q_adult_bank_otp_scam") {
-    return `
-      <div style="background:#F2F4F8; color:#333; width:100%; height:100%; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="background:#1B2A4A; color:#fff; padding:8px 12px; border-radius:4px; font-weight:bold; font-size:14px;">
-          都市銀行 セキュリティ認証
-        </div>
-        <div style="background:#fff; border:1px solid #DCE3EE; padding:12px; border-radius:6px; font-size:12.5px; line-height:1.6;">
-          <div style="color:#E85C4A; font-weight:bold; margin-bottom:6px;">【重要】取引規制解除の手続き</div>
-          第三者による不正アクセスを検知しました。<br>
-          本人認証のため、スマホに届いた<strong>ワンタイムパスワード（6桁）</strong>を入力してください。
-          <div style="margin-top:10px; background:#F8FAFC; border:1.5px dashed #4A5A7C; padding:8px; text-align:center; font-size:16px; font-weight:bold; letter-spacing:4px;">
-            [ _ _ _ _ _ _ ]
-          </div>
-        </div>
-        <div style="font-size:11px; color:#888; text-align:center;">URL: http://bank-security-verify.net</div>
-      </div>
-    `;
-  }
-
-  // 3. 国税庁・e-Tax 還付金
-  if (qId === "q_adult_etax_scam" || qId === "q_senior_mail_tax") {
-    return `
-      <div style="background:#FFFFFF; color:#222; width:100%; height:100%; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; border:2px solid #005A9C; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="border-bottom:2px solid #005A9C; padding-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-weight:bold; color:#005A9C; font-size:15px;">国税庁 e-Tax 電子納税</span>
-          <span style="font-size:11px; background:#E5F0FA; color:#005A9C; padding:2px 6px; border-radius:4px;">重要通達</span>
-        </div>
-        <div style="font-size:12.5px; line-height:1.6;">
-          <strong>【過年度税金還付通知】</strong><br>
-          過年度確定申告に伴う還付金：<strong>38,400円</strong><br>
-          払戻口座の有効期限が迫っております。<br>
-          下記ボタンより口座番号・暗証番号を入力してください。
-        </div>
-        <div style="background:#005A9C; color:#fff; text-align:center; padding:10px; border-radius:6px; font-weight:bold; font-size:14px;">
-          還付金受取口座を登録する
-        </div>
-      </div>
-    `;
-  }
-
-  // 4. 闇バイト
-  if (qId === "q_teen_dark_job") {
-    return `
-      <div style="background:#111; color:#fff; width:100%; height:100%; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <div style="width:36px; height:36px; border-radius:50%; background:#FFD700; color:#000; display:flex; align-items:center; justify-content:center; font-weight:bold;">即</div>
-          <div>
-            <div style="font-weight:bold; font-size:14px;">即日日払い案件@公式</div>
-            <div style="font-size:11px; color:#888;">@high_pay_job</div>
-          </div>
-        </div>
-        <div style="font-size:13px; line-height:1.6; background:#222; padding:10px; border-radius:6px;">
-          🔥【超高額案件】日給50,000円〜<br>
-          ・仕事内容: 荷物を受け取って運ぶだけ📦<br>
-          ・未経験/学生大歓迎！即日手渡し💰<br>
-          ・#日払い #高額バイト #書類運搬<br>
-          ※身分証写真DMで即決！
-        </div>
-        <div style="text-align:center; color:#FFD700; font-size:12px; font-weight:bold;">💬 DMで今すぐ応募</div>
-      </div>
-    `;
-  }
-
-  // 汎用モック（SMS / 通知画面風）
-  return `
-    <div style="background:#1B2A4A; color:#fff; width:100%; height:100%; padding:14px; box-sizing:border-box; font-family:sans-serif; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between;">
-      <div style="border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:6px; font-weight:bold; font-size:14px; color:#F5A623;">
-        📍 ${question.source || "通知"}
-      </div>
-      <div style="background:rgba(255,255,255,0.1); padding:12px; border-radius:6px; font-size:13px; line-height:1.6;">
-        <div style="font-weight:bold; font-size:14px; margin-bottom:4px;">${question.title.replace(/<[^>]+>/g, '')}</div>
-        ${question.desc ? question.desc.replace(/<[^>]+>/g, '') : "画面の指示内容を確認してください。"}
-      </div>
-      <div style="font-size:11px; opacity:0.8; text-align:center;">🔍 クリック / タップで拡大</div>
-    </div>
-  `;
-}
-
+/* ★ イベントビジュアル描画（携帯画面画像 ＆ 背景＋人物の自然表示） ★ */
 function renderEventVisual(question) {
   outputDebugQuestionInfo(question);
 
@@ -398,34 +280,17 @@ function renderEventVisual(question) {
   const visual = document.getElementById("event-visual");
   const zoomBadge = document.getElementById("zoom-hint-badge");
 
-  // 既存のモックHTMLがあれば除去
-  const existingMock = visual.querySelector(".event-mock-container");
-  if (existingMock) existingMock.remove();
-
   if (question.screenshot) {
     visual.classList.add("is-screenshot-mode");
+    setImageSafely(screenshotImg, question.screenshot);
     setImageSafely(bgImg, null);
     setImageSafely(characterImg, null);
     applyCharacterBlend(characterImg, null);
 
     if (zoomBadge) zoomBadge.classList.remove("is-hidden");
 
-    // 画像読み込み失敗時のフォールバック処理を登録
-    setImageSafely(screenshotImg, question.screenshot, () => {
-      // 画像が存在しない場合はリアルモック画面を自動生成して表示
-      screenshotImg.classList.add("is-hidden");
-      const mockHTML = generateFallbackMockHTML(question);
-      const mockContainer = document.createElement("div");
-      mockContainer.className = "event-mock-container";
-      mockContainer.style.width = "100%";
-      mockContainer.style.height = "100%";
-      mockContainer.innerHTML = mockHTML;
-      visual.appendChild(mockContainer);
-
-      visual.onclick = () => openImageModal(null, mockHTML);
-    });
-
-    visual.onclick = () => openImageModal(question.screenshot, null);
+    // PC・iPad・スマホ共通でクリック/タップ拡大モーダルを開く
+    visual.onclick = () => openImageModal(question.screenshot);
     return;
   }
 

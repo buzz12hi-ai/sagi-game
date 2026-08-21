@@ -1,7 +1,7 @@
-/*=========================================================
+/* =========================================================
    data.js
    -----------------------------------------------------------
-   問題プール定義（全4モード各16問・計64問・難易度全面リファイン版）
+   問題プール定義（全4モード各16問・計64問・実在携帯画面完全直結版）
    難易度設計：小学生 ＜ 高齢者 ＜ 中高生 ＝ 一般
    ========================================================= */
 
@@ -131,7 +131,6 @@ const SKILL_MAP = {
 
 /* =========================================================
    【小学生モード用問題プール】（全16問・全漢字ルビ付き）
-   難易度：初級（子どもが取りがちな行動で迷わせる）
    ========================================================= */
 const QUESTIONS_ELEMENTARY = [
   {
@@ -421,7 +420,7 @@ const QUESTIONS_ELEMENTARY = [
     notification: "📱ピコン コイン無料ゲットのおしらせ",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.gameCoinScam,
+    screenshot: IMAGE_ASSETS.screenshots.gameAdScam,
     desc: "「コインが100万枚ふえるウラワザ。ゲームのパスワードを入力してください」と かいてある。",
     correctChoices: [
       { text: "「ゲームの パスワードを ほかの人に おしえるのは ぜったいダメ！」と 判断して、サイトをとじる", money: 0, explain: "せいかい！ パスワードを 教えたら アカウントを ぬすまれちゃうよ！" }
@@ -467,7 +466,7 @@ const QUESTIONS_ELEMENTARY = [
     notification: "📱ピコン YouTuberからのDM",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.youtuberDmScam,
+    screenshot: IMAGE_ASSETS.screenshots.youtuberScam,
     desc: "有名YouTuberそっくりのアカウントから「サインを送るから 住所や通っている小学校名を教えて」とDMが届いた。",
     correctChoices: [
       { text: "公式の 本物アカウントと ユーザーIDを くらべて、「ニセモノのアカウントだ！」と 見抜いて 個人情報は おしえない", money: 0, explain: "せいかい！ アイコンは本物に見えても偽アカウントだよ。個人情報をしっかり守れたね！" }
@@ -490,7 +489,7 @@ const QUESTIONS_ELEMENTARY = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.gachaCodeScam,
+    screenshot: IMAGE_ASSETS.screenshots.gameAdScam,
     desc: "「ガチャ無料コードをあげるから、年齢確認のためにクレジットカード番号を入力して」と要求された。",
     correctChoices: [
       { text: "「無料なのに クレジットカード入力を 求めるのは ぜったい詐欺だ！」と 見抜いて、すぐ ページを閉じる", money: 0, explain: "せいかい！ タダをエサにカード情報を盗む手口だよ。絶対に入力しちゃダメ！" }
@@ -504,8 +503,7 @@ const QUESTIONS_ELEMENTARY = [
 ];
 
 /* =========================================================
-   【高齢者モード専用問題プール】（全16問・全ジャンル完全網羅）
-   難易度：中級（電話・訪問・SMSの日常的な状況から判断）
+   【高齢者モード専用問題プール】（全16問）
    ========================================================= */
 const QUESTIONS_SENIOR = [
   // ── ジャンル①：電話系（5問） ──
@@ -753,7 +751,7 @@ const QUESTIONS_SENIOR = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.entrance,
     character: IMAGE_ASSETS.characters.suspiciousVisitor,
-    screenshot: IMAGE_ASSETS.screenshots.seniorPipeCleanFlyer,
+    screenshot: IMAGE_ASSETS.screenshots.shoppingAd,
     desc: "「3,000円で排水管洗浄をする」と訪れた業者が、作業後に「腐食がひどく35万円の緊急補修が必要」と迫ってきた。",
     correctChoices: [
       { text: "その場での契約はきっぱり断り、チラシの3,000円のみ支払って退去させ、家を建てた工務店に相談する", money: 0, explain: "正解！ 格安チラシをきっかけにした高額点検商法です。その場での契約を拒否して被害を防ぎました。" }
@@ -822,7 +820,7 @@ const QUESTIONS_SENIOR = [
     notification: "📱ピコン 【国税庁】重要なお知らせ",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.seniorTaxScam,
+    screenshot: IMAGE_ASSETS.screenshots.gmailPolice,
     desc: "国税庁を名乗り「税金の未納がある。24時間以内に支払わないと差し押さえを実行する」とメールが届いた。",
     correctChoices: [
       { text: "「公的機関がメールで納税や差し押さえを通告することはない」と判断し、リンクを開かずメールを削除する", money: 0, explain: "正解！ 国税庁を騙る典型的なフィッシング詐欺です。落ち着いて無視できました。" }
@@ -881,7 +879,6 @@ const QUESTIONS_SENIOR = [
 
 /* =========================================================
    【中高生モード用問題プール】（全16問）
-   難易度：上級（SNS・DM・バイト・友達トラブル・画像とURLを吟味）
    ========================================================= */
 const QUESTIONS_TEEN = [
   {
@@ -1166,7 +1163,7 @@ const QUESTIONS_TEEN = [
     notification: "📱ピコン バイト募集への返信",
     bg: IMAGE_ASSETS.backgrounds.schoolRoute,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.darkJobScam,
+    screenshot: IMAGE_ASSETS.screenshots.lineSidejob,
     desc: "「指定場所で荷物を受け取って運ぶだけで日給5万円。身分証の写真を送ってください」と闇バイトの勧誘を受けた。",
     correctChoices: [
       { text: "「仕事内容に対して報酬が異常に高すぎる。特殊詐欺の闇バイト（受け子）だ！」と見抜いて絶対に応募せず通報する", money: 0, explain: "正解！ 闇バイトに一度でも手を染めると逮捕され一生を棒に振ります。絶対に応募してはダメ！" }
@@ -1189,7 +1186,7 @@ const QUESTIONS_TEEN = [
     notification: "📱ピコン チケット譲渡のDM",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.ticketResaleScam,
+    screenshot: IMAGE_ASSETS.screenshots.favGoods,
     desc: "「完売した人気チケットを定価で譲る。PayPayで先払いしてくれたら電子チケットを送る」と連絡が届いた。",
     correctChoices: [
       { text: "「SNS上での個人間先払い取引はチケット詐欺の典型」と判断し、主催者公式の公式トレード（リセール）以外では取引しない", money: 0, explain: "正解！ 個人間の先払い取引は99%詐欺です。チケットは公式トレードで購入しましょう。" }
@@ -1212,7 +1209,7 @@ const QUESTIONS_TEEN = [
     notification: "📱ピコン 【警告】著作権侵害通知",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.copyrightDmScam,
+    screenshot: IMAGE_ASSETS.screenshots.instagram,
     desc: "「著作権侵害で通報された。24時間以内にリンクからログインして異議申し立てしないと削除する」とDMが届いた。",
     correctChoices: [
       { text: "DM内の不審なリンクは絶対に開かず、公式アプリ内の「設定・ヘルプ＞サポート受信トレイ」から正規の警告通知の有無を確認する", money: 0, explain: "正解！ アカウント乗っ取りを狙った偽警告です。公式サポート画面から確認するのが安全です。" }
@@ -1235,7 +1232,7 @@ const QUESTIONS_TEEN = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.aiFakeAdScam,
+    screenshot: IMAGE_ASSETS.screenshots.tiktokAd,
     desc: "有名人が動画で「私も使っている」と副業アプリをおすすめしている広告が表示された。",
     correctChoices: [
       { text: "タレントの口の動きや声の不自然さを確認し、「AIで捏造されたディープフェイク偽広告」と見抜いてインストールしない", money: 0, explain: "正解！ 生成AIを悪用したディープフェイク偽広告です。タレントが副業を勧める広告は詐欺です。" }
@@ -1250,7 +1247,6 @@ const QUESTIONS_TEEN = [
 
 /* =========================================================
    【一般（大人）モード用問題プール】（全16問）
-   難易度：最高難易度（税務・OTP・API・サブスク・投資・出資）
    ========================================================= */
 const QUESTIONS_ADULT = [
   {
@@ -1311,7 +1307,7 @@ const QUESTIONS_ADULT = [
     notification: "📱ピコン 【国税庁】還付金のお受け取りについて",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.etaxScam,
+    screenshot: IMAGE_ASSETS.screenshots.gmailPolice,
     desc: "「確定申告の還付金38,400円の送金手続き。リンクより受取口座とカード情報を入力してください」とメールが届いた。",
     correctChoices: [
       { text: "URLドメインの末尾が「.com」である偽サイトと見破り、メールのリンクは開かずブラウザのブックマークから正規e-Taxへログインする", money: 0, explain: "正解！ フィッシング詐欺です。公的機関の重要通知は自らブックマークや検索から公式サイトへログインして確認しましょう。" }
@@ -1334,7 +1330,7 @@ const QUESTIONS_ADULT = [
     notification: "📱ピコン 【重要】取引規制のお知らせ",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.bankOtpScam,
+    screenshot: IMAGE_ASSETS.screenshots.lineSidejob,
     desc: "「不正ログイン検知のため口座規制中。ワンタイムパスワードを入力して解除してください」とSMSが届いた。",
     correctChoices: [
       { text: "SMSのリンクは絶対に開かず、普段使っている正規の公式バンキングアプリを直接起動して取引履歴と規制の有無を確認する", money: 0, explain: "正解！ ワンタイムパスワード搾取型の最悪のフィッシング詐欺です。公式アプリから直接確認することで被害を完全に防げました。" }
@@ -1492,7 +1488,7 @@ const QUESTIONS_ADULT = [
     notification: "📱ピコン 【税関】関税未納通知",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.customsScam,
+    screenshot: IMAGE_ASSETS.screenshots.gmailDelivery,
     desc: "「国際郵便の関税2,980円が未納のため保留中。本日中にリンクから支払わないと破棄します」とSMSが届いた。",
     correctChoices: [
       { text: "「税関がSMSで直接支払いやギフトカード決済を求めることは絶対にない」と見抜き、リンクを開かず削除する", money: 0, explain: "正解！ 税関を騙るスミッシング詐欺です。ギフトカードやSMS決済を要求する手口を見事に回避しました。" }
@@ -1514,7 +1510,7 @@ const QUESTIONS_ADULT = [
     notification: "📱ピコン 【デジタル庁】電子証明書更新のお知らせ",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.mynaPortalScam,
+    screenshot: IMAGE_ASSETS.screenshots.gmailPolice,
     desc: "「マイナンバーカードの電子証明書が期限切れ。本日中に暗証番号を再登録してください」とSMSが届いた。",
     correctChoices: [
       { text: "「行政機関がSMSで電子証明書の更新や暗証番号入力を求めることはない」と見抜き、リンクを開かず削除する", money: 0, explain: "正解！ マイナンバー情報を狙うフィッシング詐欺です。電子証明書の更新は市区町村窓口で行われます。" }
@@ -1536,7 +1532,7 @@ const QUESTIONS_ADULT = [
     notification: "📱ピコン 【警告】電力供給停止予告",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.utilityScam,
+    screenshot: IMAGE_ASSETS.screenshots.dataNotice,
     desc: "「電気料金未払いのため本日18時に電力供給を停止します。至急リンクから支払ってください」とSMSが届いた。",
     correctChoices: [
       { text: "SMS記載のリンクは絶対に開かず、紙の検針票に記載された公式コールセンターまたは正規マイページで未払いの有無を確認する", money: 0, explain: "正解！ ライフライン停止を騙るスミッシング詐欺です。焦ってリンクから決済せず自発的に公式確認できました。" }
@@ -1559,7 +1555,7 @@ const QUESTIONS_ADULT = [
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
-    screenshot: IMAGE_ASSETS.screenshots.cryptoStakingScam,
+    screenshot: IMAGE_ASSETS.screenshots.lineSidejob,
     desc: "「元本保証で月利15%の確定配当。知人も実際に配当をもらっている」と一口30万円の投資を勧められた。",
     correctChoices: [
       { text: "「元本保証で月利15%など経済合理上あり得ない（ポンジスキーム詐欺）」と判断し、知人からの出資勧誘をきっぱり断る", money: 0, explain: "正解！ 典型的なポンジスキーム型投資詐欺です。知人自身も騙されている状態を見抜き、被害を回避しました。" }
@@ -1581,7 +1577,7 @@ const QUESTIONS_ADULT = [
     notification: "📱ピコン 【予約完了】キャンセル料のお知らせ",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.travelCancelScam,
+    screenshot: IMAGE_ASSETS.screenshots.gmailDelivery,
     desc: "「身に覚えのない高級ホテル予約（20万円）。本日中の取消はキャンセル料無料、リンクより手続きを」とメールが届いた。",
     correctChoices: [
       { text: "メール記載のリンクは一切開かず、普段利用している正規旅行サイトの公式アプリ・ブックマークにログインして予約履歴が存在しないことを確認する", money: 0, explain: "正解！ 偽の予約完了メールで焦らせるフィッシング詐欺です。正規の予約履歴を確認して冷静に対処できました。" }
@@ -1603,7 +1599,7 @@ const QUESTIONS_ADULT = [
     notification: "📱ピコン 【重要】カード利用停止のお知らせ",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
-    screenshot: IMAGE_ASSETS.screenshots.policeOrgScam,
+    screenshot: IMAGE_ASSETS.screenshots.gmailPolice,
     desc: "「カード不正利用を検知し利用停止中。リンクから本人確認とセキュリティ認証を行ってください」とメールが届いた。",
     correctChoices: [
       { text: "メールのリンクは開かず、財布から本物のクレジットカードを取り出して裏面に記載された正規のカスタマー電話番号へ問い合わせる", money: 0, explain: "正解！ 不正検知を装うフィッシング詐欺です。カード裏面の公式デスクへ直接確認するのが最も確実です。" }
