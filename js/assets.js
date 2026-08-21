@@ -88,8 +88,6 @@ const IMAGE_ASSETS = {
     youtuberScam:         IMG_BASE + "YouTuberなりすまし詐欺.jpg",
     gameAdScam:           IMG_BASE + "ゲーム広告詐欺.jpg",
     dataNotice:           IMG_BASE + "通信量通知本物.jpg",
-
-    // 新規作成追加素材
     gameCoinScam:         IMG_BASE + "ゲームコイン裏ワザ詐欺.jpg",
     youtuberDmScam:       IMG_BASE + "YouTuber サイン DM 詐欺.jpg",
     gachaCodeScam:        IMG_BASE + "無料ガチャコード詐欺.jpg",
