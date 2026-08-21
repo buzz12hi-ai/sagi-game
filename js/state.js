@@ -2,6 +2,7 @@
    state.js
    -----------------------------------------------------------
    ゲーム状態管理・4モード日程＆出題バランス抽出ロジック
+   （大人・高齢者モード：名前入力スキップ対応）
    ========================================================= */
 
 const state = {
@@ -31,13 +32,14 @@ const state = {
 };
 
 function getPlayerDisplayName() {
-  if (state.mode === "senior") return "あなた";
+  // 大人モードおよび高齢者モードは名前入力をスキップし「あなた」固定
+  if (state.mode === "senior" || state.mode === "adult") return "あなた";
   const name = state.playerName ? state.playerName.trim() : "キミ";
   return `${name}さん`;
 }
 
 function getPlayerRawName() {
-  if (state.mode === "senior") return "あなた";
+  if (state.mode === "senior" || state.mode === "adult") return "あなた";
   return state.playerName ? state.playerName.trim() : "キミ";
 }
 

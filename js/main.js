@@ -1,7 +1,8 @@
 /* =========================================================
    main.js
    -----------------------------------------------------------
-   4モード分岐・動的4択・判定演出・エンディング・アンケート・モーダル制御
+   4モード分岐・動的4択・判定演出・エンディング・アンケート制御
+   （大人・高齢者モード：名前入力・欲しい物スキップ対応）
    ========================================================= */
 
 function renderTitleVisual() {
@@ -55,9 +56,10 @@ function handleSelectMode(selectedMode) {
     state.selectedItem = null;
     showJoeIntro(startSeniorWeek);
   } else if (selectedMode === "adult") {
-    // 一般（大人）モード：名前入力へ進み、欲しい物選択はスキップ
+    // 一般（大人）モード：名前入力・欲しい物選択をスキップして直接自己紹介へ
+    state.playerName = "あなた";
     state.selectedItem = null;
-    openNameInput();
+    showJoeIntro(startAdultWeek);
   } else {
     // 小学生・中高生モード：名前入力へ進み、欲しい物選択も行う
     openNameInput();
@@ -92,13 +94,8 @@ function handleNameSubmit() {
   if (errorEl) errorEl.classList.add("is-hidden");
   state.playerName = typedName;
 
-  if (state.mode === "adult") {
-    // 大人モードは欲しい物選択をスキップしてあらすじへ
-    showJoeIntro(startAdultWeek);
-  } else {
-    // 小学生・中高生モードは欲しい物選択へ
-    showJoeIntro(goToItemSelect);
-  }
+  // 小学生・中高生モードは欲しい物選択へ
+  showJoeIntro(goToItemSelect);
 }
 
 function goToItemSelect() {
@@ -170,7 +167,7 @@ function showSynopsis() {
     `;
   } else if (state.mode === "adult") {
     card.innerHTML = `
-      ${getPlayerDisplayName()}の1週間の防犯チャレンジが始まります。<br><br>
+      あなたの1週間の防犯チャレンジが始まります。<br><br>
       税金の還付や未納通知、サブスクリプションの自動更新トラブル、銀行を騙る不正アクセス、巧妙な投資・副業勧誘など、大人の日常やビジネスには巧妙な罠が潜んでいます。<br><br>
       手元資金50,000円を守り抜きながら、1日1問（全7問）のリアルな詐欺・正規通知を正しく見極めましょう！
     `;
@@ -522,8 +519,8 @@ function showEnding() {
         : `1週間お疲れさまでした。学んだ防犯知識をぜひ日頃の防犯にお役立てください！`;
     } else if (state.mode === "adult") {
       joeCommentEl.textContent = canAfford
-        ? `${getPlayerDisplayName()}、見事全問正解です！ 巧妙な詐欺手口を完璧に見抜きました！`
-        : `${getPlayerDisplayName()}、1週間お疲れさまでした。身につけた知識を日常のリスク管理に活かしてください！`;
+        ? `見事全問正解です！ 巧妙な詐欺手口を完璧に見抜きました！`
+        : `1週間お疲れさまでした。身につけた知識を日常のリスク管理に活かしてください！`;
     } else if (state.mode === "elementary") {
       joeCommentEl.innerHTML = canAfford
         ? `${getPlayerDisplayName()}、1<ruby>週間<rt>しゅうかん</rt></ruby><ruby>本当<rt>ほんとう</rt></ruby>によく<ruby>頑張<rt>がんば</rt></ruby>ったね！ すばらしい<ruby>防犯<rt>ぼうはん</rt></ruby>パワーだよ！`
