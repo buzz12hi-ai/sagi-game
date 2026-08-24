@@ -1,7 +1,7 @@
 /* =========================================================
    data.js
    問題プール定義（4モード各16問・計64問）
-   【完全中立・ネタバレ排除・大分県警3原則 実践型4択設計】
+   【完全中立・ネタバレ排除・小学生全ルビ・大分県警3原則4択設計】
    ========================================================= */
 
 const ITEMS = [
@@ -50,14 +50,14 @@ const DAILY_ACTIONS_BY_DAY = {
 
 const THREE_PRINCIPLES = [
   { head: "① 喋らない（話さない・教えない）", desc: "相手へ個人情報、パスワード、暗証番号、画面共有でコードを教えない" },
-  { head: "② 払わない（渡さない・買わない）", desc: "急かされても、すぐにお金を振り込まない・クレカ決済しない・電子マネーを買わない" },
+  { head: "② 払わない（渡さない・買わない）", desc: "急かされても、すぐにお金を振り込まない・電子マネーを買わない" },
   { head: "③ 騙されない（確認する・相談する）", desc: "届いた連絡先や話をそのまま信じず、自ら調べた正規窓口や家族・警察に確認する" }
 ];
 
 const SKILL_MAP = {
   // 小学生モード
   "elementary_q01": "メールの通知に慌てず大人の人に相談する力",
-  "elementary_q02": "プレゼント当選画面のカード情報要求を見抜く力",
+  "elementary_q02": "プレゼント当選画面の個人情報要求を見抜く力",
   "elementary_q03": "突然の点検訪問を玄関先で断る力",
   "elementary_q04": "別アカウントからの友達の送金要求を確かめる力",
   "elementary_q05": "割引広告に惑わされず公式情報を確認する力",
@@ -65,7 +65,7 @@ const SKILL_MAP = {
   "elementary_q07": "コイン増殖の裏ワザを装うアカウント盗難を防ぐ力",
   "elementary_q08": "画面共有による認証コードの流出を防ぐ力",
   "elementary_q09": "有名人を名乗るアカウントからの個人情報要求を見破る力",
-  "elementary_q10": "無料コードを口実にしたカード情報要求を遮断する力",
+  "elementary_q10": "無料コードを口実にした認証情報要求を遮断する力",
   "elementary_q11": "簡単副業を謳う広告を冷静に見極める力",
   "elementary_q12": "ATMで困っているお年寄りを店員に知らせて助ける力",
   "elementary_q13": "電話で慌てる家族を落ち着かせて被害を防ぐ力",
@@ -129,16 +129,16 @@ const SKILL_MAP = {
 };
 
 /* =========================================================
-   【小学生モード用問題プール】（全16問・ルビ付き・3原則思考型4択）
+   【小学生モード用問題プール】（全16問・全漢字ルビ付き・3原則思考型4択）
    ========================================================= */
 const QUESTIONS_ELEMENTARY = [
   // ── 詐欺（11問） ──
   {
     id: "elementary_q01", category: "scam", source: "メール", title: "【<ruby>重要<rt>じゅうよう</rt></ruby>】サイバー<ruby>犯罪<rt>はんざい</rt></ruby><ruby>対策<rt>たいさく</rt></ruby>センターからのおしらせ",
-    characterName: "サイバー捜査課",
+    characterName: "サイバー<ruby>捜査課<rt>そうさか</rt></ruby>",
     narration: "スマホに 1<ruby>通<rt>つう</rt></ruby>の メールが <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>の メールを <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "連絡通知", line: "【<ruby>警告<rt>けいこく</rt></ruby>】24<ruby>時間<rt>じかん</rt></ruby><ruby>以内<rt>いない</rt></ruby>に <ruby>下<rt>した</rt></ruby>のリンクより <ruby>本人<rt>ほんにん</rt></ruby><ruby>認証<rt>にんしょう</rt></ruby>を <ruby>完了<rt>かんりょう</rt></ruby>してください。" },
+      { speaker: "連絡通知", line: "【<ruby>警告<rt>けいこく</rt></ruby>】24<ruby>時間<rt>じかん</rt></ruby><ruby>以内<rt>いない</rt></ruby>に <ruby>下<rt>した</rt></ruby>のリンクより <ruby>本人<rt>ほんにん</rt></ruby><ruby>確認<rt>かくにん</rt></ruby>を <ruby>完了<rt>かんりょう</rt></ruby>してください。" },
       { speaker: "主人公", line: "「たいほって かいてある…！ どうしよう…！」" }
     ],
     point: "<ruby>警察<rt>けいさつ</rt></ruby>が メールで パスワードを <ruby>入<rt>い</rt></ruby>れさせたり、『たいほする』とおどすことは ぜったいに ありません！",
@@ -148,40 +148,40 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementaryPoliceMailScam,
     desc: "スマホに メールが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "メールのリンクは <ruby>押<rt>お</rt></ruby>さず、すぐ おうちの<ruby>人<rt>ひと</rt></ruby>に <ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>せて <ruby>相談<rt>そうだん</rt></ruby>する", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・相談する】リンクを開かずに大人の人に相談できたね！" }
+      { text: "メールのリンクは <ruby>押<rt>お</rt></ruby>さず、すぐ おうちの<ruby>人<rt>ひと</rt></ruby>に <ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>せて <ruby>相談<rt>そうだん</rt></ruby>する", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>騙<rt>だま</rt></ruby>されない・<ruby>相談<rt>そうだん</rt></ruby>する】リンクを <ruby>開<rt>ひら</rt></ruby>かずに おとなの<ruby>人<rt>ひと</rt></ruby>に <ruby>相談<rt>そうだん</rt></ruby>できたね！" }
     ],
     wrongChoices: [
-      { text: "たいほされたら <ruby>困<rt>こま</rt></ruby>るから、リンクを <ruby>開<rt>ひら</rt></ruby>いて パスワードと <ruby>名前<rt>なまえ</rt></ruby>を <ruby>入力<rt>にゅうりょく</rt></ruby>する", money: -25000, principleTag: "speak", damageType: "account", explain: "【喋ってしまった！】パスワードを悪ものに教えてしまい、アカウントを奪われて25,000円の被害が出たよ！" },
-      { text: "「たいほを取り消すには調査費用が必要」と書いてあるのでお金を振り込む", money: -30000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】脅されてお金を払ってしまい、大切な30,000円を奪われたよ！" },
-      { text: "メールに書いてある電話番号に電話をかけて「本当につかまるの？」と聞く", money: -15000, principleTag: "fooled", damageType: "money", explain: "【相手に騙された！】詐欺グループの電話につながり、脅されて15,000円取られてしまったよ！" }
+      { text: "たいほされたら <ruby>困<rt>こま</rt></ruby>るから、リンクを <ruby>開<rt>ひら</rt></ruby>いて パスワードと <ruby>名前<rt>なまえ</rt></ruby>を <ruby>入力<rt>にゅうりょく</rt></ruby>する", money: -25000, principleTag: "speak", damageType: "account", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】パスワードを <ruby>悪<rt>わる</rt></ruby>ものに <ruby>教<rt>おし</rt></ruby>えてしまい、アカウントを <ruby>奪<rt>うば</rt></ruby>われて 25,000<ruby>円<rt>えん</rt></ruby>の <ruby>被害<rt>ひがい</rt></ruby>が でたよ！" },
+      { text: "「たいほを <ruby>取<rt>と</rt></ruby>り<ruby>消<rt>け</rt></ruby>すには <ruby>調査<rt>ちょうさ</rt></ruby><ruby>費用<rt>ひよう</rt></ruby>が <ruby>必要<rt>ひつよう</rt></ruby>」と <ruby>書<rt>か</rt></ruby>いてあるので お<ruby>金<rt>かね</rt></ruby>を <ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>む", money: -30000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】おどされて お<ruby>金<rt>かね</rt></ruby>を <ruby>払<rt>はら</rt></ruby>ってしまい、<ruby>大切<rt>たいせつ</rt></ruby>な 30,000<ruby>円<rt>えん</rt></ruby>を <ruby>奪<rt>うば</rt></ruby>われたよ！" },
+      { text: "メールに <ruby>書<rt>か</rt></ruby>いてある でんわ<ruby>番号<rt>ばんごう</rt></ruby>に でんわをかけて「<ruby>本当<rt>ほんとう</rt></ruby>につかまるの？」と <ruby>聞<rt>き</rt></ruby>く", money: -15000, principleTag: "fooled", damageType: "money", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】さぎグループの でんわに つながり、おどされて 15,000<ruby>円<rt>えん</rt></ruby> <ruby>取<rt>と</rt></ruby>られてしまったよ！" }
     ]
   },
   {
     id: "elementary_q02", category: "scam", source: "SNSのDM", title: "【<ruby>当選<rt>とうせん</rt></ruby><ruby>通知<rt>つうち</rt></ruby>】ゲーム<ruby>機<rt>き</rt></ruby>プレゼント<ruby>企画<rt>きかく</rt></ruby>",
-    characterName: "プレゼント企画",
+    characterName: "プレゼント<ruby>企画<rt>きかく</rt></ruby>",
     narration: "SNSの ダイレクトメッセージに、メッセージが <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "アカウント", line: "おめでとうございます！ <ruby>発送<rt>はっそう</rt></ruby><ruby>手続<rt>てつづ</rt></ruby>きのため、フォームに <ruby>入力<rt>にゅうりょく</rt></ruby>してください。" },
       { speaker: "主人公", line: "「最新ゲーム機があたったの！？ はやくほしいな！」" }
     ],
-    point: "『タダであげるけど 送料だけカードではらって』は、カード番号を盗む典型的な手口です！",
+    point: "『タダであげるけど お金や暗証番号を教えて』は、個人情報やお小遣いをだまし取る手口です！",
     notification: "📱ピコン 当選メッセージ！",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryGamePrizeScam,
     desc: "SNSで メッセージが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "カード番号は入力せず、おうちの人に「これ本物かな？」と見せて確認する", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・相談する】タダをエサにカード情報を盗む詐欺だよ！しっかり相談できたね！" }
+      { text: "あやしいリンクは <ruby>開<rt>ひら</rt></ruby>かず、おうちの<ruby>人<rt>ひと</rt></ruby>に「これ<ruby>本当<rt>ほんとう</rt></ruby>かな？」と <ruby>見<rt>み</rt></ruby>せて <ruby>確認<rt>かくにん</rt></ruby>する", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>騙<rt>だま</rt></ruby>されない・<ruby>相談<rt>そうだん</rt></ruby>する】タダをエサにだまし<ruby>取<rt>と</rt></ruby>る さぎだよ！しっかり<ruby>相談<rt>そうだん</rt></ruby>できたね！" }
     ],
     wrongChoices: [
-      { text: "プレゼントを送ってもらうため、自分の名前・自宅の住所・小学校名を詳しく返信する", money: -15000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】大切な個人情報を教えてしまい、悪質なグループに名簿として売られてしまったよ！" },
-      { text: "500円なら安いので、おうちの人のクレジットカード番号を入力して決済する", money: -25000, principleTag: "pay", damageType: "personal_info", explain: "【払ってしまった！】カード番号を盗まれ、海外のサイトで勝手に25,000円分使われてしまったよ！" },
-      { text: "相手のアカウントにDMで「本当にゲーム機は届きますか？」と確認メッセージを送る", money: -12000, principleTag: "fooled", damageType: "personal_info", explain: "【相手に騙された！】「本物ですよ」と安心させられ、言われるがまま個人情報を教えてしまったよ！" }
+      { text: "プレゼントを <ruby>送<rt>おく</rt></ruby>ってもらうため、じぶんの<ruby>名前<rt>なまえ</rt></ruby>・<ruby>住所<rt>じゅうしょ</rt></ruby>・<ruby>小学校名<rt>しょうがっこうめい</rt></ruby>を くわしく <ruby>返信<rt>へんしん</rt></ruby>する", money: -15000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】<ruby>大切<rt>たいせつ</rt></ruby>な <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を <ruby>教<rt>おし</rt></ruby>えてしまい、<ruby>悪<rt>わる</rt></ruby>いグループに <ruby>使<rt>つか</rt></ruby>われてしまったよ！" },
+      { text: "「<ruby>送料<rt>そうりょう</rt></ruby>500<ruby>円<rt>えん</rt></ruby>が <ruby>必要<rt>ひつよう</rt></ruby>」と <ruby>言<rt>い</rt></ruby>われ、コンビニで プリペイドカードを <ruby>買<rt>か</rt></ruby>って <ruby>番号<rt>ばんごう</rt></ruby>を <ruby>送<rt>おく</rt></ruby>る", money: -25000, principleTag: "pay", damageType: "personal_info", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】お<ruby>金<rt>かね</rt></ruby>を だまし<ruby>取<rt>と</rt></ruby>られ、ゲーム<ruby>機<rt>き</rt></ruby>も とどかなかったよ！" },
+      { text: "<ruby>相手<rt>あいて</rt></ruby>のアカウントにDMで「<ruby>本当<rt>ほんとう</rt></ruby>にゲーム<ruby>機<rt>き</rt></ruby>は とどきますか？」と <ruby>確認<rt>かくにん</rt></ruby>メッセージを <ruby>送<rt>おく</rt></ruby>る", money: -12000, principleTag: "fooled", damageType: "personal_info", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】「<ruby>本物<rt>ほんもの</rt></ruby>ですよ」と あんしんさせられ、うそを <ruby>信<rt>しん</rt></ruby>じてしまったよ！" }
     ]
   },
   {
     id: "elementary_q03", category: "scam", source: "おうちの玄関", title: "<ruby>近隣<rt>きんりん</rt></ruby><ruby>工事<rt>こうじ</rt></ruby>の ごあいさつ",
-    characterName: "訪問作業員",
+    characterName: "<ruby>訪問<rt>ほうもん</rt></ruby><ruby>作業員<rt>さぎょういん</rt></ruby>",
     narration: "おうちで おるす<ruby>番<rt>ばん</rt></ruby>をしていると、インターホンが <ruby>鳴<rt>な</rt></ruby>り、<ruby>作業着<rt>さぎょうぎ</rt></ruby>のおじさんが <ruby>立<rt>た</rt></ruby>っていました。",
     dialogue: [
       { speaker: "作業員", line: "「<ruby>近所<rt>きんじょ</rt></ruby>で <ruby>工事<rt>こうじ</rt></ruby>をしている者ですが、お<ruby>宅<rt>たく</rt></ruby>の<ruby>屋根<rt>やね</rt></ruby>の<ruby>瓦<rt>かわら</rt></ruby>が ずれてますよ。<ruby>無料<rt>むりょう</rt></ruby>で <ruby>見<rt>み</rt></ruby>てあげます。」" },
@@ -194,17 +194,17 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: null,
     desc: "「<ruby>屋根<rt>やね</rt></ruby>の<ruby>瓦<rt>かわら</rt></ruby>が ずれている。<ruby>無料<rt>むりょう</rt></ruby>で <ruby>点検<rt>てんけん</rt></ruby>する」と <ruby>言<rt>い</rt></ruby>われた。あなたなら どうする？",
     correctChoices: [
-      { text: "玄関のカギを開けずに、インターホン越しに「親がいないので分かりません」と断る", money: 0, principleTag: "safe", explain: "せいかい！【喋らない・家に入れない】お留守番のときは絶対にドアを開けちゃダメだよ！" }
+      { text: "<ruby>玄関<rt>げんかん</rt></ruby>のカギを <ruby>開<rt>あ</rt></ruby>けずに、インターホンごしに「いま おとなが いないので わかりません」と <ruby>断<rt>ことわ</rt></ruby>る", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>喋<rt>しゃべ</rt></ruby>らない・<ruby>家<rt>いえ</rt></ruby>に<ruby>入<rt>い</rt></ruby>れない】おるす<ruby>番<rt>ばん</rt></ruby>のときは ぜったいに ドアを あけちゃダメだよ！" }
     ],
     wrongChoices: [
-      { text: "「いま親が留守で、自分一人しかいません」と正直に状況を話してしまう", money: -15000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】一人で留守番していることを教えてしまい、強引に敷地に入り込まれたよ！" },
-      { text: "「点検代は無料だけど出張費3,000円が必要」と言われ、お小遣いから支払ってしまう", money: -12000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】お金を払ってしまい、「屋根の修理代」としてさらにお金を要求されたよ！" },
-      { text: "親切な人だと思い、玄関のドアを開けて業者を庭や屋根へ案内する", money: -25000, principleTag: "fooled", damageType: "money", explain: "【相手に騙された！】わざと屋根を壊され、「すぐ直さないと危ない」と高額修理代25,000円を請求されたよ！" }
+      { text: "「いま おうちの<ruby>人<rt>ひと</rt></ruby>が いなくて、じぶん ひとりです」と <ruby>正直<rt>しょうじき</rt></ruby>に <ruby>状況<rt>じょうきょう</rt></ruby>を <ruby>話<rt>はな</rt></ruby>してしまう", money: -15000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】ひとりで るすばんしていることを <ruby>教<rt>おし</rt></ruby>えてしまい、むりやり <ruby>敷地<rt>しきち</rt></ruby>に <ruby>入<rt>はい</rt></ruby>りこまれたよ！" },
+      { text: "「<ruby>点検<rt>てんけん</rt></ruby>は <ruby>タダ<rt>ただ</rt></ruby>だけど <ruby>出張費<rt>しゅっちょうひ</rt></ruby>3,000<ruby>円<rt>えん</rt></ruby>が <ruby>必要<rt>ひつよう</rt></ruby>」と <ruby>言<rt>い</rt></ruby>われ、お<ruby>小遣<rt>こづか</rt></ruby>いから <ruby>支払<rt>しはら</rt></ruby>ってしまう", money: -12000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】お<ruby>金<rt>かね</rt></ruby>を <ruby>払<rt>はら</rt></ruby>ってしまい、さらに <ruby>高<rt>たか</rt></ruby>いお<ruby>金<rt>かね</rt></ruby>を せいきゅうされたよ！" },
+      { text: "<ruby>親切<rt>しんせつ</rt></ruby>な<ruby>人<rt>ひと</rt></ruby>だと <ruby>思<rt>おも</rt></ruby>い、<ruby>玄関<rt>げんかん</rt></ruby>のドアを <ruby>開<rt>あ</rt></ruby>けて <ruby>業者<rt>ぎょうしゃ</rt></ruby>を お<ruby>庭<rt>にわ</rt></ruby>や <ruby>屋根<rt>やね</rt></ruby>へ <ruby>案内<rt>あんない</rt></ruby>する", money: -25000, principleTag: "fooled", damageType: "money", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】わざと<ruby>屋根<rt>やね</rt></ruby>を こわされ、<ruby>高<rt>たか</rt></ruby>い<ruby>修理代<rt>しゅうりだい</rt></ruby>を せいきゅうされたよ！" }
     ]
   },
   {
     id: "elementary_q04", category: "scam", source: "SNSのDM", title: "【メッセージ】<ruby>友達<rt>ともだち</rt></ruby>の<ruby>健太<rt>けんた</rt></ruby>",
-    characterName: "健太（別アカウント）",
+    characterName: "<ruby>健太<rt>けんた</rt></ruby>（<ruby>別<rt>べつ</rt></ruby>アカウント）",
     narration: "SNSを <ruby>見<rt>み</rt></ruby>ていると、<ruby>友達<rt>ともだち</rt></ruby>の「<ruby>健太<rt>けんた</rt></ruby>」の <ruby>写真<rt>しゃしん</rt></ruby>の アカウントから メッセージが きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "健太？", line: "「今ちょっと困ってて親に言えないの。PayPayで3,000円送って！明日返すから！」" },
@@ -217,17 +217,17 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementaryFriendImpersonationScam,
     desc: "「3,000<ruby>円<rt>えん</rt></ruby> <ruby>送<rt>おく</rt></ruby>ってほしい」と メッセージが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "お金は送らず、いつもの電話や学校で直接会って「さっきメッセージ送った？」と本人に確認する", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・別ルート確認】偽アカウントの手口だよ！別ルートで確認できて正解！" }
+      { text: "お<ruby>金<rt>かね</rt></ruby>は <ruby>送<rt>おく</rt></ruby>らず、いつもの でんわや がっこうで じかに<ruby>会<rt>あ</rt></ruby>って「さっきメッセージ<ruby>送<rt>おく</rt></ruby>った？」と <ruby>本人<rt>ほんにん</rt></ruby>に <ruby>確認<rt>かくにん</rt></ruby>する", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>騙<rt>だま</rt></ruby>されない・<ruby>別<rt>べつ</rt></ruby>ルート<ruby>確認<rt>かくにん</rt></ruby>】にせアカウントの さぎだよ！ べつの<ruby>方法<rt>ほうほう</rt></ruby>で <ruby>本人<rt>ほんにん</rt></ruby>に かくにんできて せいかい！" }
     ],
     wrongChoices: [
-      { text: "「お金はないけど、自分のアカウントのパスワードならあげる」と教えてしまう", money: -20000, principleTag: "speak", damageType: "account", explain: "【喋ってしまった！】自分のアカウントまで乗っ取られ、勝手に友達へ詐欺メッセージを送られたよ！" },
-      { text: "友達が困っているからと、言われた通りPayPayで3,000円を送金する", money: -15000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】偽アカウントの詐欺で、「もっと送って」と要求され計15,000円失ったよ！" },
-      { text: "メッセージで「本当に健太？ 何組の誰先生？」と質問してやり取りを続ける", money: -10000, principleTag: "fooled", damageType: "line_takeover", explain: "【相手に騙された！】言葉巧みにごまかされて信じ込まされ、結局お金を送金してしまったよ！" }
+      { text: "「お<ruby>金<rt>かね</rt></ruby>はないけど、じぶんのアカウントのパスワードなら あげる」と <ruby>教<rt>おし</rt></ruby>えてしまう", money: -20000, principleTag: "speak", damageType: "account", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】じぶんのアカウントまで うばわれて、<ruby>勝手<rt>かって</rt></ruby>に <ruby>友達<rt>ともだち</rt></ruby>へ さぎメッセージを <ruby>送<rt>おく</rt></ruby>られたよ！" },
+      { text: "<ruby>友達<rt>ともだち</rt></ruby>が <ruby>困<rt>こま</rt></ruby>っているからと、<ruby>言<rt>い</rt></ruby>われた<ruby>通<rt>とお</rt></ruby>り お<ruby>小遣<rt>こづか</rt></ruby>いから 3,000<ruby>円<rt>えん</rt></ruby>を <ruby>送金<rt>そうきん</rt></ruby>する", money: -15000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】にせアカウントのさぎで、「もっと<ruby>送<rt>おく</rt></ruby>って」と せいきゅうされ お<ruby>金<rt>かね</rt></ruby>を <ruby>失<rt>うしな</rt></ruby>ったよ！" },
+      { text: "メッセージで「<ruby>本当<rt>ほんとう</rt></ruby>に<ruby>健太<rt>けんた</rt></ruby>？ なん<ruby>組<rt>くみ</rt></ruby>の だれ<ruby>先生<rt>せんせい</rt></ruby>？」と <ruby>質問<rt>しつもん</rt></ruby>して やり<ruby>取<rt>と</rt></ruby>りを <ruby>続<rt>つづ</rt></ruby>ける", money: -10000, principleTag: "fooled", damageType: "line_takeover", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】ことばたくみに ごまかされて <ruby>信<rt>しん</rt></ruby>じこまされ、お<ruby>金<rt>かね</rt></ruby>を <ruby>取<rt>と</rt></ruby>られてしまったよ！" }
     ]
   },
   {
     id: "elementary_q05", category: "scam", source: "ネット広告", title: "【タイムセール】<ruby>人気<rt>にんき</rt></ruby>イヤホン<ruby>特別<rt>とくべつ</rt></ruby><ruby>割引<rt>わりびき</rt></ruby>",
-    characterName: "限定セール広告",
+    characterName: "<ruby>限定<rt>げんてい</rt></ruby>セール<ruby>広告<rt>こうこく</rt></ruby>",
     narration: "SNSを <ruby>見<rt>み</rt></ruby>ていると、タイムセールの <ruby>広告<rt>こうこく</rt></ruby>が <ruby>出<rt>で</rt></ruby>てきました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "広告ページ", line: "【<ruby>夏休<rt>なつやす</rt></ruby>み<ruby>限定<rt>げんてい</rt></ruby>】ワイヤレスイヤホンが <ruby>本日<rt>ほんじつ</rt></ruby>限りの <ruby>特別<rt>とくべつ</rt></ruby><ruby>価格<rt>かかく</rt></ruby>！" },
@@ -240,17 +240,17 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementaryDiscountAdScam,
     desc: "SNSに <ruby>激安<rt>げきやす</rt></ruby>セールの <ruby>広告<rt>こうこく</rt></ruby>が <ruby>出<rt>で</rt></ruby>てきた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "広告からは買わずに、自分でメーカーの公式サイトを検索して同じセールがあるか確かめる", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・公式確認】偽のショッピングサイトだったよ！公式サイトで確認できて大正解！" }
+      { text: "<ruby>広告<rt>こうこく</rt></ruby>からは <ruby>買<rt>か</rt></ruby>わずに、じぶんで メーカーの<ruby>公式<rt>こうしき</rt></ruby>サイトを <ruby>検索<rt>けんさく</rt></ruby>して おなじセールが あるか たしかめる", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>騙<rt>だま</rt></ruby>されない・<ruby>公式<rt>こうしき</rt></ruby><ruby>確認<rt>かくにん</rt></ruby>】にせのショッピングサイトだったよ！<ruby>公式<rt>こうしき</rt></ruby>サイトで かくにんできて だいせいかい！" }
     ],
     wrongChoices: [
-      { text: "会員登録画面で、親の名前・電話番号・クレジットカード情報をすべて入力する", money: -25000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】入力したカード情報と個人情報を盗まれ、不正利用被害に遭ったよ！" },
-      { text: "売り切れたら嫌なので、広告のボタンを押してお金をすぐに支払う", money: -20000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】お金を払ったのに商品は届かず、サイトは消えてお金を失ったよ！" },
-      { text: "広告の「お問い合わせサポート」に連絡し、「正規品ですか？」と質問する", money: -12000, principleTag: "fooled", damageType: "personal_info", explain: "【相手に騙された！】「本物です」と嘘の返信を信じてしまい、購入してお金を騙し取られたよ！" }
+      { text: "<ruby>会員<rt>かいいん</rt></ruby><ruby>登録<rt>とうろく</rt></ruby><ruby>画面<rt>がめん</rt></ruby>で、おうちの<ruby>人<rt>ひと</rt></ruby>の<ruby>名前<rt>なまえ</rt></ruby>・でんわ<ruby>番号<rt>ばんごう</rt></ruby>・<ruby>住所<rt>じゅうしょ</rt></ruby>を すべて<ruby>入力<rt>にゅうりょく</rt></ruby>する", money: -25000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】<ruby>入力<rt>にゅうりょく</rt></ruby>した <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を ぬすまれ、<ruby>怪<rt>あや</rt></ruby>しい<ruby>電話<rt>でんわ</rt></ruby>が たくさん かかってくるようになったよ！" },
+      { text: "<ruby>売<rt>う</rt></ruby>り<ruby>切<rt>き</rt></ruby>れたら いやだから、お<ruby>小遣<rt>こづか</rt></ruby>いで コンビニの ギフトカードを <ruby>買<rt>か</rt></ruby>って すぐに はらう", money: -20000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】お<ruby>金<rt>かね</rt></ruby>を はらったのに <ruby>商品<rt>しょうひん</rt></ruby>は とどかず、お<ruby>金<rt>かね</rt></ruby>を ぬすまれたよ！" },
+      { text: "<ruby>広告<rt>こうこく</rt></ruby>の「お<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせ」に れんらくし、「ホンモノの<ruby>商品<rt>しょうひん</rt></ruby>ですか？」と <ruby>質問<rt>しつもん</rt></ruby>する", money: -12000, principleTag: "fooled", damageType: "personal_info", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】「<ruby>本物<rt>ほんもの</rt></ruby>です」という ウソの へんじを <ruby>信<rt>しん</rt></ruby>じてしまい、お<ruby>金<rt>かね</rt></ruby>を とられたよ！" }
     ]
   },
   {
     id: "elementary_q06", category: "scam", source: "SNSのDM", title: "【メッセージ】おこづかいをふやそう！",
-    characterName: "親切そうなアカウント",
+    characterName: "<ruby>親切<rt>しんせつ</rt></ruby>そうなアカウント",
     narration: "SNSで <ruby>知<rt>し</rt></ruby>らない <ruby>人<rt>ひと</rt></ruby>から メッセージが <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "相手", line: "「毎日お金が増える特別なサイトを教えてあげる。ここにお金を預けてみて！」" },
@@ -263,17 +263,17 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementaryMoneyInviteScam,
     desc: "「お<ruby>金<rt>かね</rt></ruby>がふえる」と メッセージが きた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "「絶対にお金が増える話なんてない」と見抜いて、お金は送らず相手をブロックする", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・遮断する】投資詐欺の手口だよ！甘い言葉に乗らずブロックできて大正解！" }
+      { text: "「ぜったいに お<ruby>金<rt>かね</rt></ruby>が ふえる お<ruby>話<rt>はなし</rt></ruby>なんて ない」と <ruby>見抜<rt>みぬ</rt></ruby>いて、お<ruby>金<rt>かね</rt></ruby>は <ruby>送<rt>おく</rt></ruby>らず <ruby>相手<rt>あいて</rt></ruby>を ブロックする", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>騙<rt>だま</rt></ruby>されない・<ruby>遮断<rt>しゃだん</rt></ruby>する】さぎの てぐちだよ！ うまいことばに のらず ブロックできて だいせいかい！" }
     ],
     wrongChoices: [
-      { text: "「登録のため」と言われて、自分の銀行口座や生年月日を相手に教えてしまう", money: -15000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】口座情報を悪用され、勝手に有料プランに登録されて損害が出たよ！" },
-      { text: "お小遣いを増やしたいので、お年玉の貯金から1万円を指定された口座へ振り込む", money: -25000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】振り込んだお金は戻らず、「手数料が必要」と騙され計25,000円失ったよ！" },
-      { text: "「本当にお金が増えた実績画面を見せて」と相手に頼んで説明を聞く", money: -12000, principleTag: "fooled", damageType: "money", explain: "【相手に騙された！】偽の残高画面を見せられて信じ込んでしまい、結局送金してしまったよ！" }
+      { text: "「<ruby>登録<rt>とうろく</rt></ruby>のため」と <ruby>言<rt>い</rt></ruby>われて、じぶんの<ruby>生年月日<rt>せいねんがっぴ</rt></ruby>や <ruby>住所<rt>じゅうしょ</rt></ruby>を <ruby>相手<rt>あいて</rt></ruby>に <ruby>教<rt>おし</rt></ruby>えてしまう", money: -15000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】<ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を <ruby>悪用<rt>あくよう</rt></ruby>され、トラブルに まきこまれてしまったよ！" },
+      { text: "お<ruby>小遣<rt>こづか</rt></ruby>いを ふやしたいので、お<ruby>年玉<rt>としだま</rt></ruby>の <ruby>貯金<rt>ちょきん</rt></ruby>から 1<ruby>万<rt>まん</rt></ruby><ruby>円<rt>えん</rt></ruby>を <ruby>指定<rt>してい</rt></ruby>された <ruby>口座<rt>こうざ</rt></ruby>へ <ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>む", money: -25000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】<ruby>振<rt>ふ</rt></ruby>りこんだ お<ruby>金<rt>かね</rt></ruby>は もどらず、さらに「<ruby>手数料<rt>てすうりょう</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>」と だまし<ruby>取<rt>と</rt></ruby>られたよ！" },
+      { text: "「<ruby>本当<rt>ほんとう</rt></ruby>にお<ruby>金<rt>かね</rt></ruby>が ふえた <ruby>証拠<rt>しょうこ</rt></ruby>の<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>せて」と <ruby>相手<rt>あいて</rt></ruby>に たのんで お<ruby>話<rt>はなし</rt></ruby>を <ruby>聞<rt>き</rt></ruby>く", money: -12000, principleTag: "fooled", damageType: "money", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】にせの<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>せられて <ruby>信<rt>しん</rt></ruby>じこんでしまい、お<ruby>金<rt>かね</rt></ruby>を はらってしまったよ！" }
     ]
   },
   {
     id: "elementary_q07", category: "scam", source: "ネット動画", title: "【<ruby>裏技<rt>うらわざ</rt></ruby>】ガチャコイン<ruby>無料<rt>むりょう</rt></ruby>プレゼント！",
-    characterName: "裏ワザ動画",
+    characterName: "<ruby>裏技<rt>うらわざ</rt></ruby><ruby>動画<rt>どうが</rt></ruby>",
     narration: "ネットで ゲームの <ruby>動画<rt>どうが</rt></ruby>を <ruby>見<rt>み</rt></ruby>ていると、気になる <ruby>案内<rt>あんない</rt></ruby>が ありました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "裏ワザサイト", line: "コインを <ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>るために、ゲームの「ID」と「パスワード」を <ruby>入力<rt>にゅうりょく</rt></ruby>してください。" },
@@ -286,17 +286,17 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementaryGameCoinScam,
     desc: "「コインを <ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>るための<ruby>手続<rt>てつづ</rt></ruby>き」と かいてある。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "ゲームのパスワードを他人に教えるのは絶対に危険なので、入力せずに動画を閉じる", money: 0, principleTag: "safe", explain: "せいかい！【喋らない・入力しない】アカウント乗っ取りの罠だよ！パスワードを守れて安心だね！" }
+      { text: "ゲームのパスワードを たにんに <ruby>教<rt>おし</rt></ruby>えるのは ぜったいに <ruby>危険<rt>きけん</rt></ruby>なので、<ruby>入力<rt>にゅうりょく</rt></ruby>せずに <ruby>動画<rt>どうが</rt></ruby>を とじる", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>喋<rt>しゃべ</rt></ruby>らない・<ruby>入力<rt>にゅうりょく</rt></ruby>しない】アカウント<ruby>乗<rt>の</rt></ruby>っ<ruby>取<rt>と</rt></ruby>りの わなだよ！パスワードを まもれて あんしんだね！" }
     ],
     wrongChoices: [
-      { text: "ガチャをたくさん引きたいので、自分のゲームIDとパスワードを入力する", money: -25000, principleTag: "speak", damageType: "account", explain: "【喋ってしまった！】アカウントを奪われて課金アイテムを勝手に売られ、25,000円の損害が出たよ！" },
-      { text: "「システム利用料500円」と書かれていたので、電子マネーを買って支払う", money: -15000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】お金を払ってもコインは増えず、電子マネーを盗まれてしまったよ！" },
-      { text: "動画のコメント欄で「本当に増えますか？」と質問し、投稿者の指示に従う", money: -12000, principleTag: "fooled", damageType: "account", explain: "【相手に騙された！】「全員もらえますよ」と嘘をつかれて信じてしまい、アカウントを失ったよ！" }
+      { text: "ガチャを たくさん ひきたいので、じぶんのゲームIDと パスワードを <ruby>入力<rt>にゅうりょく</rt></ruby>する", money: -25000, principleTag: "speak", damageType: "account", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】アカウントを うばわれて アイテムを <ruby>勝手<rt>かって</rt></ruby>に うられ、25,000<ruby>円<rt>えん</rt></ruby>の <ruby>損害<rt>そんがい</rt></ruby>が でたよ！" },
+      { text: "「システム<ruby>利用料<rt>りようりょう</rt></ruby>500<ruby>円<rt>えん</rt></ruby>」と <ruby>書<rt>か</rt></ruby>いてあったので、お<ruby>小遣<rt>こづか</rt></ruby>いで カードを<ruby>買<rt>か</rt></ruby>って はらう", money: -15000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】お<ruby>金<rt>かね</rt></ruby>を はらっても コインは ふえず、お<ruby>金<rt>かね</rt></ruby>を だまし<ruby>取<rt>と</rt></ruby>られたよ！" },
+      { text: "<ruby>動画<rt>どうが</rt></ruby>の コメント<ruby>欄<rt>らん</rt></ruby>で「<ruby>本当<rt>ほんとう</rt></ruby>に ふえますか？」と <ruby>質問<rt>しつもん</rt></ruby>し、とうこうしゃの <ruby>指示<rt>しじ</rt></ruby>に したがう", money: -12000, principleTag: "fooled", damageType: "account", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】「ぜんいん もらえます」という ウソを <ruby>信<rt>しん</rt></ruby>じてしまい、データを うばわれたよ！" }
     ]
   },
   {
     id: "elementary_q08", category: "scam", source: "通話アプリ", title: "【<ruby>通話<rt>つうわ</rt></ruby>】ゲームの<ruby>攻略<rt>こうりゃく</rt></ruby>について",
-    characterName: "ネットの友達",
+    characterName: "ネットの<ruby>友達<rt>ともだち</rt></ruby>",
     narration: "オンラインゲームで <ruby>知<rt>し</rt></ruby>り<ruby>合<rt>あ</rt></ruby>った <ruby>人<rt>ひと</rt></ruby>と <ruby>通話<rt>つうわ</rt></ruby>アプリで お<ruby>話<rt>はな</rt></ruby>ししています。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "相手", line: "「スマホの画面共有をオンにして、届いたSMSの番号を見せてくれたらアイテムをあげるよ！」" },
@@ -309,17 +309,17 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementaryScreenShareScam,
     desc: "「<ruby>画面<rt>がめん</rt></ruby><ruby>共有<rt>きょうゆう</rt></ruby>で SMSの<ruby>番号<rt>ばんごう</rt></ruby>を <ruby>見<rt>み</rt></ruby>せて」と <ruby>言<rt>い</rt></ruby>われた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "「認証コードやスマホの画面は人に見せられない」とキッパリ断り、画面共有を切る", money: 0, principleTag: "safe", explain: "せいかい！【喋らない・見せない】画面共有で見えた認証番号を使ってアカウントを奪う手口だよ！" }
+      { text: "「<ruby>認証<rt>にんしょう</rt></ruby>コードや スマホの<ruby>画面<rt>がめん</rt></ruby>は たにんに <ruby>見<rt>み</rt></ruby>せられない」と キッパリ<ruby>断<rt>ことわ</rt></ruby>り、<ruby>画面<rt>がめん</rt></ruby><ruby>共有<rt>きょうゆう</rt></ruby>を きる", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>喋<rt>しゃべ</rt></ruby>らない・<ruby>見<rt>み</rt></ruby>せない】<ruby>画面<rt>がめん</rt></ruby><ruby>共有<rt>きょうゆう</rt></ruby>で <ruby>見<rt>み</rt></ruby>えた<ruby>番号<rt>ばんごう</rt></ruby>を つかって アカウントを うばう てぐちだよ！" }
     ],
     wrongChoices: [
-      { text: "裏ワザを教えてもらいたいので、画面共有をオンにしてSMSの番号を見せる", money: -25000, principleTag: "speak", damageType: "account", explain: "【喋ってしまった！】認証コードを見せてしまい、アカウントを乗っ取られて大被害が出たよ！" },
-      { text: "「裏ワザの登録料」として、親の電子マネーから3,000円を送金してしまう", money: -20000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】お金を払っても裏ワザなどはなく、お金を騙し取られたよ！" },
-      { text: "「番号は見せないけど、通話の指示に従って操作するね」と相手の言う通りにする", money: -15000, principleTag: "fooled", damageType: "account", explain: "【相手に騙された！】言葉巧みに設定を変更させられ、スマホのセキュリティを外されてしまったよ！" }
+      { text: "<ruby>裏技<rt>うらわざ</rt></ruby>を <ruby>教<rt>おし</rt></ruby>えてもらいたいので、<ruby>画面<rt>がめん</rt></ruby><ruby>共有<rt>きょうゆう</rt></ruby>を オンにして SMSの<ruby>番号<rt>ばんごう</rt></ruby>を <ruby>見<rt>み</rt></ruby>せる", money: -25000, principleTag: "speak", damageType: "account", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】<ruby>認証<rt>にんしょう</rt></ruby>コードを <ruby>見<rt>み</rt></ruby>せてしまい、アカウントを <ruby>乗<rt>の</rt></ruby>っ<ruby>取<rt>と</rt></ruby>られて だいひがいが でたよ！" },
+      { text: "「<ruby>裏技<rt>うらわざ</rt></ruby>の <ruby>登録料<rt>とうろくりょう</rt></ruby>」として、お<ruby>小遣<rt>こづか</rt></ruby>いから 3,000<ruby>円<rt>えん</rt></ruby>を <ruby>送金<rt>そうきん</rt></ruby>してしまう", money: -20000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】お<ruby>金<rt>かね</rt></ruby>を はらっても <ruby>裏技<rt>うらわざ</rt></ruby>などは なく、お<ruby>金<rt>かね</rt></ruby>を だまし<ruby>取<rt>と</rt></ruby>られたよ！" },
+      { text: "「<ruby>番号<rt>ばんごう</rt></ruby>は <ruby>見<rt>み</rt></ruby>せないけど、つうわの <ruby>指示<rt>しじ</rt></ruby>に したがって そうさするね」と <ruby>相手<rt>あいて</rt></ruby>の<ruby>言<rt>い</rt></ruby>う<ruby>通<rt>とお</rt></ruby>りにする", money: -15000, principleTag: "fooled", damageType: "account", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】ことばたくみに せっていを へんこうさせられ、アカウントを うばわれてしまったよ！" }
     ]
   },
   {
     id: "elementary_q09", category: "scam", source: "SNSのDM", title: "【DM】<ruby>人気<rt>にんき</rt></ruby>YouTuberサイン<ruby>色紙<rt>しきし</rt></ruby>のおしらせ",
-    characterName: "有名配信者そっくり垢",
+    characterName: "<ruby>有名<rt>ゆうめい</rt></ruby><ruby>配信者<rt>はいしんしゃ</rt></ruby>そっくり垢",
     narration: "SNSの ダイレクトメッセージに、メッセージが <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "配信者？", line: "「色紙を送るから、君の【名前】【家の住所】【通っている小学校名】を返信してね！」" },
@@ -332,43 +332,43 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementaryYoutuberSignScam,
     desc: "YouTuberから メッセージが きた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "公式マークやIDを確認し、「偽物のアカウントだ」と見抜いて個人情報は教えない", money: 0, principleTag: "safe", explain: "せいかい！【喋らない・教えない】有名人そっくりに作った偽アカウントだよ！個人情報を守れたね！" }
+      { text: "<ruby>公式<rt>こうしき</rt></ruby>マークやIDを <ruby>確認<rt>かくにん</rt></ruby>し、「にせもののアカウントだ」と <ruby>見抜<rt>みぬ</rt></ruby>いて <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>は <ruby>教<rt>おし</rt></ruby>えない", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>喋<rt>しゃべ</rt></ruby>らない・<ruby>教<rt>おし</rt></ruby>えない】ゆうめいじん そっくりに つくった にせアカウントだよ！<ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を まもれたね！" }
     ],
     wrongChoices: [
-      { text: "サインがどうしても欲しいので、自分の名前・住所・小学校名をメッセージで返信する", money: -15000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】大切な個人情報を教えてしまい、悪質なグループに住所や学校名が知られたよ！" },
-      { text: "「色紙の送料と梱包代として1,500円送金して」と言われ、すぐにお金を送る", money: -18000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】お金を払っても色紙は届かず、犯人に持ち逃げされてしまったよ！" },
-      { text: "「本物のYouTuberですか？」とDMで質問し、送られてきた偽の証明書を信じる", money: -12000, principleTag: "fooled", damageType: "personal_info", explain: "【相手に騙された！】偽の動画や画像で信用させられ、結局個人情報を渡してしまったよ！" }
+      { text: "サインが どうしても ほしいので、じぶんの<ruby>名前<rt>なまえ</rt></ruby>・<ruby>住所<rt>じゅうしょ</rt></ruby>・<ruby>小学校名<rt>しょうがっこうめい</rt></ruby>を メッセージで <ruby>返信<rt>へんしん</rt></ruby>する", money: -15000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】<ruby>大切<rt>たいせつ</rt></ruby>な <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を <ruby>教<rt>おし</rt></ruby>えてしまい、<ruby>住所<rt>じゅうしょ</rt></ruby>や がっこうめいが しられたよ！" },
+      { text: "「<ruby>色紙<rt>しきし</rt></ruby>の <ruby>送料<rt>そうりょう</rt></ruby>と こんぽう<ruby>代<rt>だい</rt></ruby>として 1,500<ruby>円<rt>えん</rt></ruby> <ruby>送金<rt>そうきん</rt></ruby>して」と <ruby>言<rt>い</rt></ruby>われ、すぐにお<ruby>金<rt>かね</rt></ruby>を <ruby>送<rt>おく</rt></ruby>る", money: -18000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】お<ruby>金<rt>かね</rt></ruby>を はらっても <ruby>色紙<rt>しきし</rt></ruby>は とどかず、お<ruby>金<rt>かね</rt></ruby>を ぬすまれてしまったよ！" },
+      { text: "「ホンモノのYouTuberですか？」とDMで <ruby>質問<rt>しつもん</rt></ruby>し、<ruby>送<rt>おく</rt></ruby>られてきた にせのしょうめいしょを <ruby>信<rt>しん</rt></ruby>じる", money: -12000, principleTag: "fooled", damageType: "personal_info", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】にせの <ruby>画像<rt>がぞう</rt></ruby>で <ruby>信<rt>しん</rt></ruby>じこまされ、けっきょく <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を わたしてしまったよ！" }
     ]
   },
   {
     id: "elementary_q10", category: "scam", source: "ネット広告", title: "【コード<ruby>配布<rt>はいふ</rt></ruby>】10<ruby>連<rt>れん</rt></ruby>ガチャシリアルコード",
-    characterName: "無料コード配布サイト",
+    characterName: "<ruby>無料<rt>むりょう</rt></ruby>コード<ruby>配布<rt>はいふ</rt></ruby>サイト",
     narration: "ネットを <ruby>見<rt>み</rt></ruby>ていると、ガチャコードの <ruby>配布<rt>はいふ</rt></ruby>ページを <ruby>見<rt>み</rt></ruby>つけました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "配布ページ", line: "年齢確認のため、保護者のクレジットカード番号を入力してください。" },
-      { speaker: "主人公", line: "「カード番号を入れるのかな…？」" }
+      { speaker: "配布ページ", line: "無料コード受け取り：おうちの人のスマホに届く【確認番号】を入力してください。" },
+      { speaker: "主人公", line: "「おうちの人のスマホを見るのかな…？」" }
     ],
-    point: "「無料」をエサに、子どもに親のクレジットカード情報を入力させようとする危険な罠です！",
+    point: "「無料」をエサに、子どもにおうちの人の認証コードやパスワードを入力させようとする危険な罠です！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryGachaCodeScam,
     desc: "「ガチャコードを <ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>るための<ruby>手続<rt>てつづ</rt></ruby>き」と かいてある。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "「無料なのにカード番号を求めるのは詐欺だ」と見抜いて、すぐページを閉じる", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・入力しない】無料を口実にカード番号を盗む詐欺だよ！入力しなくて正解！" }
+      { text: "「タダなのに おうちの<ruby>人<rt>ひと</rt></ruby>の <ruby>暗証<rt>あんしょう</rt></ruby>コードを <ruby>求<rt>もと</rt></ruby>めるのは さぎだ」と <ruby>見抜<rt>みぬ</rt></ruby>いて、すぐ ページを とじる", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>騙<rt>だま</rt></ruby>されない・<ruby>入力<rt>にゅうりょく</rt></ruby>しない】タダを くちに <ruby>大切<rt>たいせつ</rt></ruby>な コードを ぬすむ さぎだよ！<ruby>入力<rt>にゅうりょく</rt></ruby>しなくて せいかい！" }
     ],
     wrongChoices: [
-      { text: "ガチャを引きたいので、親の財布からカードを出して番号と有効期限を入力する", money: -30000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】クレジットカード情報を盗まれ、勝手に30,000円分不正利用されたよ！" },
-      { text: "「年齢確認の手数料100円」と書かれていたので、小遣いから電子マネーで払う", money: -15000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】一度払ったことで詐欺グループに狙われ、追加でお金を請求されたよ！" },
-      { text: "サイトの「よくある質問」を読んで、「安全なサイトです」という説明を信じる", money: -20000, principleTag: "fooled", damageType: "personal_info", explain: "【相手に騙された！】サイトの嘘の説明に騙されてカード番号を入れてしまい大被害になったよ！" }
+      { text: "ガチャを ひきたいので、おうちの<ruby>人<rt>ひと</rt></ruby>のスマホを <ruby>見<rt>み</rt></ruby>て とどいた<ruby>認証<rt>にんしょう</rt></ruby>コードを <ruby>入力<rt>にゅうりょく</rt></ruby>する", money: -30000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】アカウントを <ruby>乗<rt>の</rt></ruby>っ<ruby>取<rt>と</rt></ruby>られ、おうちの<ruby>人<rt>ひと</rt></ruby>の お<ruby>金<rt>かね</rt></ruby>が 30,000<ruby>円<rt>えん</rt></ruby><ruby>分<rt>ぶん</rt></ruby> つかわれたよ！" },
+      { text: "「コード<ruby>発行<rt>はっこう</rt></ruby><ruby>手数料<rt>てすうりょう</rt></ruby>100<ruby>円<rt>えん</rt></ruby>」と <ruby>書<rt>か</rt></ruby>いてあったので、お<ruby>小遣<rt>こづか</rt></ruby>いから はらう", money: -15000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】いちど はらったことで さぎグループに ねらわれ、もっと お<ruby>金<rt>かね</rt></ruby>を とられたよ！" },
+      { text: "サイトの「あんぜんなサイトです」という せつめいを <ruby>信<rt>しん</rt></ruby>じて <ruby>手続<rt>てつづ</rt></ruby>きを <ruby>進<rt>すす</rt></ruby>める", money: -20000, principleTag: "fooled", damageType: "personal_info", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】サイトの ウソの せつめいに だまされて、だいひがいに なってしまったよ！" }
     ]
   },
   {
     id: "elementary_q11", category: "scam", source: "ネット広告", title: "【<ruby>募集<rt>ぼしゅう</rt></ruby>】ゲームの<ruby>感想<rt>かんそう</rt></ruby>モニター",
-    characterName: "簡単副業広告",
+    characterName: "<ruby>簡単<rt>かんたん</rt></ruby><ruby>副業<rt>ふくぎょう</rt></ruby><ruby>広告<rt>こうこく</rt></ruby>",
     narration: "ネットを <ruby>見<rt>み</rt></ruby>ていると、お<ruby>小遣<rt>こづか</rt></ruby>い<ruby>稼<rt>かせ</rt></ruby>ぎの <ruby>広告<rt>こうこく</rt></ruby>を <ruby>見<rt>み</rt></ruby>つけました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "副業サイト", line: "報酬を受け取るため、銀行口座番号と電話番号を入力してください。" },
+      { speaker: "副業サイト", line: "報酬を受け取るため、おうちの電話番号とお名前を入力してください。" },
       { speaker: "主人公", line: "「感想を書くだけでいいのかな？」" }
     ],
     point: "「誰でも簡単に高額が稼げる」は個人情報収集や悪質商法の罠です！絶対に応募してはいけません！",
@@ -378,19 +378,19 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementaryEasyMoneyScam,
     desc: "「<ruby>報酬<rt>ほうしゅう</rt></ruby>を <ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>るための<ruby>手続<rt>てつづ</rt></ruby>き」と かいてある。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "「簡単に大金が稼げる話は絶対に嘘だ」と見抜いて、何も入力せずページを閉じる", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・応募しない】甘い言葉で個人情報を集める悪質な広告だよ！" }
+      { text: "「かんたんに お<ruby>金<rt>かね</rt></ruby>が もらえるお<ruby>話<rt>はなし</rt></ruby>は ぜったいに ウソだ」と <ruby>見抜<rt>みぬ</rt></ruby>いて、なにも<ruby>入力<rt>にゅうりょく</rt></ruby>せずに ページを とじる", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>騙<rt>だま</rt></ruby>されない・<ruby>応募<rt>おうぼ</rt></ruby>しない】うまいことばで <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を あつめる あくしつな <ruby>広告<rt>こうこく</rt></ruby>だよ！" }
     ],
     wrongChoices: [
-      { text: "報酬をもらいたいので、自分の名前・自宅の電話番号・口座番号を入力して送信する", money: -20000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】大切な個人情報が詐欺グループに渡り、架空請求の電話が鳴り止まなくなったよ！" },
-      { text: "「最初にお仕事の教材代として3,000円必要」と言われ、お小遣いから支払ってしまう", money: -15000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】お金を払っても仕事は紹介されず、教材代を持ち逃げされてしまったよ！" },
-      { text: "「本当に稼げますか？」とお問い合わせフォームから質問して相手の返事を待つ", money: -12000, principleTag: "fooled", damageType: "personal_info", explain: "【相手に騙された！】「安心ですよ」と言いくるめられて納得し、結局お金を払ってしまったよ！" }
+      { text: "お<ruby>小遣<rt>こづか</rt></ruby>いが もらいたいので、じぶんの<ruby>名前<rt>なまえ</rt></ruby>・いえのでんわ<ruby>番号<rt>ばんごう</rt></ruby>・<ruby>住所<rt>じゅうしょ</rt></ruby>を <ruby>入力<rt>にゅうりょく</rt></ruby>して <ruby>送信<rt>そうしん</rt></ruby>する", money: -20000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】<ruby>大切<rt>たいせつ</rt></ruby>な <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>が さぎグループに わたり、<ruby>怪<rt>あや</rt></ruby>しいでんわが なってしまったよ！" },
+      { text: "「さいしょに おしごとの きょうざい<ruby>代<rt>だい</rt></ruby>として 3,000<ruby>円<rt>えん</rt></ruby><ruby>必要<rt>ひつよう</rt></ruby>」と <ruby>言<rt>い</rt></ruby>われ、お<ruby>小遣<rt>こづか</rt></ruby>いから はらってしまう", money: -15000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】お<ruby>金<rt>かね</rt></ruby>を はらっても おしごとは しょうかいされず、お<ruby>金<rt>かね</rt></ruby>を もち<ruby>逃<rt>に</rt></ruby>げされたよ！" },
+      { text: "「<ruby>本当<rt>ほんとう</rt></ruby>に お<ruby>小遣<rt>こづか</rt></ruby>いは もらえますか？」と お<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせフォームから <ruby>聞<rt>き</rt></ruby>いてみる", money: -12000, principleTag: "fooled", damageType: "personal_info", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】「あんしんですよ」と ことばたくみに だまされ、お<ruby>金<rt>かね</rt></ruby>を はらってしまったよ！" }
     ]
   },
 
   // ── 助ける（2問） ──
   {
     id: "elementary_q12", category: "help", source: "銀行のATM", title: "ぎんこうの ATMにて",
-    characterName: "困っている高齢者",
+    characterName: "<ruby>困<rt>こま</rt></ruby>っているおばあさん",
     narration: "お<ruby>買<rt>か</rt></ruby>いものの <ruby>途中<rt>とちゅう</rt></ruby>、ぎんこうの ATMで、でんわを しながら ボタンを <ruby>押<rt>お</rt></ruby>している おばあさんを <ruby>見<rt>み</rt></ruby>かけました。",
     dialogue: [
       { speaker: "おばあさん", line: "「（電話で）はい、言われた通り番号を押しました！ これでお金が戻るんですね…？」" },
@@ -403,17 +403,17 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: null,
     desc: "おばあさんが でんわを しながら ATMを <ruby>操作<rt>そうさ</rt></ruby>している。あなたなら どうする？",
     correctChoices: [
-      { text: "近くの銀行員さんや店員さんに「おばあさんが騙されているかも！」と急いで知らせる", money: 300, principleTag: "safe", explain: "✨ 大正解！【騙されない・周囲と連携】すぐに大人の人に知らせたおかげでおばあさんを救えたよ！（お礼+300円）" }
+      { text: "ちかくの ぎんこうの<ruby>人<rt>ひと</rt></ruby>や <ruby>店員<rt>てんいん</rt></ruby>さんに「おばあさんが だまされているかも！」と いそいで <ruby>知<rt>し</rt></ruby>らせる", money: 300, principleTag: "safe", explain: "✨ だいせいかい！【<ruby>騙<rt>だま</rt></ruby>されない・まわりと<ruby>連携<rt>れんけい</rt></ruby>】すぐに おとなの<ruby>人<rt>ひと</rt></ruby>に <ruby>知<rt>し</rt></ruby>らせたおかげで おばあさんを たすけられたよ！（お<ruby>礼<rt>れい</rt></ruby>+300<ruby>円<rt>えん</rt></ruby>）" }
     ],
     wrongChoices: [
-      { text: "電話の相手に自分の名前を名乗り、「僕がおばあちゃんの暗証番号を聞いて入力します」と言う", money: -25000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】暗証番号を聞き出して入力してしまい、預金が全額引き出されてしまったよ！" },
-      { text: "おばあさんの代わりに電話を代わって、相手の指示通りに送金ボタンを押してあげる", money: -30000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】詐欺の送金を手伝ってしまい、おばあさんの大切な貯金が奪われたよ！" },
-      { text: "電話口の男から「市役所の正規手続きです」と言われて「そうなんだ」と見守る", money: -15000, principleTag: "fooled", damageType: "money", explain: "【相手に騙された！】嘘の説明を信じてしまい、送金を止められずに被害が出てしまったよ。" }
+      { text: "でんわの<ruby>相手<rt>あいて</rt></ruby>に じぶんの<ruby>名前<rt>なまえ</rt></ruby>を なのり、「ぼくが おばあちゃんの<ruby>暗証<rt>あんしょう</rt></ruby><ruby>番号<rt>ばんごう</rt></ruby>を <ruby>聞<rt>き</rt></ruby>いて<ruby>入力<rt>にゅうりょく</rt></ruby>します」と <ruby>言<rt>い</rt></ruby>う", money: -25000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】<ruby>暗証<rt>あんしょう</rt></ruby><ruby>番号<rt>ばんごう</rt></ruby>を <ruby>聞<rt>き</rt></ruby>きだして<ruby>入力<rt>にゅうりょく</rt></ruby>してしまい、おばあさんの お<ruby>金<rt>かね</rt></ruby>が ぬすまれたよ！" },
+      { text: "おばあさんのかわりに でんわを かわって、<ruby>相手<rt>あいて</rt></ruby>の<ruby>指示<rt>しじ</rt></ruby><ruby>通<rt>とお</rt></ruby>りに そうきんボタンを <ruby>押<rt>お</rt></ruby>してあげる", money: -30000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】さぎの そうきんを てつだってしまい、おばあさんの <ruby>大切<rt>たいせつ</rt></ruby>な ちょきんが うばわれたよ！" },
+      { text: "でんわの<ruby>男<rt>おとこ</rt></ruby>から「しやくしょの てつづきです」と <ruby>言<rt>い</rt></ruby>われて「そうなんだ」と そのまま<ruby>見守<rt>みまも</rt></ruby>る", money: -15000, principleTag: "fooled", damageType: "money", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】ウソの せつめいを <ruby>信<rt>しん</rt></ruby>じてしまい、そうきんを とめられなかったよ。" }
     ]
   },
   {
     id: "elementary_q13", category: "help", source: "おうちのリビング", title: "おうちでの でんわ",
-    characterName: "母",
+    characterName: "お<ruby>母<rt>かあ</rt></ruby>さん",
     narration: "がっこうから <ruby>帰<rt>かえ</rt></ruby>ると、お<ruby>母<rt>かあ</rt></ruby>さんが あわてて でんわを していました。",
     dialogue: [
       { speaker: "母", line: "「警察から電話があって…口座のお金を別の口座に移しなさいって言われたの…」" },
@@ -426,19 +426,19 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: null,
     desc: "お<ruby>母<rt>かあ</rt></ruby>さんが「お<ruby>金<rt>かね</rt></ruby>を べつの<ruby>口座<rt>こうざ</rt></ruby>に うつす」と <ruby>言<rt>い</rt></ruby>っている。あなたなら どうする？",
     correctChoices: [
-      { text: "「警察がお金を移せというのは絶対詐欺だよ！ 一度切って110番で確認しよう！」と止める", money: 300, principleTag: "safe", explain: "✨ 家族を救ったね！【騙されない・警察へ確認】電話でお金の話はすべて詐欺！ しっかり止められたね！（お礼+300円）" }
+      { text: "「けいさつが お<ruby>金<rt>かね</rt></ruby>を うつせというのは ぜったい さぎだよ！ いちど きって110<ruby>番<rt>ばん</rt></ruby>で <ruby>確認<rt>かくにん</rt></ruby>しよう！」と とめる", money: 300, principleTag: "safe", explain: "✨ かぞくを すくったね！【<ruby>騙<rt>だま</rt></ruby>されない・けいさつへ<ruby>確認<rt>かくにん</rt></ruby>】でんわでお<ruby>金<rt>かね</rt></ruby>のお<ruby>話<rt>はなし</rt></ruby>は すべて さぎ！ しっかり とめられたね！（お<ruby>礼<rt>れい</rt></ruby>+300<ruby>円<rt>えん</rt></ruby>）" }
     ],
     wrongChoices: [
-      { text: "電話を代わって、家族全員の名前・生年月日・通帳の暗証番号を相手に伝える", money: -25000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】大切な家族の個人情報を教えてしまい、別の詐欺にも狙われるようになったよ！" },
-      { text: "逮捕されたら大変だから、お母さんと一緒に銀行へ行って急いでお金を振り込む", money: -30000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】家族の大切な貯金が全部だまし取られてしまったよ！" },
-      { text: "相手が「捜査の秘密だから誰にも言うな」と言っているのを信じて黙って見守る", money: -20000, principleTag: "fooled", damageType: "money", explain: "【相手に騙された！】脅迫を信じてしまい、お母さんの振り込みを止められなかったよ。" }
+      { text: "でんわを かわって、かぞくぜんいんの<ruby>名前<rt>なまえ</rt></ruby>・<ruby>生年月日<rt>せいねんがっぴ</rt></ruby>・<ruby>暗証<rt>あんしょう</rt></ruby><ruby>番号<rt>ばんごう</rt></ruby>を <ruby>相手<rt>あいて</rt></ruby>に <ruby>伝<rt>つた</rt></ruby>える", money: -25000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】<ruby>大切<rt>たいせつ</rt></ruby>な かぞくの <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を <ruby>教<rt>おし</rt></ruby>えてしまい、べつの さぎにも ねらわれるようになったよ！" },
+      { text: "たいほされたら たいへんだから、お<ruby>母<rt>かあ</rt></ruby>さんと いっしょに ぎんこうへ <ruby>行<rt>い</rt></ruby>って いそいでお<ruby>金<rt>かね</rt></ruby>を <ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>む", money: -30000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】かぞくの <ruby>大切<rt>たいせつ</rt></ruby>な ちょきんが ぜんぶ だまし<ruby>取<rt>と</rt></ruby>られてしまったよ！" },
+      { text: "<ruby>相手<rt>あいて</rt></ruby>が「そうさの ひみつだから だれにも<ruby>言<rt>い</rt></ruby>うな」と <ruby>言<rt>い</rt></ruby>っているのを <ruby>信<rt>しん</rt></ruby>じて だまって<ruby>見守<rt>みまも</rt></ruby>る", money: -20000, principleTag: "fooled", damageType: "money", explain: "【<ruby>相手<rt>あいて</rt></ruby>に<ruby>騙<rt>だま</rt></ruby>された！】おどしを <ruby>信<rt>しん</rt></ruby>じてしまい、お<ruby>母<rt>かあ</rt></ruby>さんの ふりこみを とめられなかったよ。" }
     ]
   },
 
   // ── 本物（3問） ──
   {
     id: "elementary_q14", category: "real", source: "SNS投稿", title: "【おしらせ】<ruby>夏休<rt>なつやす</rt></ruby>みキャンペーン",
-    characterName: "ゲーム公式アカウント",
+    characterName: "ゲーム<ruby>公式<rt>こうしき</rt></ruby>アカウント",
     narration: "SNSを <ruby>見<rt>み</rt></ruby>ていると、ゲームの <ruby>公式<rt>こうしき</rt></ruby>アカウントから キャンペーンの <ruby>投稿<rt>とうこう</rt></ruby>が 流れてきました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "ゲーム公式", line: "ログインボーナス配布中！ 詳細はゲーム内お知らせをご確認ください。" },
@@ -451,17 +451,17 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementarySummerGameCampaignReal,
     desc: "SNSに キャンペーンの <ruby>案内<rt>あんない</rt></ruby>が 流れてきた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "「見た目だけで決めつけず」公式マークを確認し、いつものゲーム内お知らせを開いて確かめる", money: 0, principleTag: "safe", explain: "せいかい！【正規確認】本物の公式キャンペーンだったね！安全なルートで正しく確認できたよ！" }
+      { text: "「<ruby>見<rt>み</rt></ruby>た<ruby>目<rt>め</rt></ruby>だけで <ruby>決<rt>き</rt></ruby>めつけず」<ruby>公式<rt>こうしき</rt></ruby>マークを <ruby>確認<rt>かくにん</rt></ruby>し、いつもの ゲーム<ruby>内<rt>ない</rt></ruby>おしらせを <ruby>開<rt>ひら</rt></ruby>いて たしかめる", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>正規<rt>せいき</rt></ruby><ruby>確認<rt>かくにん</rt></ruby>】ホンモノの <ruby>公式<rt>こうしき</rt></ruby>キャンペーンだったね！ あんぜんな ルートで ただしく かくにんできたよ！" }
     ],
     wrongChoices: [
-      { text: "確認のため、広告のリプライ欄に自分のアカウントIDとパスワードを書き込む", money: -20000, principleTag: "speak", damageType: "account", explain: "【喋ってしまった！】公開されたパスワードを見られてアカウントを盗まれてしまったよ！" },
-      { text: "「ボーナスを受け取るには課金が必要」と勘違いし、勝手に有料アイテムを買う", money: -15000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】無料でもらえるものだったのに、無駄なお金を使ってしまったよ。" },
-      { text: "「いつもとデザインが違うから全部詐欺だ！」と決めつけてアプリを削除する", money: -8000, principleTag: "fooled", damageType: "money", explain: "【誤認拒絶】本物のイベントだったのにデータを消してしまい、復旧に手数料がかかってしまったよ。" }
+      { text: "<ruby>確認<rt>かくにん</rt></ruby>のため、<ruby>広告<rt>こうこく</rt></ruby>の リプライ<ruby>欄<rt>らん</rt></ruby>に じぶんのアカウントIDと パスワードを <ruby>書<rt>か</rt></ruby>きこむ", money: -20000, principleTag: "speak", damageType: "account", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】みんなに <ruby>見<rt>み</rt></ruby>えるばしょに パスワードを かいてしまい、アカウントを ぬすまれたよ！" },
+      { text: "「ボーナスを <ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>るには かきんが <ruby>必要<rt>ひつよう</rt></ruby>」と かんちがいし、お<ruby>小遣<rt>こづか</rt></ruby>いで アイテムを <ruby>買<rt>か</rt></ruby>う", money: -15000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】タダで もらえるものだったのに、むだな お<ruby>金<rt>かね</rt></ruby>を つかってしまったよ。" },
+      { text: "「いつもと デザインが ちがうから ぜんぶ さぎだ！」と <ruby>決<rt>き</rt></ruby>めつけて アプリを けしてしまう", money: -8000, principleTag: "fooled", damageType: "money", explain: "【<ruby>誤認<rt>ごにん</rt></ruby><ruby>拒絶<rt>きょぜつ</rt></ruby>】ホンモノの イベントだったのに データを けしてしまい、ふっきゅうに お<ruby>金<rt>かね</rt></ruby>が かかってしまったよ。" }
     ]
   },
   {
     id: "elementary_q15", category: "real", source: "メール", title: "【お<ruby>届<rt>とど</rt></ruby>けもの】ご<ruby>不在<rt>ふざい</rt></ruby><ruby>連絡<rt>れんらく</rt></ruby>",
-    characterName: "宅配業者",
+    characterName: "<ruby>宅配<rt>たくはい</rt></ruby><ruby>業者<rt>ぎょうしゃ</rt></ruby>",
     narration: "おうちにいると、メールが 1<ruby>通<rt>つう</rt></ruby> <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "連絡通知", line: "荷物を持ち帰りました。再配達のご依頼は公式アプリからお願いいたします。" },
@@ -474,17 +474,17 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementaryDeliveryNoticeReal,
     desc: "お<ruby>留守<rt>るす</rt></ruby><ruby>通知<rt>つうち</rt></ruby>のメールが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "おうちの人に伝えて、ブックマークしてある公式アプリから伝票番号で再配達を頼む", money: 0, principleTag: "safe", explain: "せいかい！【正規確認】公式アプリから伝票番号を入れて安全に再配達を頼めたね！" }
+      { text: "おうちの<ruby>人<rt>ひと</rt></ruby>に つたえて、ブックマークしてある <ruby>公式<rt>こうしき</rt></ruby>アプリから <ruby>伝票<rt>でんぴょう</rt></ruby><ruby>番号<rt>ばんごう</rt></ruby>で さい<ruby>配達<rt>はいたつ</rt></ruby>を たのむ", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>正規<rt>せいき</rt></ruby><ruby>確認<rt>かくにん</rt></ruby>】<ruby>公式<rt>こうしき</rt></ruby>アプリから でんぴょう<ruby>番号<rt>ばんごう</rt></ruby>を いれて あんぜんに さいはいたつを たのめたね！" }
     ],
     wrongChoices: [
-      { text: "メールに返信して、親のクレジットカード番号や暗証番号を書いて送ってしまう", money: -20000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】宅配便の再配達にクレジットカード情報は不要です！情報流出被害が出たよ。" },
-      { text: "「再配達手数料が必要」と勘違いして、ネットで見つけた怪しい窓口へお金を払う", money: -12000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】正規の再配達は無料なのに、偽の窓口にお金を騙し取られたよ！" },
-      { text: "「不在通知は全部詐欺だ」と思い込み、何も確認せずに荷物を完全に放置する", money: -8000, principleTag: "fooled", damageType: "money", explain: "【誤認拒絶】本物の荷物が返送され、往復の送料とキャンセル料8,000円を請求されたよ！" }
+      { text: "メールに <ruby>返信<rt>へんしん</rt></ruby>して、おうちの<ruby>暗証<rt>あんしょう</rt></ruby><ruby>番号<rt>ばんごう</rt></ruby>や パスワードを <ruby>書<rt>か</rt></ruby>いて <ruby>送<rt>おく</rt></ruby>ってしまう", money: -20000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】たくはいびんの さいはいたつに パスワードなどは ふようです！ <ruby>情報<rt>じょうほう</rt></ruby>が もれてしまったよ。" },
+      { text: "「さい<ruby>配達<rt>はいたつ</rt></ruby><ruby>手数料<rt>てすうりょう</rt></ruby>が <ruby>必要<rt>ひつよう</rt></ruby>」と かんちがいして、ネットで <ruby>見<rt>み</rt></ruby>つけた <ruby>怪<rt>あや</rt></ruby>しい<ruby>窓口<rt>まどぐち</rt></ruby>へ お<ruby>金<rt>かね</rt></ruby>を はらう", money: -12000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】ほんものの さいはいたつは <ruby>無料<rt>むりょう</rt></ruby>なのに、にせの まどぐちにお<ruby>金<rt>かね</rt></ruby>を とられたよ！" },
+      { text: "「ふざいつうちメールは ぜんぶ さぎだ」と <ruby>思<rt>おも</rt></ruby>いこみ、なにも <ruby>確認<rt>かくにん</rt></ruby>せずに にもつを ほうりだす", money: -8000, principleTag: "fooled", damageType: "money", explain: "【<ruby>誤認<rt>ごにん</rt></ruby><ruby>拒絶<rt>きょぜつ</rt></ruby>】ホンモノの にもつが お<ruby>店<rt>みせ</rt></ruby>に もどってしまい、キャンセルりょうを せいきゅうされたよ！" }
     ]
   },
   {
     id: "elementary_q16", category: "real", source: "LINE公式", title: "【クーポン】10％OFF クーポンのおしらせ",
-    characterName: "ショップ公式LINE",
+    characterName: "ショップ<ruby>公式<rt>こうしき</rt></ruby>LINE",
     narration: "いつも <ruby>利用<rt>りよう</rt></ruby>している お<ruby>店<rt>みせ</rt></ruby>の <ruby>公式<rt>こうしき</rt></ruby>LINEから メッセージが きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
       { speaker: "ショップ公式", line: "お会計時にレジでバーコードをご提示ください。" },
@@ -497,12 +497,12 @@ const QUESTIONS_ELEMENTARY = [
     screenshot: IMAGE_ASSETS.screenshots.elementarySummerCouponReal,
     desc: "お<ruby>店<rt>みせ</rt></ruby>から クーポンが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
-      { text: "公式アカウントの緑の認証マークを確認し、お買い物のときにレジで画面を見せる", money: 0, principleTag: "safe", explain: "せいかい！【正規確認】本物の公式クーポンだったね！正しく確認してお得にお買い物できたよ！" }
+      { text: "<ruby>公式<rt>こうしき</rt></ruby>アカウントの みどりの<ruby>認証<rt>にんしょう</rt></ruby>マークを <ruby>確認<rt>かくにん</rt></ruby>し、お<ruby>買<rt>か</rt></ruby>いもののときに レジで <ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>せる", money: 0, principleTag: "safe", explain: "せいかい！【<ruby>正規<rt>せいき</rt></ruby><ruby>確認<rt>かくにん</rt></ruby>】ホンモノの <ruby>公式<rt>こうしき</rt></ruby>クーポンだったね！ ただしく <ruby>確認<rt>かくにん</rt></ruby>して おトクに おかいものできたよ！" }
     ],
     wrongChoices: [
-      { text: "「クーポン適用のため」と思い込み、LINEのトーク画面に親の住所やカード番号を書く", money: -18000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】レジで見せるだけのクーポンなのに、不要な個人情報を送ってしまったよ！" },
-      { text: "「クーポン購入代金」が必要だと勘違いし、電子マネーを買って送金する", money: -15000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】無料の割引クーポンなのに、勝手に送金してお金を失ってしまったよ！" },
-      { text: "「普段来ないクーポンは詐欺だ！」と疑い、公式アカウントを通報・ブロックする", money: -8000, principleTag: "fooled", damageType: "money", explain: "【誤認拒絶】本物のお得なクーポンを捨ててしまい、割引を受けることができなかったよ。" }
+      { text: "「クーポンをつかうため」と <ruby>思<rt>おも</rt></ruby>いこみ、LINEの トーク<ruby>画面<rt>がめん</rt></ruby>に おうちの<ruby>住所<rt>じゅうしょ</rt></ruby>や でんわ<ruby>番号<rt>ばんごう</rt></ruby>を かいてしまう", money: -18000, principleTag: "speak", damageType: "personal_info", explain: "【<ruby>喋<rt>しゃべ</rt></ruby>ってしまった！】レジで <ruby>見<rt>み</rt></ruby>せるだけの クーポンなのに、いらない <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を <ruby>送<rt>おく</rt></ruby>ってしまったよ！" },
+      { text: "「クーポンの こうにゅう<ruby>代<rt>だい</rt></ruby>が <ruby>必要<rt>ひつよう</rt></ruby>」と かんちがいし、お<ruby>小遣<rt>こづか</rt></ruby>いから お<ruby>金<rt>かね</rt></ruby>を <ruby>送金<rt>そうきん</rt></ruby>してしまう", money: -15000, principleTag: "pay", damageType: "money", explain: "【<ruby>払<rt>はら</rt></ruby>ってしまった！】<ruby>無料<rt>むりょう</rt></ruby>の わりびきクーポンなのに、<ruby>勝手<rt>かって</rt></ruby>にお<ruby>金<rt>かね</rt></ruby>を はらってしまったよ！" },
+      { text: "「ふだん こないクーポンは さぎだ！」と うたがい、<ruby>公式<rt>こうしき</rt></ruby>アカウントを つうほう・ブロックする", money: -8000, principleTag: "fooled", damageType: "money", explain: "【<ruby>誤認<rt>ごにん</rt></ruby><ruby>拒絶<rt>きょぜつ</rt></ruby>】ホンモノの おトクなクーポンを すててしまい、わりびきを うけることが できなかったよ。" }
     ]
   }
 ];

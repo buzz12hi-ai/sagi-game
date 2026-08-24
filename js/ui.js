@@ -231,6 +231,17 @@ function applyCharacterBlend(imgElement, src) {
   imgElement.classList.remove("blend-multiply", "blend-screen");
 }
 
+/* ★ 曜日ごとの背景画像割り当てテーブル ★ */
+const DAY_BACKGROUND_MAP = {
+  "月": IMAGE_ASSETS.backgrounds.schoolRoute,
+  "火": IMAGE_ASSETS.backgrounds.schoolRoute2,
+  "水": IMAGE_ASSETS.backgrounds.school,
+  "木": IMAGE_ASSETS.backgrounds.livingRoom,
+  "金": IMAGE_ASSETS.backgrounds.myRoom,
+  "土": IMAGE_ASSETS.backgrounds.convenienceStoreFallback,
+  "日": IMAGE_ASSETS.backgrounds.entrance
+};
+
 function showDayIntro(label, onNext, comment) {
   const slot = currentScheduleSlot();
   
@@ -240,7 +251,9 @@ function showDayIntro(label, onNext, comment) {
 
   const bgImg = document.getElementById("dayintro-bg-image");
   const guideImg = document.getElementById("dayintro-guide-image");
-  setImageSafely(bgImg, null);
+  const dayBgSrc = DAY_BACKGROUND_MAP[slot.weekdayName] || IMAGE_ASSETS.backgrounds.schoolRoute;
+  
+  setImageSafely(bgImg, dayBgSrc);
 
   setJoeExpression("cheer");
   setImageSafely(guideImg, getJoeImage(state.joeExpression));
@@ -263,7 +276,6 @@ let zoomState = {
   scale: 1,
   startDistance: 0,
   initialScale: 1,
-  lastTapTime: 0,
   startX: 0,
   startY: 0,
   translateX: 0,
@@ -302,11 +314,9 @@ function openImageModal(imgSrc) {
     scrollArea.scrollLeft = 0;
   }
 
-  // 1. タップ / クリック / ダブルタップでズーム
+  // 1. クリック / タップで拡大・縮小トグル
   modalImg.onclick = (e) => {
     e.stopPropagation();
-    const now = Date.now();
-    // シングルタップ/ダブルタップ兼用トグル
     if (zoomState.scale > 1.2) {
       resetZoom(modalImg);
     } else {
@@ -317,9 +327,10 @@ function openImageModal(imgSrc) {
   };
 
   // 2. スマホ実機の 2本指ピンチイン・ピンチアウト処理
-  modalImg.ontouchstart = (e) => {
+  const touchArea = scrollArea || modalImg;
+
+  touchArea.ontouchstart = (e) => {
     if (e.touches.length === 2) {
-      e.preventDefault();
       zoomState.startDistance = Math.hypot(
         e.touches[0].pageX - e.touches[1].pageX,
         e.touches[0].pageY - e.touches[1].pageY
@@ -332,27 +343,25 @@ function openImageModal(imgSrc) {
     }
   };
 
-  modalImg.ontouchmove = (e) => {
+  touchArea.ontouchmove = (e) => {
     if (e.touches.length === 2 && zoomState.startDistance > 0) {
-      e.preventDefault();
       const currentDist = Math.hypot(
         e.touches[0].pageX - e.touches[1].pageX,
         e.touches[0].pageY - e.touches[1].pageY
       );
       const factor = currentDist / zoomState.startDistance;
       let nextScale = zoomState.initialScale * factor;
-      nextScale = Math.min(Math.max(1.0, nextScale), 3.5); // 1倍〜3.5倍に制限
+      nextScale = Math.min(Math.max(1.0, nextScale), 3.5); // 1倍〜3.5倍
       zoomState.scale = nextScale;
       updateImageTransform(modalImg);
     } else if (e.touches.length === 1 && zoomState.isDragging && zoomState.scale > 1) {
-      e.preventDefault();
       zoomState.translateX = (e.touches[0].pageX - zoomState.startX);
       zoomState.translateY = (e.touches[0].pageY - zoomState.startY);
       updateImageTransform(modalImg);
     }
   };
 
-  modalImg.ontouchend = (e) => {
+  touchArea.ontouchend = (e) => {
     if (e.touches.length < 2) {
       zoomState.startDistance = 0;
     }
