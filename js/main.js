@@ -6,8 +6,7 @@
 function renderTitleVisual() {
   const titleJoeImg = document.getElementById("title-joe-image");
   if (titleJoeImg) {
-    setImageSafely(titleJoeImg, getJoeImage("cheer"));
-    applyCharacterBlend(titleJoeImg, getJoeImage("cheer"));
+    setImageSafely(titleJoeImg, "ジョー君通常.png");
   }
 }
 
@@ -212,7 +211,7 @@ function showEvent() {
   if (isNewDay) {
     const dayComment =
       DAY_INTRO_COMMENTS[slot.weekdayName] ||
-      "落ち着いて考えながら進めよう！";
+      "落ち着いて進めていこう！";
     showDayIntro(
       `${slot.weekdayName}曜日`,
       startEventFlow,
@@ -638,8 +637,8 @@ function showSurveyScreen() {
   setImageSafely(bgImg, IMAGE_ASSETS.backgrounds.schoolRoute);
   
   setJoeExpression("cheer");
-  setImageSafely(guideImg, getJoeImage("cheer"));
-  applyCharacterBlend(guideImg, getJoeImage("cheer"));
+  setImageSafely(guideImg, getJoeImage(state.joeExpression));
+  applyCharacterBlend(guideImg, getJoeImage(state.joeExpression));
 
   if (surveyTextEl) {
     surveyTextEl.innerHTML = `
@@ -728,10 +727,15 @@ if (imageModalOverlay) {
   });
 }
 
-// ★ 案A：直前の会話ログ見直しボタン・モーダル関連 ★
-const openLogBtn = document.getElementById("btn-open-log");
-if (openLogBtn) {
-  openLogBtn.addEventListener("click", openLogModal);
+// ★ 案A：直前の会話ログ見直しボタン（問題画面 ＆ 結果画面の両方に対応） ★
+const openLogBtnResult = document.getElementById("btn-open-log");
+if (openLogBtnResult) {
+  openLogBtnResult.addEventListener("click", openLogModal);
+}
+
+const openLogBtnEvent = document.getElementById("btn-open-log-event");
+if (openLogBtnEvent) {
+  openLogBtnEvent.addEventListener("click", openLogModal);
 }
 
 const closeLogBtn = document.getElementById("btn-close-log-modal");

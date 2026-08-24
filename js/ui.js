@@ -1,6 +1,6 @@
 /* =========================================================
    ui.js
-   UI描画・4モード表示制御・Mac文字コード自動修復・拡大ズーム
+   UI描画・4モード表示制御・ピンチズーム・会話ログ・Mac文字コード自動修復
    ========================================================= */
 
 window.DEBUG_MODE = true;
@@ -11,7 +11,7 @@ function showScreen(screenId) {
   });
 }
 
-/* ★ 画像割れ・代替テキスト浮きを完全に防ぐ安全画像読み込み関数 ★ */
+/* ★ Mac特有の日本語ファイル名（NFD/NFC）を自動補正して必ず表示する安全関数 ★ */
 function setImageSafely(imgElement, src) {
   if (!imgElement) return;
   if (!src) {
@@ -22,7 +22,6 @@ function setImageSafely(imgElement, src) {
 
   imgElement.classList.remove("is-hidden");
 
-  // 画像読み込み失敗時のMac文字コード（NFD/NFC/URLエンコード）自動修復
   imgElement.onerror = () => {
     if (!imgElement.dataset.triedNFD) {
       imgElement.dataset.triedNFD = "true";
@@ -40,7 +39,6 @@ function setImageSafely(imgElement, src) {
       return;
     }
 
-    // すべて試しても読み込めない場合は安全に非表示化（文字浮きを完全防止）
     imgElement.classList.add("is-hidden");
   };
 
@@ -240,7 +238,6 @@ function showDayIntro(label, onNext, comment) {
   document.getElementById("dayintro-daynum").textContent = slot.dayNumber;
   document.getElementById("dayintro-comment").textContent = comment || "";
 
-  // 曜日画面は暗黒ステージのため背景画像は設定しない（割れ防止）
   const bgImg = document.getElementById("dayintro-bg-image");
   const guideImg = document.getElementById("dayintro-guide-image");
   setImageSafely(bgImg, null);
@@ -261,7 +258,34 @@ function showDayIntro(label, onNext, comment) {
   document.getElementById("btn-dayintro-next").onclick = onNext;
 }
 
-/* ★ 資料・画像ポップアップモーダル制御（携帯対応ズーム強化版） ★ */
+/* ★ 資料・画像ポップアップ（スマホ対応ピンチズーム・パン・タップ拡大） ★ */
+let zoomState = {
+  scale: 1,
+  startDistance: 0,
+  initialScale: 1,
+  lastTapTime: 0,
+  startX: 0,
+  startY: 0,
+  translateX: 0,
+  translateY: 0,
+  isDragging: false
+};
+
+function updateImageTransform(modalImg) {
+  if (!modalImg) return;
+  modalImg.style.transform = `scale(${zoomState.scale}) translate(${zoomState.translateX}px, ${zoomState.translateY}px)`;
+}
+
+function resetZoom(modalImg) {
+  zoomState.scale = 1;
+  zoomState.translateX = 0;
+  zoomState.translateY = 0;
+  if (modalImg) {
+    modalImg.style.transform = `scale(1) translate(0px, 0px)`;
+    modalImg.classList.remove("is-zoomed");
+  }
+}
+
 function openImageModal(imgSrc) {
   if (!imgSrc) return;
   const modal = document.getElementById("image-modal");
@@ -270,7 +294,7 @@ function openImageModal(imgSrc) {
   if (!modal || !modalImg) return;
 
   setImageSafely(modalImg, imgSrc);
-  modalImg.classList.remove("is-zoomed");
+  resetZoom(modalImg);
   modal.classList.remove("is-hidden");
 
   if (scrollArea) {
@@ -278,10 +302,76 @@ function openImageModal(imgSrc) {
     scrollArea.scrollLeft = 0;
   }
 
+  // 1. タップ / クリック / ダブルタップでズーム
   modalImg.onclick = (e) => {
     e.stopPropagation();
-    modalImg.classList.toggle("is-zoomed");
+    const now = Date.now();
+    // シングルタップ/ダブルタップ兼用トグル
+    if (zoomState.scale > 1.2) {
+      resetZoom(modalImg);
+    } else {
+      zoomState.scale = 2.2;
+      modalImg.classList.add("is-zoomed");
+      updateImageTransform(modalImg);
+    }
   };
+
+  // 2. スマホ実機の 2本指ピンチイン・ピンチアウト処理
+  modalImg.ontouchstart = (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      zoomState.startDistance = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY
+      );
+      zoomState.initialScale = zoomState.scale;
+    } else if (e.touches.length === 1 && zoomState.scale > 1) {
+      zoomState.isDragging = true;
+      zoomState.startX = e.touches[0].pageX - zoomState.translateX;
+      zoomState.startY = e.touches[0].pageY - zoomState.translateY;
+    }
+  };
+
+  modalImg.ontouchmove = (e) => {
+    if (e.touches.length === 2 && zoomState.startDistance > 0) {
+      e.preventDefault();
+      const currentDist = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY
+      );
+      const factor = currentDist / zoomState.startDistance;
+      let nextScale = zoomState.initialScale * factor;
+      nextScale = Math.min(Math.max(1.0, nextScale), 3.5); // 1倍〜3.5倍に制限
+      zoomState.scale = nextScale;
+      updateImageTransform(modalImg);
+    } else if (e.touches.length === 1 && zoomState.isDragging && zoomState.scale > 1) {
+      e.preventDefault();
+      zoomState.translateX = (e.touches[0].pageX - zoomState.startX);
+      zoomState.translateY = (e.touches[0].pageY - zoomState.startY);
+      updateImageTransform(modalImg);
+    }
+  };
+
+  modalImg.ontouchend = (e) => {
+    if (e.touches.length < 2) {
+      zoomState.startDistance = 0;
+    }
+    if (e.touches.length === 0) {
+      zoomState.isDragging = false;
+      if (zoomState.scale <= 1.05) {
+        resetZoom(modalImg);
+      }
+    }
+  };
+
+  // 等倍リセットボタン
+  const resetBtn = document.getElementById("btn-zoom-reset");
+  if (resetBtn) {
+    resetBtn.onclick = (e) => {
+      e.stopPropagation();
+      resetZoom(modalImg);
+    };
+  }
 }
 
 function closeImageModal() {
@@ -291,11 +381,11 @@ function closeImageModal() {
     modal.classList.add("is-hidden");
   }
   if (modalImg) {
-    modalImg.classList.remove("is-zoomed");
+    resetZoom(modalImg);
   }
 }
 
-/* ★ 直前の会話・通知ログを見直すモーダル制御 ★ */
+/* ★ 会話・通知ログ見直しモーダル制御 ★ */
 function openLogModal() {
   const modal = document.getElementById("log-modal");
   const contentEl = document.getElementById("log-modal-content");

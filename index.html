@@ -2,14 +2,14 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>だまされるな！1週間チャレンジ</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="style.css?v=20260824_final2">
+<link rel="stylesheet" href="style.css?v=20260824_final3">
 </head>
 <body>
 
@@ -38,7 +38,6 @@
       <!-- ① タイトル画面 -->
       <section id="screen-title" class="screen active">
         <div class="title-bg-patterns" aria-hidden="true">
-          <!-- テスト用：どのパスで画像が出るか確認 -->
           <span class="bg-icon icon-1">📱</span>
           <span class="bg-icon icon-2">✉️</span>
           <span class="bg-icon icon-3">🔔</span>
@@ -60,7 +59,7 @@
           
           <div class="title-main-hero">
             <div class="title-hero-glow"></div>
-           <img id="title-joe-image" class="title-char-joe-hero" src="ジョー君通常.png" alt="ジョーくん">
+            <img id="title-joe-image" class="title-char-joe-hero" src="resource/images/ジョー君通常.png" alt="ジョーくん">
           </div>
 
           <p class="game-lead">
@@ -299,7 +298,11 @@
       <section id="screen-event" class="screen">
         <div class="event-context">
           <span id="event-daylabel" class="event-daylabel"></span>
-          <span id="event-progress" class="event-progress"></span>
+          <div class="event-context-right">
+            <!-- ★ 問題画面でも直前の会話・通知をいつでも見直せるボタン ★ -->
+            <button id="btn-open-log-event" class="btn-review-log-compact" type="button">📜 直前を見直す</button>
+            <span id="event-progress" class="event-progress"></span>
+          </div>
         </div>
 
         <div class="event-layout">
@@ -310,7 +313,7 @@
             <img id="event-screenshot-image" class="event-screenshot-image is-hidden" alt="画面">
             
             <div class="zoom-hint-badge is-hidden" id="zoom-hint-badge">
-              <span>🔍 タップで全画面・ズーム拡大</span>
+              <span>🔍 ピンチ・タップで拡大</span>
             </div>
 
             <div class="joe-support-bubble" id="joe-support-bubble">
@@ -374,7 +377,7 @@
             <p class="result-point-text" id="result-point"></p>
           </div>
 
-          <!-- ★ 案A：直前の会話・通知ログを見直すボタン ★ -->
+          <!-- 結果画面での見直しボタン -->
           <button id="btn-open-log" class="btn-review-log" type="button">📜 直前の会話・通知を見直す</button>
 
           <button id="btn-next" class="btn btn-primary">次の日へ</button>
@@ -440,12 +443,15 @@
 
     </main>
 
-    <!-- ★ 特大画像ポップアップモーダル（ズーム強化版） ★ -->
+    <!-- ★ 特大画像ポップアップモーダル（ピンチズーム・パン対応版） ★ -->
     <div id="image-modal" class="image-modal-overlay is-hidden">
       <div class="image-modal-dialog">
         <div class="image-modal-controls">
-          <span class="image-modal-hint">🔍 タップで拡大 / 縮小</span>
-          <button id="btn-close-image-modal" class="image-modal-close" type="button">✕ 閉じる</button>
+          <span class="image-modal-hint">🔍 ピンチ / タップで拡大</span>
+          <div class="image-modal-btn-group">
+            <button id="btn-zoom-reset" class="image-modal-zoom-btn" type="button">↺ 等倍</button>
+            <button id="btn-close-image-modal" class="image-modal-close" type="button">✕ 閉じる</button>
+          </div>
         </div>
         <div class="image-modal-body" id="image-modal-scroll-area">
           <img id="image-modal-img" src="" alt="拡大画像">
@@ -453,7 +459,7 @@
       </div>
     </div>
 
-    <!-- ★ 案A：直前の会話・通知を見直すポップアップモーダル ★ -->
+    <!-- ★ 会話・通知ログ見直しポップアップモーダル ★ -->
     <div id="log-modal" class="log-modal-overlay is-hidden">
       <div class="log-modal-dialog">
         <header class="log-modal-header">
@@ -467,13 +473,13 @@
   </div>
 
   <!-- スクリプト群（読み込み順） -->
-  <script src="js/assets.js?v=20260824_final2"></script>
-  <script src="js/data.js?v=20260824_final2"></script>
-  <script src="js/state.js?v=20260824_final2"></script>
-  <script src="js/ui.js?v=20260824_final2"></script>
-  <script src="js/story.js?v=20260824_final2"></script>
-  <script src="js/validator.js?v=20260824_final2"></script>
-  <script src="js/preview.js?v=20260824_final2"></script>
-  <script src="js/main.js?v=20260824_final2"></script>
+  <script src="js/assets.js?v=20260824_final3"></script>
+  <script src="js/data.js?v=20260824_final3"></script>
+  <script src="js/state.js?v=20260824_final3"></script>
+  <script src="js/ui.js?v=20260824_final3"></script>
+  <script src="js/story.js?v=20260824_final3"></script>
+  <script src="js/validator.js?v=20260824_final3"></script>
+  <script src="js/preview.js?v=20260824_final3"></script>
+  <script src="js/main.js?v=20260824_final3"></script>
 </body>
 </html>
