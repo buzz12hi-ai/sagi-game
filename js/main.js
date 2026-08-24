@@ -1,12 +1,15 @@
 /* =========================================================
    main.js
    4モード分岐・動的4択・判定演出・会話ログ・エンディング制御
+   （タイトルジョーくん初期表示・不具合修正版）
    ========================================================= */
 
 function renderTitleVisual() {
   const titleJoeImg = document.getElementById("title-joe-image");
   if (titleJoeImg) {
-    setImageSafely(titleJoeImg, "ジョー君通常.png");
+    // 正しいアセット定義から画像パスを取得して確実にセット
+    setImageSafely(titleJoeImg, getJoeImage("cheer"));
+    applyCharacterBlend(titleJoeImg, getJoeImage("cheer"));
   }
 }
 
@@ -671,6 +674,8 @@ function restartGame() {
   state.answeredQuestions = [];
   document.getElementById("status-bar").classList.add("hidden");
   showScreen("screen-title");
+  // リタイア時もタイトルジョーくんを正常レンダリング
+  renderTitleVisual();
 }
 
 /* =========================================================
@@ -727,7 +732,7 @@ if (imageModalOverlay) {
   });
 }
 
-// ★ 案A：直前の会話ログ見直しボタン（問題画面 ＆ 結果画面の両方に対応） ★
+// 会話ログ見直しボタン（問題画面 ＆ 結果画面）
 const openLogBtnResult = document.getElementById("btn-open-log");
 if (openLogBtnResult) {
   openLogBtnResult.addEventListener("click", openLogModal);
