@@ -1,7 +1,7 @@
 /* =========================================================
    assets.js
    画像アセット・ファイルパス定義
-   （全モード実在ファイル名・新タグ完全同期版）
+   （大人主人公・新NPC・証拠スクショ完全同期版）
    ========================================================= */
 
 const IMG_BASE = "images/";
@@ -30,15 +30,15 @@ const IMAGE_ASSETS = {
   // キャラクター立ち絵
   characters: {
     // ジョーくん（全9表情）
-    joe:          IMG_BASE + "ジョー君通常.png",
-    joeHappy:     IMG_BASE + "ジョー君喜.png",
-    joeSad:       IMG_BASE + "ジョー君哀.png",
-    joeSurprised: IMG_BASE + "ジョー君驚き.png",
-    joeThinking:  IMG_BASE + "ジョー君考える.png",
-    joeCheer:     IMG_BASE + "ジョー君応援.png",
-    joeWorry:     IMG_BASE + "ジョー君困り.png",
-    joeAngry:     IMG_BASE + "ジョー君怒.png",
-    joeRelax:     IMG_BASE + "ジョー君楽.png",
+    joe:               IMG_BASE + "ジョー君通常.png",
+    joeHappy:          IMG_BASE + "ジョー君喜.png",
+    joeSad:            IMG_BASE + "ジョー君哀.png",
+    joeSurprised:      IMG_BASE + "ジョー君驚き.png",
+    joeThinking:       IMG_BASE + "ジョー君考える.png",
+    joeCheer:          IMG_BASE + "ジョー君応援.png",
+    joeWorry:          IMG_BASE + "ジョー君困り.png",
+    joeAngry:          IMG_BASE + "ジョー君怒.png",
+    joeRelax:          IMG_BASE + "ジョー君楽.png",
 
     // 学生主人公（小学生・中高生モード用）
     studentNeutral:    IMG_BASE + "普通主人公.png",
@@ -49,7 +49,18 @@ const IMAGE_ASSETS = {
     studentWalking:    IMG_BASE + "通学主人公.png",
     studentSmartphone: IMG_BASE + "携帯みる主人公.png",
 
-    // 高齢者主人公・一般大人主人公用
+    // 一般（大人）主人公（大人モード用）
+    adultNeutral:      IMG_BASE + "一般主人公.png",
+    adultHappy:        IMG_BASE + "一般主人公喜.png",
+    adultSad:          IMG_BASE + "一般主人公哀.png",
+    adultQuestion:     IMG_BASE + "一般主人公考える.png",
+    adultThinking:     IMG_BASE + "一般主人公考える.png",
+    adultWorry:        IMG_BASE + "一般主人公哀.png",
+    adultWalking:      IMG_BASE + "一般主人公.png",
+    adultSmartphone:   IMG_BASE + "一般主人公仕事中.png",
+    adultAngry:        IMG_BASE + "一般主人公怒.png",
+
+    // 高齢者主人公（高齢者モード用）
     seniorNeutral:     IMG_BASE + "高齢者.png",
     seniorHappy:       IMG_BASE + "高齢者笑顔.png",
     seniorSad:         IMG_BASE + "困っている高齢者.png",
@@ -58,8 +69,10 @@ const IMAGE_ASSETS = {
     seniorWalking:     IMG_BASE + "高齢者.png",
     seniorSmartphone:  IMG_BASE + "高齢者笑顔.png",
 
-    // NPC・家族・点検員・店員
-    suspiciousVisitor: IMG_BASE + "シルエット.png",
+    // NPC・家族・同僚・作業員・店員
+    colleagueTroubled: IMG_BASE + "困ってる同僚.png",
+    workerLabor:       IMG_BASE + "作業員.png",
+    fireTruck:         IMG_BASE + "消防車.png",
     workerGas:         IMG_BASE + "コンビニ店員.png",
     elderlyWomanCane:  IMG_BASE + "困っている高齢者.png",
     elderlyWoman:      IMG_BASE + "高齢者.png",

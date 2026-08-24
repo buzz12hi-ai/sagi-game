@@ -1,11 +1,10 @@
 /* =========================================================
    ui.js
-   -----------------------------------------------------------
-   UI描画・4モード表示制御・携帯画面表示・資料タップ拡大モーダル制御
-   デバッグ情報出力 ＆ 画像自動フォールバック対応
+   UI描画・4モード表示制御・資料拡大ズーム・コンソールデバッグ
+   （大人主人公画像・二重宣言解消・タップズーム対応版）
    ========================================================= */
 
-// デバッグモード設定（trueでコンソール出力有効化）
+// デバッグフラグ（重複宣言エラー防止のため window オブジェクトで一元管理）
 window.DEBUG_MODE = true;
 
 function showScreen(screenId) {
@@ -23,16 +22,10 @@ function setImageSafely(imgElement, src) {
   }
 
   imgElement.classList.remove("is-hidden");
-
+  
   imgElement.onerror = () => {
     const currentSrc = imgElement.getAttribute("src") || "";
-
-    // パス差異やファイル名ブレ（スペース・記号・拡張子）を順次フォールバック
-    if (currentSrc.includes("広告詐欺？ .png")) {
-      imgElement.src = currentSrc.replace("広告詐欺？ .png", "広告詐欺.png");
-    } else if (currentSrc.includes("広告詐欺.png")) {
-      imgElement.src = currentSrc.replace("広告詐欺.png", "広告詐欺？.png");
-    } else if (currentSrc.startsWith("images/")) {
+    if (currentSrc.startsWith("images/")) {
       imgElement.src = "../resource/images/" + currentSrc.replace("images/", "");
     } else if (currentSrc.startsWith("../resource/images/")) {
       imgElement.src = "resource/images/" + currentSrc.replace("../resource/images/", "");
@@ -80,7 +73,7 @@ function setJoeExpression(expression) {
   });
 }
 
-// 主人公画像（モード別切替対応）
+// 主人公画像のモード別切替（小学生/中高生・一般大人・高齢者）
 function getPlayerImage(expressionType) {
   if (state.mode === "senior") {
     const map = {
@@ -93,6 +86,19 @@ function getPlayerImage(expressionType) {
       playerSmartphone: IMAGE_ASSETS.characters.seniorSmartphone
     };
     return map[expressionType] || IMAGE_ASSETS.characters.seniorNeutral;
+  } else if (state.mode === "adult") {
+    const map = {
+      playerNeutral:    IMAGE_ASSETS.characters.adultNeutral,
+      playerHappy:      IMAGE_ASSETS.characters.adultHappy,
+      playerSad:        IMAGE_ASSETS.characters.adultSad,
+      playerQuestion:   IMAGE_ASSETS.characters.adultQuestion,
+      playerThinking:   IMAGE_ASSETS.characters.adultThinking,
+      playerWorry:      IMAGE_ASSETS.characters.adultWorry,
+      playerWalking:    IMAGE_ASSETS.characters.adultWalking,
+      playerSmartphone: IMAGE_ASSETS.characters.adultSmartphone,
+      playerAngry:      IMAGE_ASSETS.characters.adultAngry
+    };
+    return map[expressionType] || IMAGE_ASSETS.characters.adultNeutral;
   } else {
     const map = {
       playerNeutral:    IMAGE_ASSETS.characters.studentNeutral,
@@ -240,7 +246,7 @@ function showDayIntro(label, onNext, comment) {
   document.getElementById("btn-dayintro-next").onclick = onNext;
 }
 
-/* ★ 資料・画像ポップアップモーダル制御 ★ */
+/* ★ 資料・画像ポップアップモーダル制御（ズーム拡大対応） ★ */
 function openImageModal(imgSrc) {
   if (!imgSrc) return;
   const modal = document.getElementById("image-modal");
@@ -248,37 +254,39 @@ function openImageModal(imgSrc) {
   if (!modal || !modalImg) return;
 
   setImageSafely(modalImg, imgSrc);
+  modalImg.classList.remove("is-zoomed");
   modal.classList.remove("is-hidden");
+
+  // タップ・クリックでズーム（拡大・縮小）切り替え
+  modalImg.onclick = (e) => {
+    e.stopPropagation();
+    modalImg.classList.toggle("is-zoomed");
+  };
 }
 
 function closeImageModal() {
   const modal = document.getElementById("image-modal");
+  const modalImg = document.getElementById("image-modal-img");
   if (modal) {
     modal.classList.add("is-hidden");
   }
+  if (modalImg) {
+    modalImg.classList.remove("is-zoomed");
+  }
 }
 
-/* ★ デバッグ情報ログ出力 ★ */
-function outputDebugQuestionInfo(question) {
-  if (!window.DEBUG_MODE || !question) return;
-
-  const imageFileName = question.screenshot 
-    ? question.screenshot.split("/").pop() 
-    : (question.character ? question.character.split("/").pop() : "なし");
-
-  const debugText = `[DEBUG] MODE: ${state.mode} | QUESTION ID: ${question.id} | IMAGE: ${decodeURIComponent(imageFileName)}`;
-  console.log(`%c${debugText}`, "color: #00e676; background: #1B2A4A; font-weight: bold; padding: 4px 8px; border-radius: 4px;");
-}
-
-/* ★ イベントビジュアル描画（携帯画面画像 ＆ 背景＋人物の自然表示） ★ */
 function renderEventVisual(question) {
-  outputDebugQuestionInfo(question);
-
   const screenshotImg = document.getElementById("event-screenshot-image");
   const bgImg = document.getElementById("event-bg-image");
   const characterImg = document.getElementById("event-character-image");
   const visual = document.getElementById("event-visual");
   const zoomBadge = document.getElementById("zoom-hint-badge");
+
+  // デバッグコンソール出力
+  if (window.DEBUG_MODE) {
+    const imgInfo = question.screenshot ? question.screenshot : (question.character || question.bg || "なし");
+    console.log(`[DEBUG] MODE: ${state.mode} | QUESTION ID: ${question.id} | IMAGE: ${imgInfo}`);
+  }
 
   if (question.screenshot) {
     visual.classList.add("is-screenshot-mode");
@@ -286,15 +294,13 @@ function renderEventVisual(question) {
     setImageSafely(bgImg, null);
     setImageSafely(characterImg, null);
     applyCharacterBlend(characterImg, null);
-
+    
     if (zoomBadge) zoomBadge.classList.remove("is-hidden");
 
-    // PC・iPad・スマホ共通でクリック/タップ拡大モーダルを開く
     visual.onclick = () => openImageModal(question.screenshot);
     return;
   }
 
-  // screenshot がない問題（背景＋立ち絵）
   visual.classList.remove("is-screenshot-mode");
   setImageSafely(screenshotImg, null);
   visual.onclick = null;

@@ -1,9 +1,7 @@
 /* =========================================================
    data.js
    問題プール定義（4モード各16問・計64問）
-   【大分県警3原則 実践型4択設計】
-   ① 喋らない（情報漏洩） / ② 払わない（金銭送金） / 
-   ③ 騙されない（偽窓口・言いくるめ） / ④ 正規確認（安全解決）
+   【完全中立・ネタバレ排除・大分県警3原則 実践型4択設計】
    ========================================================= */
 
 const ITEMS = [
@@ -23,13 +21,13 @@ const ITEMS = [
 ];
 
 const DAY_INTRO_COMMENTS = {
-  "月": "新しい1週間の始まりだね！\n落ち着いて判断していこう！",
-  "火": "少し慣れてきた頃かな？\n今日も確認を忘れずに！",
-  "水": "あと半分！\n焦らず進もう！",
-  "木": "詐欺は日常のふとした瞬間にやってくるよ。\n今日も気を付けよう！",
-  "金": "もう少しで週末！\n最後まで油断しないでね！",
-  "土": "いよいよ終盤！\n学んだことを活かそう！",
-  "日": "今日は最後の日！\n落ち着いて過ごそう！",
+  "月": "新しい1週間の始まりだね！\n落ち着いて進めていこう！",
+  "火": "少し慣れてきた頃かな？\n今日も内容をよく確認しよう！",
+  "水": "今日でちょうど真ん中！\n焦らず進もう！",
+  "木": "木曜日になったよ！\n今日も一日頑張ろう！",
+  "金": "もう少しで週末！\n最後までしっかり確認しよう！",
+  "土": "いよいよ終盤！\n落ち着いて考えていこう！",
+  "日": "今日は最後の日！\n1週間を振り返ってみよう！",
 };
 
 const DAILY_ACTIONS_BY_DAY = {
@@ -51,24 +49,24 @@ const DAILY_ACTIONS_BY_DAY = {
 };
 
 const THREE_PRINCIPLES = [
-  { head: "① 喋らない（話さない・教えない）", desc: "怪しい相手へ個人情報、パスワード、暗証番号、画面共有でコードを教えない" },
+  { head: "① 喋らない（話さない・教えない）", desc: "相手へ個人情報、パスワード、暗証番号、画面共有でコードを教えない" },
   { head: "② 払わない（渡さない・買わない）", desc: "急かされても、すぐにお金を振り込まない・クレカ決済しない・電子マネーを買わない" },
-  { head: "③ 騙されない（確認する・相談する）", desc: "届いた連絡先やうまい話を信じず、自ら調べた正規窓口や家族・警察に確認する" }
+  { head: "③ 騙されない（確認する・相談する）", desc: "届いた連絡先や話をそのまま信じず、自ら調べた正規窓口や家族・警察に確認する" }
 ];
 
 const SKILL_MAP = {
   // 小学生モード
-  "elementary_q01": "メールの脅迫に慌てず大人の人に相談する力",
-  "elementary_q02": "プレゼント当選を装うカード情報要求を見抜く力",
+  "elementary_q01": "メールの通知に慌てず大人の人に相談する力",
+  "elementary_q02": "プレゼント当選画面のカード情報要求を見抜く力",
   "elementary_q03": "突然の点検訪問を玄関先で断る力",
   "elementary_q04": "別アカウントからの友達の送金要求を確かめる力",
   "elementary_q05": "割引広告に惑わされず公式情報を確認する力",
   "elementary_q06": "ネットの知らない人からの儲け話を断る力",
   "elementary_q07": "コイン増殖の裏ワザを装うアカウント盗難を防ぐ力",
   "elementary_q08": "画面共有による認証コードの流出を防ぐ力",
-  "elementary_q09": "有名人の偽アカウントによる個人情報集めを見破る力",
+  "elementary_q09": "有名人を名乗るアカウントからの個人情報要求を見破る力",
   "elementary_q10": "無料コードを口実にしたカード情報要求を遮断する力",
-  "elementary_q11": "簡単副業を謳う怪しい広告を見抜く力",
+  "elementary_q11": "簡単副業を謳う広告を冷静に見極める力",
   "elementary_q12": "ATMで困っているお年寄りを店員に知らせて助ける力",
   "elementary_q13": "電話で慌てる家族を落ち着かせて被害を防ぐ力",
   "elementary_q14": "いつもと違うデザインの公式広告を正しく確認する力",
@@ -76,33 +74,33 @@ const SKILL_MAP = {
   "elementary_q16": "お店からの期間限定クーポンを正しく確かめる力",
 
   // 中高生モード
-  "teen_q01": "公的機関を名乗る緊急警告メールの真偽を見抜く力",
-  "teen_q02": "配信者を装う偽当選DMの個人情報要求を見破る力",
+  "teen_q01": "公的機関を名乗る緊急通知の真偽を見抜く力",
+  "teen_q02": "配信者を名乗るDMの個人情報要求を見破る力",
   "teen_q03": "通信会社からの正規の通信量通知を扱う力",
   "teen_q04": "宅配通知から正規アプリで照会する力",
   "teen_q05": "ATMで指示を受ける高齢者を周囲と連携して守る力",
   "teen_q06": "突然の無料点検訪問を毅然と断る力",
   "teen_q07": "友達アカウントからの電子マネー要求を直接確認する力",
   "teen_q08": "口座移動を迫る電話から家族を守る力",
-  "teen_q09": "お得すぎる公式SNSキャンペーンを正しく照合する力",
+  "teen_q09": "公式SNSキャンペーンを正しく照合する力",
   "teen_q10": "海外発信の不審電話に個人情報を渡さない力",
   "teen_q11": "親しくなったSNSアカウントからの投資勧誘を断る力",
-  "teen_q12": "限定品を謳う偽通販・高額転売サイトを見抜く力",
-  "teen_q13": "荷物運搬などを謳う闇バイト（特殊詐欺受け子）を拒絶する力",
+  "teen_q12": "限定品を謳う通販サイトの信憑性を見抜く力",
+  "teen_q13": "荷物運搬などを謳うバイト募集を拒絶する力",
   "teen_q14": "SNSでのチケット個人間先払い取引を回避する力",
-  "teen_q15": "偽の著作権侵害警告によるログイン情報窃取を防ぐ力",
-  "teen_q16": "有名人出演のAI偽動画広告（ディープフェイク）を見破る力",
+  "teen_q15": "著作権警告DMによるログイン情報窃取を防ぐ力",
+  "teen_q16": "有名人出演のAI動画広告を見破る力",
 
   // 一般（大人）モード
   "adult_q01": "サブスク自動更新を騙る架空請求SMSを遮断する力",
   "adult_q02": "国税庁・e-Tax還付通知の偽サイト誘導を見抜く力",
   "adult_q03": "銀行セキュリティ通知を装うフィッシングを回避する力",
   "adult_q04": "警察官を騙るLINE誘導・偽逮捕状詐欺を看破する力",
-  "adult_q05": "著名人悪用のSNS投資グループ勧誘を見破る力",
+  "adult_q05": "著名人を騙るSNS投資グループ勧誘を見破る力",
   "adult_q06": "火災保険不正請求を勧誘する悪質業者を拒絶する力",
   "adult_q07": "ATMで電話指示を受ける高齢者を店員と連携して救う力",
   "adult_q08": "クレジットカード会社の正規明細通知を安全に確認する力",
-  "adult_q09": "職場の同僚のPC偽警告（サポート詐欺）を止める力",
+  "adult_q09": "職場の同僚のPC警告画面トラブルを止める力",
   "adult_q10": "国際郵便の関税未納スミッシングを見抜く力",
   "adult_q11": "マイナポータル電子証明書更新の偽SMSを遮断する力",
   "adult_q12": "ライフライン供給停止を騙る緊急決済要求を防ぐ力",
@@ -136,19 +134,19 @@ const SKILL_MAP = {
 const QUESTIONS_ELEMENTARY = [
   // ── 詐欺（11問） ──
   {
-    id: "elementary_q01", category: "scam", source: "メール", title: "【<ruby>重要<rt>じゅうよう</rt></ruby>】<ruby>警察<rt>けいさつ</rt></ruby>からのメール",
+    id: "elementary_q01", category: "scam", source: "メール", title: "【<ruby>重要<rt>じゅうよう</rt></ruby>】サイバー<ruby>犯罪<rt>はんざい</rt></ruby><ruby>対策<rt>たいさく</rt></ruby>センターからのおしらせ",
     characterName: "サイバー捜査課",
-    narration: "スマホに <ruby>警察<rt>けいさつ</rt></ruby>を <ruby>名乗<rt>なの</rt></ruby>る <ruby>相手<rt>あいて</rt></ruby>から メールが <ruby>届<rt>とど</rt></ruby>きました。\n『【<ruby>緊急<rt>きんきゅう</rt></ruby>】あなたのスマホが <ruby>犯罪<rt>はんざい</rt></ruby>に <ruby>利用<rt>りよう</rt></ruby>されています。24<ruby>時間<rt>じかん</rt></ruby><ruby>以内<rt>いない</rt></ruby>に <ruby>下<rt>した</rt></ruby>のリンクから パスワードを <ruby>入力<rt>にゅうりょく</rt></ruby>して <ruby>確認<rt>かくにん</rt></ruby>しないと、あなたを <ruby>逮捕<rt>たいほ</rt></ruby>します。』",
+    narration: "スマホに 1<ruby>通<rt>つう</rt></ruby>の メールが <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>の メールを <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "連絡通知", line: "【<ruby>警告<rt>けいこく</rt></ruby>】<ruby>本人<rt>ほんにん</rt></ruby><ruby>確認<rt>かくにん</rt></ruby>が できない<ruby>場合<rt>ばあい</rt></ruby>、スマホの<ruby>利用<rt>りよう</rt></ruby>を <ruby>停止<rt>ていし</rt></ruby>し <ruby>法的<rt>ほうてき</rt></ruby><ruby>措置<rt>そち</rt></ruby>を とります。" },
-      { speaker: "主人公", line: "「たいほって かいてある…！ いますぐ <ruby>確認<rt>かくにん</rt></ruby>しないと つかまっちゃうのかな…！？」" }
+      { speaker: "連絡通知", line: "【<ruby>警告<rt>けいこく</rt></ruby>】24<ruby>時間<rt>じかん</rt></ruby><ruby>以内<rt>いない</rt></ruby>に <ruby>下<rt>した</rt></ruby>のリンクより <ruby>本人<rt>ほんにん</rt></ruby><ruby>認証<rt>にんしょう</rt></ruby>を <ruby>完了<rt>かんりょう</rt></ruby>してください。" },
+      { speaker: "主人公", line: "「たいほって かいてある…！ どうしよう…！」" }
     ],
     point: "<ruby>警察<rt>けいさつ</rt></ruby>が メールで パスワードを <ruby>入<rt>い</rt></ruby>れさせたり、『たいほする』とおどすことは ぜったいに ありません！",
-    notification: "📱ピコン 【警察】たいほの警告",
+    notification: "📱ピコン 新着メールが届きました",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryPoliceMailScam,
-    desc: "「24<ruby>時間<rt>じかん</rt></ruby><ruby>以内<rt>いない</rt></ruby>に リンクから パスワードを <ruby>入<rt>い</rt></ruby>れないと つかまります」と かいてある。",
+    desc: "スマホに メールが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "メールのリンクは <ruby>押<rt>お</rt></ruby>さず、すぐ おうちの<ruby>人<rt>ひと</rt></ruby>に <ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>せて <ruby>相談<rt>そうだん</rt></ruby>する", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・相談する】リンクを開かずに大人の人に相談できたね！" }
     ],
@@ -159,19 +157,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q02", category: "scam", source: "SNSのDM", title: "ゲーム<ruby>機<rt>き</rt></ruby>が タダでもらえる！？",
+    id: "elementary_q02", category: "scam", source: "SNSのDM", title: "【<ruby>当選<rt>とうせん</rt></ruby><ruby>通知<rt>つうち</rt></ruby>】ゲーム<ruby>機<rt>き</rt></ruby>プレゼント<ruby>企画<rt>きかく</rt></ruby>",
     characterName: "プレゼント企画",
-    narration: "SNSの ダイレクトメッセージに、うれしい <ruby>連絡<rt>れんらく</rt></ruby>が <ruby>届<rt>とど</rt></ruby>きました。\n『【<ruby>当選<rt>とうせん</rt></ruby>おめでとう！】100<ruby>名<rt>めい</rt></ruby>さまに <ruby>最新<rt>さいしん</rt></ruby>ゲーム<ruby>機<rt>き</rt></ruby>を 無料プレゼント！ お<ruby>届<rt>とど</rt></ruby>けのための <ruby>手続<rt>てつづ</rt></ruby>きをしてください。』",
+    narration: "SNSの ダイレクトメッセージに、メッセージが <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "アカウント", line: "ゲーム<ruby>機<rt>き</rt></ruby>の <ruby>発送<rt>はっそう</rt></ruby>のため、<ruby>送料<rt>そうりょう</rt></ruby>500<ruby>円<rt>えん</rt></ruby>の クレジットカード<ruby>決済<rt>けっさい</rt></ruby>と <ruby>住所<rt>じゅうしょ</rt></ruby>を <ruby>入力<rt>にゅうりょく</rt></ruby>してください。" },
-      { speaker: "主人公", line: "「500<ruby>円<rt>えん</rt></ruby>だけで ゲーム<ruby>機<rt>き</rt></ruby>が もらえるの！？ いますぐ ほしいな！」" }
+      { speaker: "アカウント", line: "おめでとうございます！ <ruby>発送<rt>はっそう</rt></ruby><ruby>手続<rt>てつづ</rt></ruby>きのため、フォームに <ruby>入力<rt>にゅうりょく</rt></ruby>してください。" },
+      { speaker: "主人公", line: "「最新ゲーム機があたったの！？ はやくほしいな！」" }
     ],
     point: "『タダであげるけど 送料だけカードではらって』は、カード番号を盗む典型的な手口です！",
     notification: "📱ピコン 当選メッセージ！",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryGamePrizeScam,
-    desc: "「最新ゲーム機があたりました。送料500円のカード情報を入力してください」と書かれている。",
+    desc: "SNSで メッセージが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "カード番号は入力せず、おうちの人に「これ本物かな？」と見せて確認する", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・相談する】タダをエサにカード情報を盗む詐欺だよ！しっかり相談できたね！" }
     ],
@@ -182,19 +180,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q03", category: "scam", source: "おうちの玄関", title: "「屋根の瓦がずれてるよ！」",
+    id: "elementary_q03", category: "scam", source: "おうちの玄関", title: "<ruby>近隣<rt>きんりん</rt></ruby><ruby>工事<rt>こうじ</rt></ruby>の ごあいさつ",
     characterName: "訪問作業員",
-    narration: "おうちでお留守番をしていると、インターホンが鳴り、作業着を着た男の人が立っていました。",
+    narration: "おうちで おるす<ruby>番<rt>ばん</rt></ruby>をしていると、インターホンが <ruby>鳴<rt>な</rt></ruby>り、<ruby>作業着<rt>さぎょうぎ</rt></ruby>のおじさんが <ruby>立<rt>た</rt></ruby>っていました。",
     dialogue: [
-      { speaker: "作業員", line: "「近くで工事をしてる者だけど、お宅の屋根の瓦が落ちそうで危ないよ！今すぐハシゴで登って無料で見てあげるよ！」" },
-      { speaker: "主人公", line: "「親はいないけど…屋根が壊れてたら危ないのかな…？」" }
+      { speaker: "作業員", line: "「<ruby>近所<rt>きんじょ</rt></ruby>で <ruby>工事<rt>こうじ</rt></ruby>をしている者ですが、お<ruby>宅<rt>たく</rt></ruby>の<ruby>屋根<rt>やね</rt></ruby>の<ruby>瓦<rt>かわら</rt></ruby>が ずれてますよ。<ruby>無料<rt>むりょう</rt></ruby>で <ruby>見<rt>み</rt></ruby>てあげます。」" },
+      { speaker: "主人公", line: "「お父さんもお母さんもいないけど…どうしよう？」" }
     ],
     point: "突然やってきて「今すぐ無料で見ます」という訪問者は、わざと壊して高額なお金を請求する危険があります！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.entrance,
-    character: IMAGE_ASSETS.characters.suspiciousVisitor,
+    character: IMAGE_ASSETS.characters.workerLabor,
     screenshot: null,
-    desc: "「屋根が危ないから、今すぐ無料で登って点検してあげる」と家に入ろうとしている。",
+    desc: "「<ruby>屋根<rt>やね</rt></ruby>の<ruby>瓦<rt>かわら</rt></ruby>が ずれている。<ruby>無料<rt>むりょう</rt></ruby>で <ruby>点検<rt>てんけん</rt></ruby>する」と <ruby>言<rt>い</rt></ruby>われた。あなたなら どうする？",
     correctChoices: [
       { text: "玄関のカギを開けずに、インターホン越しに「親がいないので分かりません」と断る", money: 0, principleTag: "safe", explain: "せいかい！【喋らない・家に入れない】お留守番のときは絶対にドアを開けちゃダメだよ！" }
     ],
@@ -205,19 +203,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q04", category: "scam", source: "SNSのDM", title: "友達からの「たすけて！」",
+    id: "elementary_q04", category: "scam", source: "SNSのDM", title: "【メッセージ】<ruby>友達<rt>ともだち</rt></ruby>の<ruby>健太<rt>けんた</rt></ruby>",
     characterName: "健太（別アカウント）",
-    narration: "SNSを見ていると、仲良しの友達「健太」の名前と写真のアカウントから急にメッセージが届きました。\n『今ちょっと困ってて親に言えないの。PayPayで3,000円分送ってほしい！明日返すから！』\nでも、いつものアカウントとは違う新しいアカウントのようです。",
+    narration: "SNSを <ruby>見<rt>み</rt></ruby>ていると、<ruby>友達<rt>ともだち</rt></ruby>の「<ruby>健太<rt>けんた</rt></ruby>」の <ruby>写真<rt>しゃしん</rt></ruby>の アカウントから メッセージが きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "健太？", line: "「本当に急いでるんだ！頼むから誰にも言わずに送って！」" },
-      { speaker: "主人公", line: "「いつもの健太とアカウントが違うような…？ でも困ってるのかな？」" }
+      { speaker: "健太？", line: "「今ちょっと困ってて親に言えないの。PayPayで3,000円送って！明日返すから！」" },
+      { speaker: "主人公", line: "「健太からだ。急いでるみたいだな…」" }
     ],
     point: "友達の名前や写真を使っていても、別アカウントから突然お金を要求されたら乗っ取りや偽アカウントを疑いましょう！",
     notification: "📱ピコン 健太からのメッセージ",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryFriendImpersonationScam,
-    desc: "友達を名乗る別アカウントから「困っているから3,000円送って」とメッセージが届いた。",
+    desc: "「3,000<ruby>円<rt>えん</rt></ruby> <ruby>送<rt>おく</rt></ruby>ってほしい」と メッセージが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "お金は送らず、いつもの電話や学校で直接会って「さっきメッセージ送った？」と本人に確認する", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・別ルート確認】偽アカウントの手口だよ！別ルートで確認できて正解！" }
     ],
@@ -228,19 +226,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q05", category: "scam", source: "ネット広告", title: "ワイヤレスイヤホンが50%OFF！？",
+    id: "elementary_q05", category: "scam", source: "ネット広告", title: "【タイムセール】<ruby>人気<rt>にんき</rt></ruby>イヤホン<ruby>特別<rt>とくべつ</rt></ruby><ruby>割引<rt>わりびき</rt></ruby>",
     characterName: "限定セール広告",
-    narration: "SNSを見ていると、定価19,800円の欲しかったイヤホンが「夏休み限定50%OFF！ 9,900円！」という広告が表示されました。",
+    narration: "SNSを <ruby>見<rt>み</rt></ruby>ていると、タイムセールの <ruby>広告<rt>こうこく</rt></ruby>が <ruby>出<rt>で</rt></ruby>てきました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "広告ページ", line: "【残りあと2個】本日限りの特別価格！クレジットカードですぐにお支払いください。" },
-      { speaker: "主人公", line: "「半額で買えちゃうの！？ お得だけど、この広告からすぐ買っていいのかな？」" }
+      { speaker: "広告ページ", line: "【<ruby>夏休<rt>なつやす</rt></ruby>み<ruby>限定<rt>げんてい</rt></ruby>】ワイヤレスイヤホンが <ruby>本日<rt>ほんじつ</rt></ruby>限りの <ruby>特別<rt>とくべつ</rt></ruby><ruby>価格<rt>かかく</rt></ruby>！" },
+      { speaker: "主人公", line: "「欲しかったイヤホンだ！ 安くなってる！」" }
     ],
     point: "広告の見た目だけで信じず、商品の公式サイトを自分で検索して同じセールが行われているか確認しましょう！",
     notification: "📱ピコン セールのお知らせ",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryDiscountAdScam,
-    desc: "19,800円のイヤホンが「本日限定9,900円」と広告に表示され、カード決済を迫っている。",
+    desc: "SNSに <ruby>激安<rt>げきやす</rt></ruby>セールの <ruby>広告<rt>こうこく</rt></ruby>が <ruby>出<rt>で</rt></ruby>てきた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "広告からは買わずに、自分でメーカーの公式サイトを検索して同じセールがあるか確かめる", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・公式確認】偽のショッピングサイトだったよ！公式サイトで確認できて大正解！" }
     ],
@@ -251,19 +249,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q06", category: "scam", source: "SNSのDM", title: "ネットの知り合いから「お金あげます」",
+    id: "elementary_q06", category: "scam", source: "SNSのDM", title: "【メッセージ】おこづかいをふやそう！",
     characterName: "親切そうなアカウント",
-    narration: "SNSで最近知り合った人から、親切そうなメッセージが届きました。\n『毎日少しずつお金が増える特別なサイトがあるよ。君の将来のために教えてあげるから、ここにお金を預けてみて！』",
+    narration: "SNSで <ruby>知<rt>し</rt></ruby>らない <ruby>人<rt>ひと</rt></ruby>から メッセージが <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "相手", line: "「私を信じて！ 最初に1万円預けるだけで、来週には3万円になるよ！」" },
-      { speaker: "主人公", line: "「ネットで知り合ったばかりの人だけど…本当にお金が増えるのかな？」" }
+      { speaker: "相手", line: "「毎日お金が増える特別なサイトを教えてあげる。ここにお金を預けてみて！」" },
+      { speaker: "主人公", line: "「お金が増えるのかな…？」" }
     ],
     point: "「絶対にお金が増える」「お金を預けて」と言ってくる相手は詐欺グループです！すぐやり取りをやめましょう！",
     notification: "📱ピコン メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryMoneyInviteScam,
-    desc: "「毎日お金が増えるサイトがあるから、ここにお金を預けて」と勧誘された。",
+    desc: "「お<ruby>金<rt>かね</rt></ruby>がふえる」と メッセージが きた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "「絶対にお金が増える話なんてない」と見抜いて、お金は送らず相手をブロックする", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・遮断する】投資詐欺の手口だよ！甘い言葉に乗らずブロックできて大正解！" }
     ],
@@ -274,19 +272,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q07", category: "scam", source: "ネット動画", title: "コイン「無料無限増殖」の裏ワザ！？",
+    id: "elementary_q07", category: "scam", source: "ネット動画", title: "【<ruby>裏技<rt>うらわざ</rt></ruby>】ガチャコイン<ruby>無料<rt>むりょう</rt></ruby>プレゼント！",
     characterName: "裏ワザ動画",
-    narration: "動画サイトで「限定レアキャラとガチャコインが100万枚タダで手に入る裏ワザサイト！」という動画を見つけました。",
+    narration: "ネットで ゲームの <ruby>動画<rt>どうが</rt></ruby>を <ruby>見<rt>み</rt></ruby>ていると、気になる <ruby>案内<rt>あんない</rt></ruby>が ありました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "裏ワザサイト", line: "コインを受け取るために、あなたのゲームの「ID」と「パスワード」を入力してください。" },
-      { speaker: "主人公", line: "「100万コインも手に入るの！？ パスワードを入れて大丈夫かな…？」" }
+      { speaker: "裏ワザサイト", line: "コインを <ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>るために、ゲームの「ID」と「パスワード」を <ruby>入力<rt>にゅうりょく</rt></ruby>してください。" },
+      { speaker: "主人公", line: "「コインがもらえるの！？ 入力してみようかな…」" }
     ],
     point: "「無料」「裏ワザ」と嘘をついて、ゲームのアカウント情報を盗み取るフィッシングサイトです！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryGameCoinScam,
-    desc: "「コインが無限に増える。ゲームのIDとパスワードを入力してください」と要求された。",
+    desc: "「コインを <ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>るための<ruby>手続<rt>てつづ</rt></ruby>き」と かいてある。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "ゲームのパスワードを他人に教えるのは絶対に危険なので、入力せずに動画を閉じる", money: 0, principleTag: "safe", explain: "せいかい！【喋らない・入力しない】アカウント乗っ取りの罠だよ！パスワードを守れて安心だね！" }
     ],
@@ -297,19 +295,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q08", category: "scam", source: "通話アプリ", title: "「チートのやり方を教えるよ」",
+    id: "elementary_q08", category: "scam", source: "通話アプリ", title: "【<ruby>通話<rt>つうわ</rt></ruby>】ゲームの<ruby>攻略<rt>こうりゃく</rt></ruby>について",
     characterName: "ネットの友達",
-    narration: "オンラインゲームで知り合った人から、通話アプリで「ゲームが強くなる裏ワザを教えてあげるから、スマホの画面共有をオンにして」と言われました。",
+    narration: "オンラインゲームで <ruby>知<rt>し</rt></ruby>り<ruby>合<rt>あ</rt></ruby>った <ruby>人<rt>ひと</rt></ruby>と <ruby>通話<rt>つうわ</rt></ruby>アプリで お<ruby>話<rt>はな</rt></ruby>ししています。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "相手", line: "「いま君のスマホに届いたSMSの【6桁の数字】を画面に見せてくれたら、アイテムをあげるよ！」" },
-      { speaker: "主人公", line: "「画面共有でSMSの番号を見せるの…？ なんでだろう？」" }
+      { speaker: "相手", line: "「スマホの画面共有をオンにして、届いたSMSの番号を見せてくれたらアイテムをあげるよ！」" },
+      { speaker: "主人公", line: "「画面共有でSMSの番号を見せるのかな…？」" }
     ],
     point: "画面共有中に届いた認証番号を見せると、スマホのアカウントを乗っ取られてしまいます！",
     notification: "📱ピコン 【認証コード】492103",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryScreenShareScam,
-    desc: "「裏ワザを教えるから画面共有して、届いたSMSの認証番号を見せて」と言われた。",
+    desc: "「<ruby>画面<rt>がめん</rt></ruby><ruby>共有<rt>きょうゆう</rt></ruby>で SMSの<ruby>番号<rt>ばんごう</rt></ruby>を <ruby>見<rt>み</rt></ruby>せて」と <ruby>言<rt>い</rt></ruby>われた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "「認証コードやスマホの画面は人に見せられない」とキッパリ断り、画面共有を切る", money: 0, principleTag: "safe", explain: "せいかい！【喋らない・見せない】画面共有で見えた認証番号を使ってアカウントを奪う手口だよ！" }
     ],
@@ -320,19 +318,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q09", category: "scam", source: "SNSのDM", title: "人気YouTuberの「極秘サイン色紙プレゼント」",
+    id: "elementary_q09", category: "scam", source: "SNSのDM", title: "【DM】<ruby>人気<rt>にんき</rt></ruby>YouTuberサイン<ruby>色紙<rt>しきし</rt></ruby>のおしらせ",
     characterName: "有名配信者そっくり垢",
-    narration: "大好きな有名YouTuberとそっくりのアイコンのアカウントから、「限定サイン色紙が当選したよ！」とDMが届きました。",
+    narration: "SNSの ダイレクトメッセージに、メッセージが <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "配信者？", line: "「色紙を送るから、君の【名前】【家の住所】【通っている小学校名】【親の電話番号】を返信してね！」" },
-      { speaker: "主人公", line: "「大好きなYouTuberからだ！ でも小学校の名前まで教えていいのかな…？」" }
+      { speaker: "配信者？", line: "「色紙を送るから、君の【名前】【家の住所】【通っている小学校名】を返信してね！」" },
+      { speaker: "主人公", line: "「大好きなYouTuberからだ！返信しようかな？」" }
     ],
     point: "有名人になりすました偽アカウントです！公式マークやユーザーIDをしっかり確認しましょう！",
     notification: "📱ピコン サイン当選のDM！",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryYoutuberSignScam,
-    desc: "「サインを送るから、名前・住所・小学校名・親の電話番号を教えて」とDMが届いた。",
+    desc: "YouTuberから メッセージが きた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "公式マークやIDを確認し、「偽物のアカウントだ」と見抜いて個人情報は教えない", money: 0, principleTag: "safe", explain: "せいかい！【喋らない・教えない】有名人そっくりに作った偽アカウントだよ！個人情報を守れたね！" }
     ],
@@ -343,19 +341,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q10", category: "scam", source: "ネット広告", title: "10連ガチャ無料コード配布中！",
+    id: "elementary_q10", category: "scam", source: "ネット広告", title: "【コード<ruby>配布<rt>はいふ</rt></ruby>】10<ruby>連<rt>れん</rt></ruby>ガチャシリアルコード",
     characterName: "無料コード配布サイト",
-    narration: "ネットを見ていると、「ゲームの10連ガチャが今すぐ無料で引けるシリアルコードプレゼント！」というページを見つけました。",
+    narration: "ネットを <ruby>見<rt>み</rt></ruby>ていると、ガチャコードの <ruby>配布<rt>はいふ</rt></ruby>ページを <ruby>見<rt>み</rt></ruby>つけました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "配布ページ", line: "受け取り手続き：年齢確認のため、保護者のクレジットカード番号を入力してください。お金はかかりません。" },
-      { speaker: "主人公", line: "「無料ガチャなのに、なんで親のカード番号が必要なんだろう…？」" }
+      { speaker: "配布ページ", line: "年齢確認のため、保護者のクレジットカード番号を入力してください。" },
+      { speaker: "主人公", line: "「カード番号を入れるのかな…？」" }
     ],
     point: "「無料」をエサに、子どもに親のクレジットカード情報を入力させようとする危険な罠です！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryGachaCodeScam,
-    desc: "「ガチャ無料コードをあげるから、年齢確認のために親のカード番号を入れて」と要求された。",
+    desc: "「ガチャコードを <ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>るための<ruby>手続<rt>てつづ</rt></ruby>き」と かいてある。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "「無料なのにカード番号を求めるのは詐欺だ」と見抜いて、すぐページを閉じる", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・入力しない】無料を口実にカード番号を盗む詐欺だよ！入力しなくて正解！" }
     ],
@@ -366,19 +364,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q11", category: "scam", source: "ネット広告", title: "1日で簡単に3万円！の広告",
+    id: "elementary_q11", category: "scam", source: "ネット広告", title: "【<ruby>募集<rt>ぼしゅう</rt></ruby>】ゲームの<ruby>感想<rt>かんそう</rt></ruby>モニター",
     characterName: "簡単副業広告",
-    narration: "ネットを見ていると、「ゲームの感想を書くだけで1日3万円！誰でもできる簡単副業！」というバナー広告を見つけました。",
+    narration: "ネットを <ruby>見<rt>み</rt></ruby>ていると、お<ruby>小遣<rt>こづか</rt></ruby>い<ruby>稼<rt>かせ</rt></ruby>ぎの <ruby>広告<rt>こうこく</rt></ruby>を <ruby>見<rt>み</rt></ruby>つけました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "副業サイト", line: "登録手続き：お仕事の報酬を受け取るため、あなたの銀行口座番号とおうちの電話番号を入力してください。" },
-      { speaker: "主人公", line: "「感想を書くだけで3万円もらえるの！？やってみたいな！」" }
+      { speaker: "副業サイト", line: "報酬を受け取るため、銀行口座番号と電話番号を入力してください。" },
+      { speaker: "主人公", line: "「感想を書くだけでいいのかな？」" }
     ],
     point: "「誰でも簡単に高額が稼げる」は個人情報収集や悪質商法の罠です！絶対に応募してはいけません！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.elementaryEasyMoneyScam,
-    desc: "「感想を書くだけで1日3万円。口座番号と電話番号を入力してください」と要求された。",
+    desc: "「<ruby>報酬<rt>ほうしゅう</rt></ruby>を <ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>るための<ruby>手続<rt>てつづ</rt></ruby>き」と かいてある。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "「簡単に大金が稼げる話は絶対に嘘だ」と見抜いて、何も入力せずページを閉じる", money: 0, principleTag: "safe", explain: "せいかい！【騙されない・応募しない】甘い言葉で個人情報を集める悪質な広告だよ！" }
     ],
@@ -391,19 +389,19 @@ const QUESTIONS_ELEMENTARY = [
 
   // ── 助ける（2問） ──
   {
-    id: "elementary_q12", category: "help", source: "銀行のATM", title: "ATMで困っているおばあさん",
+    id: "elementary_q12", category: "help", source: "銀行のATM", title: "ぎんこうの ATMにて",
     characterName: "困っている高齢者",
-    narration: "お買い物の途中、銀行のATMで、電話をしながら慌ててボタンを押しているおばあさんを見かけました。",
+    narration: "お<ruby>買<rt>か</rt></ruby>いものの <ruby>途中<rt>とちゅう</rt></ruby>、ぎんこうの ATMで、でんわを しながら ボタンを <ruby>押<rt>お</rt></ruby>している おばあさんを <ruby>見<rt>み</rt></ruby>かけました。",
     dialogue: [
-      { speaker: "おばあさん", line: "「（電話で）はい、言われた通り番号を押しました！ これで医療費の還付金が戻ってくるんですね…？」" },
-      { speaker: "主人公", line: "「電話しながらATMでお金が戻るって…これってニュースで見た還付金詐欺じゃないかな！？」" }
+      { speaker: "おばあさん", line: "「（電話で）はい、言われた通り番号を押しました！ これでお金が戻るんですね…？」" },
+      { speaker: "主人公", line: "「電話しながら操作してるな…どうしよう？」" }
     ],
     point: "ATMを操作して『お金が戻ってくる』ことは絶対にありません！ 100%詐欺です！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.atm,
     character: IMAGE_ASSETS.characters.elderlyWomanCane,
     screenshot: null,
-    desc: "おばあさんが電話で指示を受けながらATMでお金を送金しようとしている。",
+    desc: "おばあさんが でんわを しながら ATMを <ruby>操作<rt>そうさ</rt></ruby>している。あなたなら どうする？",
     correctChoices: [
       { text: "近くの銀行員さんや店員さんに「おばあさんが騙されているかも！」と急いで知らせる", money: 300, principleTag: "safe", explain: "✨ 大正解！【騙されない・周囲と連携】すぐに大人の人に知らせたおかげでおばあさんを救えたよ！（お礼+300円）" }
     ],
@@ -414,19 +412,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q13", category: "help", source: "おうちのリビング", title: "お母さんがパニックに！？",
+    id: "elementary_q13", category: "help", source: "おうちのリビング", title: "おうちでの でんわ",
     characterName: "母",
-    narration: "学校から帰ると、お母さんが青い顔をして電話をしていました。\nお母さん：「警察から電話があって…口座が犯罪に使われたから、安全な別口座にお金を全部移しなさいって言われたの…」",
+    narration: "がっこうから <ruby>帰<rt>かえ</rt></ruby>ると、お<ruby>母<rt>かあ</rt></ruby>さんが あわてて でんわを していました。",
     dialogue: [
-      { speaker: "母", line: "「どうしよう… すぐにお金を振り込まないと逮捕されちゃうのかしら…」" },
-      { speaker: "主人公", line: "「お母さん落ち着いて！ 電話でお金を送れっていうのは詐欺だよ！」" }
+      { speaker: "母", line: "「警察から電話があって…口座のお金を別の口座に移しなさいって言われたの…」" },
+      { speaker: "主人公", line: "「お母さん、どうしたの？」" }
     ],
     point: "本物の警察が「指定した別の口座にお金を移せ」と電話することは100%ありません！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.motherWorried,
     screenshot: null,
-    desc: "お母さんが「警察から電話でお金を別口座に移せと言われた」と慌てている。",
+    desc: "お<ruby>母<rt>かあ</rt></ruby>さんが「お<ruby>金<rt>かね</rt></ruby>を べつの<ruby>口座<rt>こうざ</rt></ruby>に うつす」と <ruby>言<rt>い</rt></ruby>っている。あなたなら どうする？",
     correctChoices: [
       { text: "「警察がお金を移せというのは絶対詐欺だよ！ 一度切って110番で確認しよう！」と止める", money: 300, principleTag: "safe", explain: "✨ 家族を救ったね！【騙されない・警察へ確認】電話でお金の話はすべて詐欺！ しっかり止められたね！（お礼+300円）" }
     ],
@@ -439,19 +437,19 @@ const QUESTIONS_ELEMENTARY = [
 
   // ── 本物（3問） ──
   {
-    id: "elementary_q14", category: "real", source: "SNS投稿", title: "夏休みキャンペーンのゲーム広告",
+    id: "elementary_q14", category: "real", source: "SNS投稿", title: "【おしらせ】<ruby>夏休<rt>なつやす</rt></ruby>みキャンペーン",
     characterName: "ゲーム公式アカウント",
-    narration: "SNSを見ていると、遊んでいるゲームの公式アカウントから「夏休みキャンペーン開催中！」という広告が流れてきました。いつもと少しデザインが違います。",
+    narration: "SNSを <ruby>見<rt>み</rt></ruby>ていると、ゲームの <ruby>公式<rt>こうしき</rt></ruby>アカウントから キャンペーンの <ruby>投稿<rt>とうこう</rt></ruby>が 流れてきました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "ゲーム公式", line: "【公式お知らせ】夏休みログインボーナス配布中！ 詳細はゲーム内お知らせまたは公式ポータルサイトをご確認ください。" },
-      { speaker: "主人公", line: "「いつもの広告と絵の雰囲気が違うな…これって詐欺なのかな？」" }
+      { speaker: "ゲーム公式", line: "ログインボーナス配布中！ 詳細はゲーム内お知らせをご確認ください。" },
+      { speaker: "主人公", line: "「いつもと少し雰囲気が違うけど、どうなんだろう？」" }
     ],
     point: "見た目がいつもと違っても詐欺とは限りません。公式アカウントのマークやゲーム内のお知らせで確認しましょう！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.elementarySummerGameCampaignReal,
-    desc: "「夏休みキャンペーン開催中。ゲーム内お知らせから確認してください」と案内されている。",
+    desc: "SNSに キャンペーンの <ruby>案内<rt>あんない</rt></ruby>が 流れてきた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "「見た目だけで決めつけず」公式マークを確認し、いつものゲーム内お知らせを開いて確かめる", money: 0, principleTag: "safe", explain: "せいかい！【正規確認】本物の公式キャンペーンだったね！安全なルートで正しく確認できたよ！" }
     ],
@@ -462,18 +460,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q15", category: "real", source: "メール", title: "宅配便のおるす通知",
+    id: "elementary_q15", category: "real", source: "メール", title: "【お<ruby>届<rt>とど</rt></ruby>けもの】ご<ruby>不在<rt>ふざい</rt></ruby><ruby>連絡<rt>れんらく</rt></ruby>",
     characterName: "宅配業者",
-    narration: "おうちにいると、宅配会社からメールが届きました。\n『お荷物をお届けにあがりましたが不在でした。伝票番号：1234-5678。再配達は公式アプリまたは公式サイトからご依頼ください。』",
+    narration: "おうちにいると、メールが 1<ruby>通<rt>つう</rt></ruby> <ruby>届<rt>とど</rt></ruby>きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "主人公", line: "「今日届く予定だったマンガの本だ！ 伝票番号もちゃんと書いてあるぞ。」" }
+      { speaker: "連絡通知", line: "荷物を持ち帰りました。再配達のご依頼は公式アプリからお願いいたします。" },
+      { speaker: "主人公", line: "「頼んでいた本かな？ 伝票番号が書いてあるぞ。」" }
     ],
     point: "伝票番号が明記され、公式アプリや公式サイトからの手続きを案内する通知は本物の連絡です。",
     notification: "📱ピコン お荷物のおしらせ",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.elementaryDeliveryNoticeReal,
-    desc: "「お留守のため荷物を持ち帰りました。伝票番号をご確認の上公式アプリからご依頼ください」と届いた。",
+    desc: "お<ruby>留守<rt>るす</rt></ruby><ruby>通知<rt>つうち</rt></ruby>のメールが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "おうちの人に伝えて、ブックマークしてある公式アプリから伝票番号で再配達を頼む", money: 0, principleTag: "safe", explain: "せいかい！【正規確認】公式アプリから伝票番号を入れて安全に再配達を頼めたね！" }
     ],
@@ -484,19 +483,19 @@ const QUESTIONS_ELEMENTARY = [
     ]
   },
   {
-    id: "elementary_q16", category: "real", source: "LINE公式", title: "お店から届いた夏休み10％OFFクーポン！？",
+    id: "elementary_q16", category: "real", source: "LINE公式", title: "【クーポン】10％OFF クーポンのおしらせ",
     characterName: "ショップ公式LINE",
-    narration: "いつも利用しているお店の公式LINEから、「夏休み限定！ 10%OFFクーポン配布中！」というメッセージが届きました。普段はあまりクーポンが届かないお店です。",
+    narration: "いつも <ruby>利用<rt>りよう</rt></ruby>している お<ruby>店<rt>みせ</rt></ruby>の <ruby>公式<rt>こうしき</rt></ruby>LINEから メッセージが きました。\n<ruby>画面<rt>がめん</rt></ruby>を <ruby>見<rt>み</rt></ruby>てみよう。",
     dialogue: [
-      { speaker: "ショップ公式", line: "【会員様へ】お会計時にこの画面のバーコードをレジでご提示ください。※リンク先でのカード番号入力等は一切不要です。" },
-      { speaker: "主人公", line: "「普段クーポンが来ないお店だから怪しい気もするけど…本物なのかな？」" }
+      { speaker: "ショップ公式", line: "お会計時にレジでバーコードをご提示ください。" },
+      { speaker: "主人公", line: "「クーポンが届いた！使ってみようかな？」" }
     ],
     point: "公式LINEの認証マークがあり、個人情報やカード入力を求めずにレジ提示だけで使えるクーポンは本物です。",
     notification: "📱ピコン お店からのクーポン！",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.elementarySummerCouponReal,
-    desc: "「夏休み10%OFFクーポン。お会計時にレジで提示してください」とLINEが届いた。",
+    desc: "お<ruby>店<rt>みせ</rt></ruby>から クーポンが <ruby>届<rt>とど</rt></ruby>いた。<ruby>画像<rt>がめん</rt></ruby>を よく<ruby>見<rt>み</rt></ruby>て、あなたなら どうする？",
     correctChoices: [
       { text: "公式アカウントの緑の認証マークを確認し、お買い物のときにレジで画面を見せる", money: 0, principleTag: "safe", explain: "せいかい！【正規確認】本物の公式クーポンだったね！正しく確認してお得にお買い物できたよ！" }
     ],
@@ -514,19 +513,19 @@ const QUESTIONS_ELEMENTARY = [
 const QUESTIONS_TEEN = [
   // ── 詐欺（11問） ──
   {
-    id: "teen_q01", category: "scam", source: "SMS通知", title: "サイバー犯罪捜査課通知",
+    id: "teen_q01", category: "scam", source: "SMS通知", title: "【警視庁】不正アクセス検知に関する緊急通知",
     characterName: "サイバー犯罪捜査課",
-    narration: "スマホに警察を名乗るSMSが届きました。\n内容：【重要】あなた名義の銀行口座が特殊詐欺の送金先に利用されていることが判明しました。24時間以内に下記URLより本人認証を行わない場合、全口座を凍結し法的措置へ移行します。",
+    narration: "スマホに1通のSMSが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "通知メッセージ", line: "緊急本人確認ポータル：http://police-cyber-security.jp-auth.net" },
-      { speaker: "主人公", line: "（口座凍結や法的措置って書いてある…焦るな、どう対応すればいいんだ？）" }
+      { speaker: "通知メッセージ", line: "【重要】24時間以内に下記URLより本人認証を行わない場合、全口座を凍結いたします。" },
+      { speaker: "主人公", line: "「口座凍結って書いてある…焦るな、どう対応すればいいんだ？」" }
     ],
     point: "警察がSMSでパスワード認証を求めたり、URLリンクから口座の照会を指示することは絶対にありません。",
-    notification: "📱ピコン 【警告】口座凍結のお知らせ",
+    notification: "📱ピコン 新着通知が届きました",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenPoliceFreezeScam,
-    desc: "「不正利用検知。24時間以内にリンクから本人確認しないと口座を凍結します」とSMSが届いた。",
+    desc: "警察を名乗るSMSが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "SMS本文のリンクは開かず、自分で調べた最寄りの警察署の代表電話へ問い合わせる", money: 0, principleTag: "safe", explain: "正解！【騙されない・警察へ確認】焦らせる脅迫通知はフィッシング詐欺。自発的に調べた番号で確認が鉄則！" }
     ],
@@ -537,19 +536,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q02", category: "scam", source: "SNSのDM", title: "公式風 特別プレゼント企画",
+    id: "teen_q02", category: "scam", source: "SNSのDM", title: "【当選確定】限定プレゼントキャンペーン",
     characterName: "人気配信者プレゼント企画",
-    narration: "SNSを見ていると、有名配信者そっくりなアカウントから「当選おめでとうございます！欲しい物をプレゼントします。24時間以内に発送先住所を登録してください」とDMが届きました。",
+    narration: "SNSのDMに通知が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "アカウント", line: "【発送手続き】下記フォームより、氏名・自宅住所・電話番号および本人確認用クレジットカード情報をご入力ください。（送料500円のみ発生します）" },
-      { speaker: "主人公", line: "（送料500円だけでプレゼントが届くの！？ お得だけどクレカ入力が必要なのか…）" }
+      { speaker: "アカウント", line: "当選確定！発送手配のため、下記URLにて情報をご入力ください。" },
+      { speaker: "主人公", line: "「プレゼントがもらえるの！？確認してみよう。」" }
     ],
     point: "有名人を騙る偽アカウントです。「無料プレゼント」を口実に個人情報やクレカ情報を盗む手口に注意しましょう。",
     notification: "📱ピコン 当選DMが届きました",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenFakeGiftScam,
-    desc: "「プレゼント当選！送料500円の決済と配送先住所を24時間以内に入力してください」とDMが届いた。",
+    desc: "SNSでプレゼント当選のDMが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "DMのリンクは開かず、本物の配信者の公式アカウント（IDや認証マーク）で企画の有無を確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・公式確認】アイコンを真似た偽アカウントです。公式マークやユーザーIDで正しく見破れました！" }
     ],
@@ -560,18 +559,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q03", category: "real", source: "SMS通知", title: "公式 通信キャリア制限通知",
+    id: "teen_q03", category: "real", source: "SMS通知", title: "【通信会社】データ通信量に関するお知らせ",
     characterName: "通信キャリア公式",
-    narration: "部活動の帰り道、スマホに通信会社から通知が届きました。\n内容：【お知らせ】今月のデータ通信量が上限に達しました。速度制限を解除する場合は、公式マイページまたは公式アプリよりお手続きください。",
+    narration: "部活動の帰り道、スマホに通知が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "通信キャリア", line: "※本SMSには直接のログインリンクは記載されておりません。ブラウザのブックマークや公式アプリをご利用ください。" }
+      { speaker: "通信キャリア", line: "今月のデータ通信量が上限に達しました。公式アプリよりお手続きください。" },
+      { speaker: "主人公", line: "「動画を見すぎたかな？確認してみよう。」" }
     ],
     point: "SMS本文に直接ログインURLを載せず、「公式アプリやブックマークからアクセスしてください」と案内する通知は正規の公式通知です。",
-    notification: "📱ピコン 通信会社からの通知",
+    notification: "📱ピコン 新着通知が届きました",
     bg: IMAGE_ASSETS.backgrounds.schoolRoute,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.teenDataNoticeReal,
-    desc: "「データ上限到達のお知らせ。手続きは公式アプリ・マイページから行なってください（直リンクなし）」との通知。",
+    desc: "通信会社から通知が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "通知だけで詐欺と決めつけず、普段使っている公式アプリを開いて実際の通信量と利用状況を確認する", money: 0, principleTag: "safe", explain: "正解！【正規確認】直リンクを載せず公式アプリへ誘導する通知は安全。公式アプリから正しく確認できました！" }
     ],
@@ -582,18 +582,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q04", category: "real", source: "メール通知", title: "宅配会社 不在通知",
+    id: "teen_q04", category: "real", source: "メール通知", title: "【不在通知】お荷物のお届けについて",
     characterName: "宅配業者",
-    narration: "休日に家で過ごしていると、宅配会社からメールが届きました。\n内容：お荷物のお届けに伺いましたがご不在でした。伝票番号：1234-5678。再配達の依頼は公式LINEまたは公式サイトよりお願いいたします。",
+    narration: "休日に家で過ごしていると、メールが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "主人公", line: "（今日届く予定だったネット通販の荷物だ。お問い合わせ伝票番号も明記されているな。）" }
+      { speaker: "連絡通知", line: "荷物を持ち帰りました。再配達のご依頼は公式LINEまたは公式サイトよりお願いいたします。" },
+      { speaker: "主人公", line: "「通販で買った荷物かな？確認してみよう。」" }
     ],
     point: "伝票番号が明記され、公式アプリ・公式サイトからの再配達手続きを案内する通知は正規の連絡です。",
-    notification: "📱ピコン 不在持ち帰りのお知らせ",
+    notification: "📱ピコン 新着メールが届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.teenDeliveryNoticeReal,
-    desc: "「ご不在のため荷物を持ち帰りました。伝票番号をご用意の上公式アプリより再配達を依頼してください」との案内。",
+    desc: "宅配の不在通知が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "ブックマークしてある宅配会社の公式サイトを開き、伝票番号を入力して再配達を依頼する", money: 0, principleTag: "safe", explain: "正解！【正規確認】送られてきたリンクではなく自ら公式サイトを開いて伝票番号検索するのが最も安全です！" }
     ],
@@ -604,21 +605,21 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q05", category: "help", source: "街中（銀行ATM）", title: "ATMでの高齢者電話操作",
+    id: "teen_q05", category: "help", source: "街中（銀行ATM）", title: "ATMコーナーでの出来事",
     characterName: "困っている高齢者",
-    narration: "ショッピングモールのATMコーナーを通ると、電話をしながら慌ててボタンを操作している高齢者を見かけました。",
+    narration: "ショッピングモールのATMコーナーを通ると、電話をしながらボタンを操作しているおばあさんを見かけました。",
     dialogue: [
-      { speaker: "おばあさん", line: "（電話口へ）「はい、言われた通り操作しました！ これで医療費の還付金が戻ってくるんですね…？」" },
-      { speaker: "主人公", line: "（電話で指示を受けながらATMで還付金…！？ 還付金詐欺じゃないかな？）" }
+      { speaker: "おばあさん", line: "（電話口へ）「はい、言われた通り操作しました！ これで医療費が戻ってくるんですね…？」" },
+      { speaker: "主人公", line: "「電話で指示を受けながら操作してるな…どうしよう？」" }
     ],
     point: "ATMを操作して還付金が受け取れることは絶対にありません！ 周囲の大人の協力を得て止めましょう！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.atm,
     character: IMAGE_ASSETS.characters.elderlyWomanCane,
     screenshot: null,
-    desc: "高齢者が携帯電話で指示を受けながらATMで「還付金」の振込操作をしている。",
+    desc: "おばあさんが電話で指示を受けながらATMを操作している。あなたならどうする？",
     correctChoices: [
-      { text: "「還付金はATMで受け取れません！詐欺かもしれません！」と声をかけ、操作を止めて銀行員や店員を呼ぶ", money: 300, principleTag: "safe", explain: "✨ 正解！【騙されない・周囲と連携】ATM操作で還付金が戻ることは絶対にありません。声をかけて被害を防げました！（お礼+300円）" }
+      { text: "「おばあさん、それ還付金は受け取れません！詐欺かもしれません！」と声をかけ、操作を止めて銀行員や店員を呼ぶ", money: 300, principleTag: "safe", explain: "✨ 正解！【騙されない・周囲と連携】ATM操作で還付金が戻ることは絶対にありません。声をかけて被害を防げました！（お礼+300円）" }
     ],
     wrongChoices: [
       { text: "電話を代わり、おばあさんの代わりに口座番号や暗証番号を電話口で伝えてしまう", money: -25000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】暗証番号を犯人に教えてしまい、おばあさんの預金を全額奪わせてしまいました。" },
@@ -627,19 +628,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q06", category: "scam", source: "自宅訪問", title: "緊急屋根・瓦点検商法",
+    id: "teen_q06", category: "scam", source: "自宅訪問", title: "近隣工事に伴う屋根点検のご案内",
     characterName: "近隣工事作業員",
-    narration: "自宅で過ごしていると玄関のチャイムが鳴り、作業服を着た男が立っていました。\n男：「近所で工事をしている者ですが、お宅の屋根の瓦がズレて落ちそうですよ。今ならハシゴがあるので無料で見てあげます。」",
+    narration: "自宅で過ごしていると玄関のチャイムが鳴り、作業服を着た男が立っていました。\n男：「近所で工事をしている者ですが、お宅の屋根の瓦がズレてますよ。今ならハシゴがあるので無料で見てあげます。」",
     dialogue: [
-      { speaker: "作業員", line: "放置すると次の雨で雨漏りしますよ。今すぐ屋根に登って点検しましょうか？" },
-      { speaker: "主人公", line: "（親は外出中だけど…本当に瓦が落ちて近所の人に当たったら大変なのかな…？）" }
+      { speaker: "作業員", line: "「今すぐ屋根に登って点検しましょうか？」" },
+      { speaker: "主人公", line: "「親は外出中だけど…どうしよう？」" }
     ],
     point: "突然の訪問点検は、自ら瓦を割って高額な修繕契約を迫る「点検商法」の典型手口です！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.entrance,
-    character: IMAGE_ASSETS.characters.suspiciousVisitor,
+    character: IMAGE_ASSETS.characters.workerLabor,
     screenshot: null,
-    desc: "「屋根が崩れそうで危険。今すぐ無料で点検する」と訪問業者が家に入ろうとしている。",
+    desc: "「屋根を無料で点検する」と訪問業者が家に入ろうとしている。あなたならどうする？",
     correctChoices: [
       { text: "「親がいないので対応できません。名刺を置いてお引き取りください」とドアを開けずに断る", money: 0, principleTag: "safe", explain: "正解！【喋らない・家に入れない】突然の点検業者は絶対に敷地に入れないのが鉄則です！" }
     ],
@@ -650,19 +651,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q07", category: "scam", source: "SNSチャット", title: "友達のアカウントから急なお願い",
+    id: "teen_q07", category: "scam", source: "SNSチャット", title: "【チャット】友達からの緊急メッセージ",
     characterName: "友達のアカウント",
-    narration: "部活の帰り道、仲の良い友達のSNSアカウントから急な連絡が届きました。\n『頼む！ 今どうしても親に言えない事情があって困ってるの！ 今すぐコンビニで1万円分の電子マネーを買って番号を送って！ 明日学校で絶対返す！』",
+    narration: "部活の帰り道、仲の良い友達のSNSアカウントから連絡が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "友達？", line: "お願いだから急いで！ 誰にも言わないで！" },
-      { speaker: "主人公", line: "（いつもの言葉遣いと少し違うような…でも友達が一大事なのかな？）" }
+      { speaker: "友達？", line: "「お願いだから急いで！ 誰にも言わないで！」" },
+      { speaker: "主人公", line: "「急にお願いされたな…どうしたんだろう？」" }
     ],
     point: "友達のアカウントが乗っ取られている可能性が高いです。「電子マネーの番号を送って」は100%詐欺を疑いましょう。",
-    notification: "📱ピコン 友達からの緊急連絡",
+    notification: "📱ピコン 友達からの新着メッセージ",
     bg: IMAGE_ASSETS.backgrounds.schoolRoute,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenFriendMoneyScam,
-    desc: "仲の良い友達から「今すぐコンビニで1万円分の電子マネーを買って番号を送って」と届いた。",
+    desc: "友達からメッセージが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "チャットには返信せず、直接電話をかけるか対面で「さっき連絡くれた？」と本人確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・別ルート確認】アカウント乗っ取り詐欺です。別ルートで本人確認が鉄則！" }
     ],
@@ -673,19 +674,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q08", category: "help", source: "家庭（リビング）", title: "お母さんへの不審な警察電話",
+    id: "teen_q08", category: "help", source: "家庭（リビング）", title: "お母さんにかかってきた電話",
     characterName: "母",
-    narration: "学校から帰ると、お母さんが青ざめた顔で電話を切るところでした。\n母：「警察から電話があって…私の口座が犯罪に使われたから、安全な別口座にお金を全額移しなさいと言われたの…」",
+    narration: "学校から帰ると、お母さんが青ざめた顔で電話を切るところでした。\n母：「警察から電話があって…口座のお金を別の口座に移しなさいと言われたの…」",
     dialogue: [
-      { speaker: "母", line: "どうしよう…指示された口座に今すぐ振り込まないと逮捕されちゃうかしら…" },
-      { speaker: "主人公", line: "（警察が電話で口座の金を移せなんて言うはずがない…！）" }
+      { speaker: "母", line: "「今すぐ振り込まないと大変なことになるのかしら…」" },
+      { speaker: "主人公", line: "「お母さん、落ち着いて！」" }
     ],
     point: "警察が電話で「指定口座にお金を移せ」と指示することは100%ありません。偽警察詐欺です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.motherWorried,
     screenshot: null,
-    desc: "お母さんが「警察から口座のお金を別の口座に移せと言われた」とパニックになっている。",
+    desc: "お母さんが電話の指示に従ってお金を移そうとしている。あなたならどうする？",
     correctChoices: [
       { text: "「お母さん落ち着いて！本物の警察が電話で口座を移せと言うことは絶対にないよ！110番で確認しよう！」と止める", money: 300, principleTag: "safe", explain: "✨ 家族を救ったね！【騙されない・警察へ確認】電話で「口座を移せ」は偽警察詐欺。しっかり止めて被害を防げました！（お礼+300円）" }
     ],
@@ -696,19 +697,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q09", category: "real", source: "公式SNS投稿", title: "公式Xで見つけた期間限定ガチャキャンペーン",
+    id: "teen_q09", category: "real", source: "公式SNS投稿", title: "【公式X】大型アップデート記念キャンペーン",
     characterName: "ゲーム公式X",
-    narration: "X（旧Twitter）を見ていると、普段遊んでいるゲームの公式アカウント（金色の公式認証マーク付き）から「大型アップデート記念！ 今だけガチャ石1,000個プレゼントキャンペーン開催！」という投稿が流れてきました。",
+    narration: "X（旧Twitter）を見ていると、ゲームの投稿が流れてきました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "ゲーム公式", line: "【公式キャンペーン】プレゼントはゲーム内プレゼントボックスに直接付与されます。※外部サイトへの誘導やパスワード入力は一切ありません。" },
-      { speaker: "主人公", line: "（いつもよりかなりお得な内容だけど…これって詐欺じゃないのかな？）" }
+      { speaker: "ゲーム公式", line: "大型アップデート記念！ガチャ石プレゼントキャンペーン開催！" },
+      { speaker: "主人公", line: "「キャンペーンの案内だ。確認してみよう。」" }
     ],
     point: "公式認証マークを確認し、外部サイトへの誘導がなくゲーム内へ直接付与されるキャンペーンは安全な公式告知です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.teenGameCampaignReal,
-    desc: "「ガチャ石1,000個プレゼント。ゲーム内ボックスへ直接付与（外部誘導なし）」と公式告知されている。",
+    desc: "SNSにゲームのキャンペーン情報が表示された。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "公式アカウントの認証マークを確認し、ゲームを起動してゲーム内お知らせとボックスを確認する", money: 0, principleTag: "safe", explain: "正解！【正規確認】外部誘導のない正規の公式キャンペーンです。ゲーム内から安全に確認できました！" }
     ],
@@ -719,19 +720,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q10", category: "scam", source: "スマートフォン着信", title: "国外からの怪しい電話",
+    id: "teen_q10", category: "scam", source: "スマートフォン着信", title: "【着信】重要確認センターより",
     characterName: "自動音声・不審な発信者",
-    narration: "スマホに見覚えのない「+1」から始まる国際電話番号から着信がありました。電話に出ると、片言の日本語で自動音声が流れてきました。\n『こちらは重要確認センターです。あなた宛の重要書類が届いておりません。確認のため、氏名・生年月日・暗証番号を入力してください。』",
+    narration: "スマホに着信がありました。電話に出ると、自動音声が流れてきました。\n画面の情報を確認してみよう。",
     dialogue: [
-      { speaker: "自動音声", line: "ダイヤルの【1】を押して、本人確認情報をご入力ください。" },
-      { speaker: "主人公", line: "（海外からの電話番号だ…重要書類って何の確認だろう？）" }
+      { speaker: "自動音声", line: "「こちらは重要確認センターです。本人確認情報をご入力ください。」" },
+      { speaker: "主人公", line: "「海外からの電話番号だな…何の確認だろう？」" }
     ],
     point: "見覚えのない国際電話や不審な自動音声で個人情報を要求されたら、すぐに切断しましょう。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenOverseasCallScam,
-    desc: "海外番号から電話があり、「重要書類の確認のため氏名や暗証番号を入力してください」と要求された。",
+    desc: "見覚えのない番号から電話があり、自動音声が流れた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "個人情報は一切入力せず、その場で直ちに電話を切って着信拒否に設定する", money: 0, principleTag: "safe", explain: "正解！【喋らない・切断する】国際電話を利用した詐欺です。一切対応せずに切断が正解！" }
     ],
@@ -742,19 +743,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q11", category: "scam", source: "Instagram DM", title: "日本人アカウントからの「投資に興味ない？」",
+    id: "teen_q11", category: "scam", source: "Instagram DM", title: "【DM】Instagramのフォロワーからのメッセージ",
     characterName: "親密なフォロワー",
-    narration: "Instagramで、友達もフォローしている日本人アカウントからフォローされ、何日か世間話をして仲良くなりました。\n相手：「普段どんなバイトしてるの？ 実は私、スマホだけで月15万稼げる暗号資産の運用をやってるんだけど、興味ない？」",
+    narration: "Instagramで、相互フォローの相手からメッセージが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "相手", line: "「私の指示通りに専用サイトに入金するだけだよ。友達にも特別に教えたいな！」" },
-      { speaker: "主人公", line: "（友達もフォローしてる人だし、会話も自然だったけど…投資の話に乗っていいのかな？）" }
+      { speaker: "相手", line: "「私の指示通りに専用サイトに入金するだけだよ。興味ない？」" },
+      { speaker: "主人公", line: "「投資の案内が届いたな…どうしよう？」" }
     ],
     point: "友達がフォローしていても安全とは限りません。SNSで親密になった後に投資や送金を勧めるのは詐欺です。",
-    notification: "📱ピコン DMが届きました",
+    notification: "📱ピコン 新着DMが届きました",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenInvestmentDmscam,
-    desc: "SNSで知り合った相手から「スマホで月15万稼げる投資サイトに入金してみて」と誘われた。",
+    desc: "SNSで知り合った相手からメッセージが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "投資の話には一切乗らず、これ以上やり取りを続けずに相手をブロック・通報する", money: 0, principleTag: "safe", explain: "正解！【騙されない・遮断する】SNS型投資詐欺です。どれだけ親しくなってもお金の話は遮断！" }
     ],
@@ -765,19 +766,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q12", category: "scam", source: "ネット通販", title: "本日まで・数量限定のアイドルグッズ",
+    id: "teen_q12", category: "scam", source: "ネット通販", title: "【数量限定】人気アイドル限定グッズ販売",
     characterName: "限定グッズショップ",
-    narration: "公式ストアで即完売した大好きなアイドルの限定ライブグッズを探していると、別の通販サイトで見つけました。\n定価8,000円のグッズが『39,800円・本日23:59まで・残り1点・販売元：不明な海外業者』と表示されています。",
+    narration: "通販サイトで、完売した限定グッズの販売ページを見つけました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "販売ページ", line: "【プレミア価格】クレジットカードまたは銀行振込で即日発送！キャンセル不可。" },
-      { speaker: "主人公", line: "（どうしても欲しいグッズだ…高額だけど今日を逃したら二度と手に入らないかも…）" }
+      { speaker: "販売ページ", line: "【残り1点】本日23:59までの特別価格！" },
+      { speaker: "主人公", line: "「欲しかったグッズだ。在庫があるぞ。」" }
     ],
     point: "「残り1点」「本日まで」と煽る非公式の怪しいショップは、偽物が届くかお金だけ奪われる危険があります。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenIdolGoodsScam,
-    desc: "完売した人気グッズが非公式通販で高額販売され、「本日限定・残り1点」と購入を急かしている。",
+    desc: "通販サイトに商品が掲載されている。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "衝動買いせず、公式サイトで再販情報がないか確認し、販売元の情報が怪しいサイトでは購入しない", money: 0, principleTag: "safe", explain: "正解！【騙されない・公式確認】悪質な転売・偽通販の罠を見破り、冷静に被害を回避できました！" }
     ],
@@ -788,19 +789,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q13", category: "scam", source: "SNS募集", title: "荷物を運ぶだけ 日給5万円のバイト",
+    id: "teen_q13", category: "scam", source: "SNS募集", title: "【即日払い】書類運搬アシスタント募集",
     characterName: "高額バイト募集",
-    narration: "SNSで『#日払い #高額バイト #荷物を受け取って届けるだけ #書類運搬 #日給5万円 #身分証提示必須』という投稿を見つけました。",
+    narration: "SNSで、バイト募集の投稿を見つけました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "募集担当DM", line: "「誰でもできる簡単なお仕事です。生徒手帳か保険証の写真を送ってくれれば、秘密のチャットアプリで詳細を指示します。」" },
-      { speaker: "主人公", line: "（荷物を運ぶだけで5万円！？ ちょっと怪しい気もするけど、すぐにお金が欲しいな…）" }
+      { speaker: "募集担当DM", line: "「誰でもできる簡単なお仕事です。身分証の写真を送ってください。」" },
+      { speaker: "主人公", line: "「荷物を運ぶだけの仕事か…」" }
     ],
     point: "「荷物や書類を運ぶだけ」は特殊詐欺の『受け子・出し子』です！一度身分証を送ると脅されて抜け出せなくなります！",
     notification: "📱ピコン バイト募集への返信",
     bg: IMAGE_ASSETS.backgrounds.schoolRoute,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenDarkJobScam,
-    desc: "「荷物を運ぶだけで日給5万円。身分証の写真を送ってください」と闇バイトの勧誘を受けた。",
+    desc: "SNSでバイト募集の案内を見つけた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「仕事内容に対して報酬が高すぎる。闇バイト（犯罪の受け子）だ」と見抜いて応募せず通報する", money: 0, principleTag: "safe", explain: "正解！【騙されない・応募しない】特殊詐欺の受け子募集です！関わると逮捕されます。見破って正解！" }
     ],
@@ -811,19 +812,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q14", category: "scam", source: "SNS投稿", title: "ライブ良席チケット譲ります",
+    id: "teen_q14", category: "scam", source: "SNS投稿", title: "【SNS譲渡】人気ライブチケットお譲りします",
     characterName: "チケット譲渡アカウント",
-    narration: "SNSで、大人気ライブの完売チケットについて「急用で行けなくなったのでアリーナ最前列チケットを定価で譲ります。PayPayで先払い確認後に電子チケットを分配します」という投稿を見つけました。",
+    narration: "SNSで、ライブチケット譲渡の投稿を見つけました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "譲渡希望者", line: "「他にも希望者が多いので、今すぐ送金できる方を優先します！」" },
-      { speaker: "主人公", line: "（どうしても行きたかったライブだ！ 定価だし先にお金を送ればチケットがもらえるのかな…？）" }
+      { speaker: "譲渡希望者", line: "「PayPayで先払い確認後に電子チケットを分配します！」" },
+      { speaker: "主人公", line: "「完売したチケットだ。連絡してみようかな。」" }
     ],
     point: "SNSでの個人間先払い取引は極めて危険です。送金後にブロックされて逃げられる詐欺が多発しています。",
     notification: "📱ピコン チケット譲渡のDM",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenTicketResaleScam,
-    desc: "「完売チケットを定価で譲る。PayPayで先払いしてくれたら電子チケットを送る」と連絡が届いた。",
+    desc: "SNSでチケット譲渡の案内が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「SNSでの個人間先払いはチケット詐欺の典型」と判断し、公式リセール（再販）以外では購入しない", money: 0, principleTag: "safe", explain: "正解！【騙されない・公式リセール利用】個人間の先払いは99%詐欺です。公式トレード利用が鉄則！" }
     ],
@@ -834,19 +835,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q15", category: "scam", source: "Instagram DM", title: "著作権侵害でアカウント削除！？",
+    id: "teen_q15", category: "scam", source: "Instagram DM", title: "【警告】著作権侵害に関する申し立て通知",
     characterName: "偽著作権サポート",
-    narration: "SNSを開くと、公式サポート風のアカウントから警告DMが届いていました。\n『【著作権侵害の警告】あなたの投稿が著作権を侵害していると通報されました。24時間以内にリンクから異議申し立てを行わない場合、アカウントが永久削除されます。』",
+    narration: "SNSに、警告のダイレクトメッセージが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "偽サポート", line: "異議申し立てポータル：http://instagram-copyright-appeal-center.com" },
-      { speaker: "主人公", line: "（アカウントが消されたら友達との思い出も消えちゃう…急いで異議申し立てしなきゃ！）" }
+      { speaker: "偽サポート", line: "【著作権侵害】24時間以内にリンクから異議申し立てを行ってください。" },
+      { speaker: "主人公", line: "「アカウントが削除されるって書いてある…どうしよう？」" }
     ],
     point: "「アカウント削除」でパニックにさせ、偽ログイン画面にパスワードを入力させて乗っ取るフィッシングです。",
     notification: "📱ピコン 【警告】著作権侵害通知",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenCopyrightScam,
-    desc: "「著作権侵害で通報された。24時間以内にリンクからログインして申し立てしないと削除する」と届いた。",
+    desc: "著作権侵害の警告DMが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "DM内のリンクは開かず、公式アプリの正規の「設定・アカウントステータス」画面から確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・公式設定で確認】アカウント乗っ取りを狙うフィッシングです。公式画面から確認して正解！" }
     ],
@@ -857,19 +858,19 @@ const QUESTIONS_TEEN = [
     ]
   },
   {
-    id: "teen_q16", category: "scam", source: "SNS動画広告", title: "有名人出演の月20万円稼げるアプリ",
+    id: "teen_q16", category: "scam", source: "SNS動画広告", title: "【広告】話題の副業アプリのご紹介",
     characterName: "AI副業動画広告",
-    narration: "SNSを見ていると、大人気タレントが出演する「誰でも月20万円稼げる最新スマホアプリ」の動画広告が流れてきました。",
+    narration: "SNSを見ていると、動画広告が流れてきました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "有名タレント（AI偽動画）", line: "「私もこのアプリを毎日使ってます！ 今だけ登録料無料で特別なボーナスがもらえますよ！」" },
-      { speaker: "主人公", line: "（あの人気タレントが本人の声でおすすめしてる！ 本当に稼げるアプリなのかな？）" }
+      { speaker: "有名タレント（AI動画）", line: "「私もこのアプリを毎日使ってます！特別なボーナスがもらえますよ！」" },
+      { speaker: "主人公", line: "「あの有名人が紹介してるアプリだ。どうなんだろう？」" }
     ],
     point: "AI技術（ディープフェイク）で有名人の顔や声を偽装した詐欺広告です。本人が動画で話していても信用してはいけません。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.teenAiFakeAdScam,
-    desc: "有名人が動画で「私も使っている」と副業アプリをおすすめしている広告が表示された。",
+    desc: "有名人が出演する動画広告が流れてきた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「AIで作られた有名人の偽動画（ディープフェイク）だ」と見破り、本人の公式SNSで確認して無視する", money: 0, principleTag: "safe", explain: "正解！【騙されない・AI偽動画を見破る】ディープフェイク偽広告です。有名人が副業を勧める広告は詐欺！" }
     ],
@@ -887,19 +888,19 @@ const QUESTIONS_TEEN = [
 const QUESTIONS_ADULT = [
   // ── 詐欺（12問） ──
   {
-    id: "adult_q01", category: "scam", source: "SMS通知", title: "自動更新完了（サブスク架空請求）",
+    id: "adult_q01", category: "scam", source: "SMS通知", title: "【重要】会員登録の自動更新完了のお知らせ",
     characterName: "動画サービスカスタマー",
-    narration: "スマートフォンのSMSに通知が届きました。\n内容：【重要】会員登録中のクラウド動画見放題プラン（月額49,800円）が自動更新されました。本日24時を過ぎると返金不可となります。退会・解約希望窓口：050-XXXX-XXXX",
+    narration: "スマートフォンのSMSに通知が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "通知メッセージ", line: "心当たりのない登録・誤登録の解約手続きはお電話にて承ります。" },
-      { speaker: "あなた", line: "（月額5万円近い高額請求！？ 無料お試し期間の解約を忘れていたのだろうか…？）" }
+      { speaker: "通知メッセージ", line: "【重要】動画見放題プランが自動更新されました。解約手続きはお電話にて承ります。" },
+      { speaker: "あなた", line: "（高額な請求通知が届いている…どう対応すべきか？）" }
     ],
     point: "身に覚えのない自動更新を装い、焦らせて電話をかけさせて電子マネーや振込を迫る架空請求詐欺です。",
-    notification: "📱ピコン 【重要】自動更新のお知らせ",
+    notification: "📱ピコン 新着メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.subscriptionScam,
-    desc: "「月額49,800円が自動更新されました。本日中に解約希望の方は記載の電話番号へ」とSMSが届いた。",
+    desc: "自動更新完了の通知が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "記載された電話番号には絶対に連絡せず、普段利用している正規アプリの契約管理画面から確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・公式マイページ確認】架空請求詐欺です。相手が提示した連絡先ではなく公式画面で確認が鉄則！" }
     ],
@@ -910,19 +911,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q02", category: "scam", source: "Eメール", title: "e-Tax還付金受取手続き",
+    id: "adult_q02", category: "scam", source: "Eメール", title: "【国税庁】過年度税額還付のご案内",
     characterName: "国税庁税務相談課",
-    narration: "メールボックスに「国税庁 e-Tax」を名乗る重要メールが届きました。\n内容：【重要】過年度の確定申告にかかる還付金（38,400円）の送金準備が完了いたしました。受取口座の有効期限が迫っておりますので、下記リンクより払戻先口座情報を照会してください。",
+    narration: "メールボックスに1通のメールが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "e-Tax偽装メール", line: "認証URL：http://e-tax.nta-go-jp.secure-receive.com（※24時間以内にログインしてください）" },
-      { speaker: "あなた", line: "（確定申告の還付金か？ ちょうど申告時期だし本物に見えるが…）" }
+      { speaker: "e-Tax通知メール", line: "【重要】還付金の送金準備が完了いたしました。下記リンクより口座情報を照会してください。" },
+      { speaker: "あなた", line: "（国税庁からの還付金案内だ。確認してみよう。）" }
     ],
     point: "国税庁や税務署がメールの直リンクから口座情報やカード番号、暗証番号を入力させることは絶対にありません。",
-    notification: "📱ピコン 【国税庁】還付金のお受け取りについて",
+    notification: "📱ピコン 新着メールが届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.taxRefundScam,
-    desc: "「確定申告の還付金38,400円の送金手続き。リンクより受取口座とカード情報を入力してください」とメールが届いた。",
+    desc: "国税庁からの還付金案内メールが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "メールのリンクは一切開かず、検索等で直接開いた国税庁の正規e-Taxマイページから通知を確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・公式サイト照会】フィッシング詐欺です。公的機関の重要通知は自発的に公式サイトへログインして確認！" }
     ],
@@ -933,19 +934,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q03", category: "scam", source: "SMS通知", title: "銀行不正ログイン検知",
+    id: "adult_q03", category: "scam", source: "SMS通知", title: "【〇〇銀行】異常取引検知に伴う取引規制のお知らせ",
     characterName: "銀行セキュリティデスク",
-    narration: "スマートフォンのSMSに、利用している大手銀行から緊急通知が届きました。\n内容：【重要】異常な取引を検知したため、お取引を一時規制しております。ご本人様によるご確認はこちらから手続きを行ってください。http://bank-security-verify.net",
+    narration: "スマートフォンのSMSに、利用している銀行から緊急通知が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "偽サイト画面", line: "本人確認のため、店番号・口座番号・ログインパスワードおよび、スマホに届いたワンタイムパスワードを入力してください。" },
-      { speaker: "あなた", line: "（口座が止められたら支払いが滞る…すぐに認証して解除しなきゃ…）" }
+      { speaker: "偽サイト画面", line: "本人確認のため、口座番号とスマホに届いたワンタイムパスワードを入力してください。" },
+      { speaker: "あなた", line: "（取引規制がかかっているようだ…どう対応すべきか？）" }
     ],
     point: "「不正利用検知」で焦らせ、本物の銀行から届いたワンタイムパスワード（OTP）を入力させて不正送金する手口です。",
-    notification: "📱ピコン 【重要】取引規制のお知らせ",
+    notification: "📱ピコン 新着メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.bankOtpScam,
-    desc: "「不正ログイン検知のため口座規制中。リンク先でワンタイムパスワードを入力してください」とSMSが届いた。",
+    desc: "銀行からの取引規制SMSが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "SMSのリンクは絶対に開かず、普段使っている正規の公式バンキングアプリを直接起動して状況を確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・公式アプリ確認】ワンタイムパスワード搾取型フィッシングです。公式アプリから直接確認して完全防御！" }
     ],
@@ -956,19 +957,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q04", category: "scam", source: "電話・LINE誘導", title: "偽警察逮捕状詐欺",
+    id: "adult_q04", category: "scam", source: "電話・LINE誘導", title: "【重要】捜査手続きに関するご連絡",
     characterName: "警察庁捜査二課",
-    narration: "スマホに警察を名乗る人物から電話があり、「あなたの名義の口座が資金洗浄に使われている。詳しい事情聴取のためLINEを追加してください」と指示されました。LINEを追加すると「逮捕状」と書かれた書類の画像が送られてきました。",
+    narration: "警察を名乗る人物から電話があり、LINEを追加するよう指示されました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "自称・捜査官", line: "「身の潔白を証明するため、保釈保証金として50万円をこちらの指定口座へ一時供託してください。捜査終了後に返金します。」" },
-      { speaker: "あなた", line: "（本物の逮捕状のような書類まで見せられた…どう対応すべきか…？）" }
+      { speaker: "自称・捜査官", line: "「保釈保証金としてこちらの指定口座へ一時供託してください。」" },
+      { speaker: "あなた", line: "（書類の画像が送られてきた…どう対応すべきか？）" }
     ],
     point: "警察がSNS（LINE）で事情聴取を行ったり、逮捕状の画像を送ったり、保釈金を振り込ませることは100%ありません。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.fakeArrestWarrant,
-    desc: "警察を名乗りLINEで逮捕状を見せられ、「身の潔白のため保証金を振り込め」と指示された。",
+    desc: "警察を名乗る人物からLINEで書類が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "指示には一切従わず通話を切り、相手の連絡先ではなく自ら調べた警察署の代表番号へ通報・照会する", money: 0, principleTag: "safe", explain: "正解！【騙されない・警察へ確認】LINE誘導型の偽警察詐欺です。警察がSNSで金銭を要求することは絶対にありません！" }
     ],
@@ -979,19 +980,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q05", category: "scam", source: "SNS広告・LINE", title: "投資勉強会（著名人悪用）",
+    id: "adult_q05", category: "scam", source: "SNS広告・LINE", title: "【招待】著名アナリスト限定投資勉強会",
     characterName: "有名アナリストアシスタント",
-    narration: "SNSを見ていると、テレビでも有名な経済アナリストの写真を使った投資広告からLINEグループに誘導されました。グループ内では複数の参加者が「指示通りに買ったら100万円儲かった！」と投稿しています。",
+    narration: "SNS広告からLINEグループに案内されました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "グループ管理者", line: "「明日公開の極秘銘柄です。最低一口30万円から、こちらの専用海外プラットフォームへご入金ください。」" },
-      { speaker: "あなた", line: "（参加者全員が利益を出していると投稿している…少額なら試す価値はあるか…？）" }
+      { speaker: "グループ管理者", line: "「明日公開の銘柄です。こちらの専用プラットフォームへご入金ください。」" },
+      { speaker: "あなた", line: "（グループ内で多くの人がやり取りしているな…）" }
     ],
     point: "有名人の肖像を無断悪用した偽広告からLINEグループへ誘導し、サクラ全員で煽って入金させる「SNS型投資詐欺」です。",
-    notification: "📱ピコン 投資勉強会へのご案内",
+    notification: "📱ピコン グループへの招待が届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.investmentGroupScam,
-    desc: "有名アナリストの偽LINEグループで「全員が儲かっている。指定プラットフォームに入金して」と指示された。",
+    desc: "LINEグループで投資案内が行われている。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "著名人の公式SNSやニュースで投資詐欺の注意喚起を確認し、LINEグループを即座に退会・通報する", money: 0, principleTag: "safe", explain: "正解！【騙されない・公式確認】SNS型投資詐欺です。グループ内の「儲かった」という投稿はすべてサクラの自作自演！" }
     ],
@@ -1002,19 +1003,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q06", category: "scam", source: "電話・訪問勧誘", title: "火災保険で無料リフォーム（不正請求）",
+    id: "adult_q06", category: "scam", source: "電話・訪問勧誘", title: "火災保険を活用した住宅修繕のご案内",
     characterName: "住宅災害コンサルタント",
-    narration: "自宅に業者から連絡がありました。\n「火災保険を使えば自己負担ゼロで屋根を修理できます。経年劣化の傷みでも、台風で壊れたことにして申請書類を作成しますのでご安心ください。」",
+    narration: "自宅に業者から連絡がありました。\n「火災保険を使えば自己負担ゼロで屋根を修理できます。申請手続きはこちらで代行します。」",
     dialogue: [
-      { speaker: "業者", line: "申請手続きはこちらで代行します。保険金が下りたらその中から工事費と手数料30%をいただきます。" },
-      { speaker: "あなた", line: "（自己負担なしでリフォームできるなら得だが…事実と違う理由で申請していいのか…？）" }
+      { speaker: "業者", line: "「保険金が下りたらその中から工事費をいただきますのでご安心ください。」" },
+      { speaker: "あなた", line: "（保険で修繕できるという案内だが…どう対応すべきか？）" }
     ],
     point: "経年劣化を自然災害と偽って保険請求することは保険金詐欺（犯罪）に該当し、高額な違約金を請求されるトラブルが多発しています。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
-    character: IMAGE_ASSETS.characters.suspiciousVisitor,
+    character: IMAGE_ASSETS.characters.workerLabor,
     screenshot: IMAGE_ASSETS.screenshots.insuranceRepairScam,
-    desc: "「火災保険を使えば自己負担ゼロで修繕できる。劣化を台風被害として代行申請する」と勧誘された。",
+    desc: "「火災保険で自己負担なく修繕できる」と案内された。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「虚偽の理由で保険申請することはできない」ときっぱり断り、契約している正規の保険会社へ相談する", money: 0, principleTag: "safe", explain: "正解！【騙されない・正規保険会社へ相談】不正請求トラブルです。経年劣化を偽る申請は犯罪リスクがあります！" }
     ],
@@ -1025,41 +1026,42 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q07", category: "help", source: "街中（コンビニATM）", title: "ATM高齢者（還付金詐欺阻止）",
+    id: "adult_q07", category: "help", source: "街中（コンビニATM）", title: "コンビニATMコーナーにて",
     characterName: "困っている高齢者",
-    narration: "コンビニのATM前で、高齢者がスマホで誰かと通話しながらATMを操作しています。\n電話口から「はい、次は【確認】を押して、数字の【985200】を入力してください」と指示が聞こえてきます。",
+    narration: "コンビニのATM前で、おばあさんがスマホで誰かと通話しながらATMを操作しています。\n電話口から指示が聞こえてきます。",
     dialogue: [
-      { speaker: "高齢者", line: "「これで市役所からの給付金が私の口座に振り込まれるんですね…？」" },
-      { speaker: "あなた", line: "（電話で数字を入力させてる…これって還付金詐欺の送金操作だ！）" }
+      { speaker: "おばあさん", line: "「これで給付金が私の口座に振り込まれるんですね…？」" },
+      { speaker: "あなた", line: "（電話で数字を入力させているな…どう対応すべきか？）" }
     ],
     point: "ATMの操作で給付金や還付金が受け取れることは絶対にありません。数字の入力は送金額を指定させられています。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.atm,
     character: IMAGE_ASSETS.characters.elderlyWomanCane,
     screenshot: null,
-    desc: "高齢者が電話で指示を受けながらATMで「給付金受取」と信じて送金操作をしている。",
+    desc: "おばあさんが電話で指示を受けながらATMを操作している。あなたならどうする？",
     correctChoices: [
-      { text: "「お母さん、それ還付金詐欺です！送金操作させられています！」と声をかけて止め、コンビニ店員と連携する", money: 300, principleTag: "safe", explain: "✨ 見事な救出！【騙されない・店員と連携】ATM操作で還付金が戻ることは絶対にありません。店員と連携して被害を防ぎました！（お礼+300円）" }
+      { text: "「おばあさん、それ還付金詐欺です！送金操作させられています！」と声をかけて止め、コンビニ店員と連携する", money: 300, principleTag: "safe", explain: "✨ 見事な救出！【騙されない・店員と連携】ATM操作で還付金が戻ることは絶対にありません。店員と連携しておばあさんの被害を防ぎました！（お礼+300円）" }
     ],
     wrongChoices: [
-      { text: "電話口の相手に「代わりに暗証番号を押してあげます」と伝えて高齢者の暗証番号を聞き出す", money: -25000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】高齢者の暗証番号を漏洩させてしまい、預金が全額引き出されてしまいました。" },
-      { text: "親切心から高齢者の代わりに操作を代わり、相手の言う通りの送金ボタンを押してあげる", money: -30000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】詐欺の送金を手伝ってしまい、高齢者の大切な預金を奪わせてしまいました。" },
-      { text: "電話口の男から「市役所の正規手続きです」と説明され、「そうなのか」とそのまま見守る", money: -15000, principleTag: "fooled", damageType: "money", explain: "【相手に騙された！】犯人の説明を信じてしまい、高齢者の送金を止めることができませんでした。" }
+      { text: "電話口の相手に「代わりに暗証番号を押してあげます」と伝えておばあさんの暗証番号を聞き出す", money: -25000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】おばあさんの暗証番号を漏洩させてしまい、預金が全額引き出されてしまいました。" },
+      { text: "親切心からおばあさんの代わりに操作を代わり、相手の言う通りの送金ボタンを押してあげる", money: -30000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】詐欺の送金を手伝ってしまい、高齢者の大切な預金を奪わせてしまいました。" },
+      { text: "電話口の男から「市役所の正規手続きです」と説明され、「そうなのか」とそのまま見守る", money: -15000, principleTag: "fooled", damageType: "money", explain: "【相手に騙された！】犯人の説明を信じてしまい、おばあさんの送金を止めることができませんでした。" }
     ]
   },
   {
-    id: "adult_q08", category: "real", source: "クレジットカード会社", title: "【本物】クレジットカード会社からの「ご利用明細確定」通知",
+    id: "adult_q08", category: "real", source: "クレジットカード会社", title: "【〇〇カード】今月のご利用代金明細確定のお知らせ",
     characterName: "カード会社公式",
-    narration: "普段利用しているカード会社からメールが届きました。\n内容：【〇〇カード】今月のご利用代金明細書を作成いたしました。明細内容は公式Webサービス（会員ログイン画面）または公式アプリよりご確認ください。※不審なフィッシングメールにご注意ください。",
+    narration: "普段利用しているカード会社からメールが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（普段使っているカード会社の定期明細案内だ。直接ログインさせる怪しいリンクもないな。）" }
+      { speaker: "カード会社通知", line: "【〇〇カード】今月のご利用代金明細書を作成いたしました。公式Webサービスよりご確認ください。" },
+      { speaker: "あなた", line: "（定期明細の案内メールだ。確認してみよう。）" }
     ],
     point: "定期的な利用明細の確定通知であり、個人情報やカード番号の入力を急かす文面がないものは本物の正規連絡です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.adultCardStatementReal,
-    desc: "クレジットカード会社から「今月のご利用明細が確定しました。公式サイトよりご確認ください」と届いた。",
+    desc: "クレジットカード会社から明細通知が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "ブラウザのブックマークに保存してあるカード会社の会員サイトへログインして明細を確認する", money: 0, principleTag: "safe", explain: "正解！【正規確認】正規の案内を自ら安全なブックマーク経由で確認できました！" }
     ],
@@ -1070,18 +1072,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q09", category: "help", source: "職場（オフィス）", title: "Microsoft偽警告（同僚サポート詐欺阻止）",
+    id: "adult_q09", category: "help", source: "職場（オフィス）", title: "職場の同僚のPC画面トラブル",
     characterName: "職場の同僚",
-    narration: "オフィスで仕事中、隣の同僚が青ざめた顔で受話器を持ち、けたたましい警告音が鳴るノートPCの画面を見つめていました。\n同僚：「急に『ウイルス感染！PCがロックされました』って警告が出て…画面のサポート窓口に電話したら、今すぐ遠隔操作ソフトを入れて電子マネーで修理代を払えと言われてるんだけど…」",
+    narration: "オフィスで仕事中、隣の同僚が受話器を持ち、ノートPCの画面を見つめていました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "同僚", line: "会社の機密データが漏洩したら私の責任になる…言われた通りにお金を払った方がいいよね…！？" }
+      { speaker: "同僚", line: "「急に警告画面が出て…画面のサポート窓口に電話したら修理代が必要と言われてるんだけど…」" },
+      { speaker: "あなた", line: "（同僚のパソコンに警告画面が出ているな…どう対応すべきか？）" }
     ],
     point: "全画面警告と警告音はWebブラウザ上の偽物（サポート詐欺）です。遠隔操作ソフトを入れると社内ネットワークの機密情報が窃取されます。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
-    character: IMAGE_ASSETS.characters.workerGas,
+    character: IMAGE_ASSETS.characters.colleagueTroubled,
     screenshot: IMAGE_ASSETS.screenshots.supportScamHelp,
-    desc: "同僚がPCの偽警告画面にパニックになり、電話の指示で遠隔操作ソフトを入れようとしている。",
+    desc: "同僚のPCに警告画面が表示されている。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「それ偽物のサポート詐欺だよ！今すぐ電話を切って、ブラウザを強制終了（または社内情シスへ連絡）しよう！」と同僚を制止する", money: 300, principleTag: "safe", explain: "✨ 職場を救った！【騙されない・強制終了して情シス報告】サポート詐欺です。電話を切らせてブラウザを終了させ、機密流出を防ぎました！（お礼+300円）" }
     ],
@@ -1092,19 +1095,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q10", category: "scam", source: "スマートフォンSMS", title: "関税未納（国際郵便スミッシング）",
+    id: "adult_q10", category: "scam", source: "スマートフォンSMS", title: "【日本税関】通関手数料および関税のお支払いについて",
     characterName: "日本税関通関センター",
-    narration: "スマートフォンに「日本税関」を名乗る緊急SMSが届きました。\n内容：【日本税関】海外から発送されたお荷物について関税（2,980円）が未納のため通関が保留されています。本日中に納付がない場合、商品は廃棄処分となります。支払い窓口：http://customs-japan-tax.vip",
+    narration: "スマートフォンにSMSが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "SMS通知", line: "支払い方法：クレジットカード決済 / Appleギフトカード決済" },
-      { speaker: "あなた", line: "（海外通販で頼んだ荷物があったかもしれない…2980円なら払うべきか…？）" }
+      { speaker: "SMS通知", line: "【日本税関】関税が未納のため通関手続きが保留されています。本日中にご納付ください。" },
+      { speaker: "あなた", line: "（税関からの連絡だ。確認してみよう。）" }
     ],
     point: "税関が個人の携帯電話へSMSで直接関税の納付を要求したり、ギフトカードで支払わせることは絶対にありません。",
-    notification: "📱ピコン 【税関】関税未納通知",
+    notification: "📱ピコン 新着メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.customsFeeScam,
-    desc: "「国際郵便の関税2,980円が未納。本日中にリンクから支払わないと荷物を処分する」とSMSが届いた。",
+    desc: "税関を名乗るSMSが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「税関がSMSで直接支払いを迫ることはない」と見抜き、通知のリンクは使わず削除する", money: 0, principleTag: "safe", explain: "正解！【騙されない・スミッシング遮断】税関を騙るスミッシング詐欺です。ギフトカード決済要求を見事に回避！" }
     ],
@@ -1115,18 +1118,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q11", category: "scam", source: "スマートフォンSMS", title: "マイナポータル（電子証明書更新）",
+    id: "adult_q11", category: "scam", source: "スマートフォンSMS", title: "【重要】マイナンバーカードに関するお知らせ",
     characterName: "デジタル庁マイナポータル",
-    narration: "スマートフォンに「デジタル庁」を名乗る緊急SMSが届きました。\n内容：【デジタル庁】マイナンバーカードの電子証明書が有効期限切れを迎えています。本日中に再登録されない場合、健康保険証連携および公金口座が一時停止されます。更新手続き：http://myna-portal-auth.com",
+    narration: "スマートフォンにSMSが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（保険証が使えなくなったら困る…今すぐ暗証番号を入力して更新すべきか…？）" }
+      { speaker: "SMS通知", line: "【重要】マイナンバーカードの電子証明書の有効期限が切れています。下記リンクより更新手続きをお願いいたします。" },
+      { speaker: "あなた", line: "（マイナンバーカードの通知だ…どう対応すべきか？）" }
     ],
     point: "デジタル庁や自治体がSMSでマイナンバーカードの暗証番号や暗証コードの再入力を求めることは絶対にありません。",
-    notification: "📱ピコン 【デジタル庁】電子証明書更新のお知らせ",
+    notification: "📱ピコン 新着メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.mynaPortalScam,
-    desc: "「マイナンバーカードの電子証明書が期限切れ。本日中にリンクから暗証番号を再登録してください」と届いた。",
+    desc: "スマホに「Digital Agency」からメッセージが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "メッセージのリンクは開かず、公式のマイナポータルアプリまたは市区町村窓口で更新状況を確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・公的窓口で確認】マイナンバー情報を狙うフィッシングです。更新は正規ルートで確認が鉄則！" }
     ],
@@ -1137,18 +1141,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q12", category: "scam", source: "スマートフォンSMS", title: "電気・ガス停止予告",
+    id: "adult_q12", category: "scam", source: "スマートフォンSMS", title: "【〇〇電力】電力供給停止予告に関する重要なお知らせ",
     characterName: "電力供給センター",
-    narration: "スマートフォンのSMSに、電力会社を名乗る緊急警告が届きました。\n内容：【〇〇電力】電気料金（4,980円）の未払いが確認されました。本日18時までにお支払いが確認できない場合、電力の供給を停止いたします。至急お支払いください：http://power-pay-bill.net",
+    narration: "スマートフォンのSMSに通知が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（電気が止められたら仕事も生活もできない！ 4,980円ならすぐリンクから払うべきか…？）" }
+      { speaker: "SMS通知", line: "【〇〇電力】電気料金の未払いが確認されました。本日18時までにお支払いください。" },
+      { speaker: "あなた", line: "（電気代の未払い通知だ…確認してみよう。）" }
     ],
     point: "「本日夕方に電気を止める」など極度の焦りを生む文面はスミッシング詐欺の典型です。正規の電力会社が事前予告なしにSMSだけで即日送電停止することはありません。",
-    notification: "📱ピコン 【警告】電力供給停止予告",
+    notification: "📱ピコン 新着メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.utilityStopScam,
-    desc: "「電気料金未払いのため本日18時に電力供給を停止します。至急リンクから支払ってください」とSMSが届いた。",
+    desc: "電力会社を名乗るSMSが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "SMSのリンクは絶対に開かず、紙の検針票に記載された公式の問い合わせ番号または正規マイページで確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・正規請求書で確認】ライフライン停止を騙る詐欺です。焦ってリンクから決済せず自発照会！" }
     ],
@@ -1159,19 +1164,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q13", category: "scam", source: "ビジネスEメール", title: "偽請求書ビジネスメール（BEC）",
+    id: "adult_q13", category: "scam", source: "ビジネスEメール", title: "【請求書】お取引代金のお振込先口座変更について",
     characterName: "取引先担当者名義",
-    narration: "会社のメールに、普段取引している会社とよく似たドメインから請求書メールが届きました。\n内容：【重要なお知らせ】弊社取引口座の変更について。今月度のお取引代金（250,000円）につきましては、セキュリティ強化のため下記の新指定口座へお振込みをお願いいたします。",
+    narration: "会社のメールに請求書が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "メール文面", line: "※本口座変更は監査法人の指導によるものです。従来の旧口座へはお振込みにならないようご注意ください。" },
-      { speaker: "あなた", line: "（いつもやり取りしている取引先の名前だ。口座変更の案内通りに処理していいだろうか…？）" }
+      { speaker: "メール文面", line: "【重要なお知らせ】セキュリティ強化のため下記の新指定口座へお振込みをお願いいたします。" },
+      { speaker: "あなた", line: "（振込先口座変更の案内だ。確認してみよう。）" }
     ],
     point: "取引先になりすまして振込先を変更させる「ビジネスメール詐欺（BEC）」です。メールの連絡先ではなく、既存の電話番号等で必ず確認しましょう。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.businessInvoiceScam,
-    desc: "取引先から「振込先口座が変更になったので新口座へ振り込んでください」と請求書メールが届いた。",
+    desc: "取引先から振込先変更の請求書メールが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "メールの指示だけを鵜呑みにせず、以前から社内で登録してある取引先の代表電話番号へ電話して口座変更の事実を確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・別ルート電話確認】ビジネスメール詐欺です。別ルート（既存の電話番号）での確認が最大の防壁！" }
     ],
@@ -1182,19 +1187,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q14", category: "scam", source: "マッチングチャット", title: "マッチング相手からの「会うための交通費を貸して」",
+    id: "adult_q14", category: "scam", source: "マッチングチャット", title: "さくら☆さんからのメッセージ",
     characterName: "さくら☆",
-    narration: "マッチングアプリで知り合ってやり取りを重ね、仲良くなった女性「さくら」と今日初めて会う約束をしていました。\nしかし待ち合わせ直前に「ごめんなさい、交通費がないです…少しだけ貸してもらえないかな？会ったら必ず返すから！30,000円でいいです…！」とメッセージが届きました。",
+    narration: "マッチングアプリで仲良くなった「さくら」からメッセージが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "さくら", line: "「30,000円でいいです…！よろしくお願いします🥺」" },
-      { speaker: "あなた", line: "（せっかく会える約束だったのに…会ったら返してくれると言っているし送金すべきか…？）" }
+      { speaker: "さくら", line: "「ごめんなさい、交通費がないです…少しだけ貸してもらえないかな？30,000円でいいです…！」" },
+      { speaker: "あなた", line: "（メッセージが届いたな…どう返信すべきか？）" }
     ],
     point: "親密になった後に「会うための交通費」「トラブル解決金」などと理由をつけて先払いを求めるのはロマンス詐欺の典型です！",
-    notification: "📱ピコン さくらからのメッセージ",
+    notification: "📱ピコン 新着メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.adultRomanceChatScam,
-    desc: "「会うための交通費30,000円を貸して。会ったら必ず返すから」と送金を要求された。",
+    desc: "マッチング相手からメッセージが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「会う前の金銭要求（先払い）はロマンス詐欺の典型」と見抜き、送金せずにやり取りを中止・通報する", money: 0, principleTag: "safe", explain: "正解！【騙されない・先払いは絶対拒絶】典型的なロマンス詐欺です。会ったことのない相手にお金を送金せず完全回避！" }
     ],
@@ -1205,18 +1210,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q15", category: "scam", source: "Eメール", title: "身に覚えのないホテル予約「キャンセルはこちら」",
+    id: "adult_q15", category: "scam", source: "Eメール", title: "【予約完了】高級リゾートホテルご宿泊予約の確認",
     characterName: "旅行予約サイトカスタマー",
-    narration: "メールボックスを開くと、有名ホテル予約サイトから予約完了メールが届いていました。\n内容：【〇〇トラベル】スイートルーム2泊（合計198,000円）のご予約が完了しました。本日15時を過ぎるとキャンセル料100%が発生します。予約の取り消し・照会はこちら：http://travel-booking-cancel.net",
+    narration: "メールボックスを開くと、ホテル予約完了メールが届いていました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（予約した覚えがまったくない！ 20万円近く請求されたら大変だ、急いでキャンセルしなきゃ…！）" }
+      { speaker: "予約完了メール", line: "【予約完了】本日15時以降のキャンセルはキャンセル料100%が発生いたします。" },
+      { speaker: "あなた", line: "（予約完了メールが届いている…どう対応すべきか？）" }
     ],
     point: "身に覚えのない超高額な予約メールを送り、「キャンセル料100%」で焦らせて偽の取消フォームへクレカ情報を再入力させるフィッシング詐欺です。",
-    notification: "📱ピコン 【予約完了】キャンセル料のお知らせ",
+    notification: "📱ピコン 新着メールが届きました",
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.hotelBookingScam,
-    desc: "「身に覚えのないホテル予約（20万円）。本日中の取消はキャンセル料無料、リンクより手続きを」とメールが届いた。",
+    desc: "ホテルの予約確認メールが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "メール記載のリンクは一切開かず、普段使っている正規の旅行アプリにログインして予約履歴が存在しないことを確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・正規アプリ照会】偽の予約完了メールで焦らせる詐欺です。正規の予約履歴を確認して冷静に対処！" }
     ],
@@ -1227,18 +1233,19 @@ const QUESTIONS_ADULT = [
     ]
   },
   {
-    id: "adult_q16", category: "real", source: "クレジットカード会社", title: "【本物】オンライン決済時の「3Dセキュア本人認証」",
+    id: "adult_q16", category: "real", source: "クレジットカード会社", title: "【本人認証】オンライン決済3Dセキュア認証",
     characterName: "カード会社公式認証",
-    narration: "自ら公式オンラインストアでノートパソコンを購入し、決済ボタンを押したところ、カード会社の「本人認証サービス（3Dセキュア）」の画面が表示されました。\n画面：『お取引内容：〇〇公式ストア / 金額：88,000円。ご登録のカード会社公式ワンタイム認証アプリまたはSMSで届いたワンタイムパスワードをご入力ください。』",
+    narration: "公式オンラインストアでノートパソコンを購入し、決済ボタンを押しました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（自分で今まさに購入手続きをしている最中の認証画面だ。金額と店舗名も一致している。）" }
+      { speaker: "認証画面", line: "ご登録のワンタイム認証アプリまたはSMSで届いたワンタイムパスワードをご入力ください。" },
+      { speaker: "あなた", line: "（本人認証の画面が表示された。確認してみよう。）" }
     ],
     point: "自らが購入手続きを行っている最中に表示され、決済金額や利用加盟店名が正確に一致している正規の3Dセキュア画面は安全な本人認証です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.cardFraudPhishing,
-    desc: "自分で買い物をしている最中に、金額と店舗名が正確に一致するカード会社の3Dセキュア画面が表示された。",
+    desc: "買い物中にカードの本人認証画面が表示された。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "購入店舗名と請求金額が正しいことを確認した上で、正規のワンタイムパスワードを入力して決済を完了する", money: 0, principleTag: "safe", explain: "正解！【正規確認】自分が操作中の正規な3Dセキュア認証です。金額と店舗名を確認して安全に購入完了！" }
     ],
@@ -1256,19 +1263,19 @@ const QUESTIONS_ADULT = [
 const QUESTIONS_SENIOR = [
   // ── 詐欺（11問） ──
   {
-    id: "senior_q01", category: "scam", source: "固定電話・LINE", title: "偽警察からの電話とLINE「逮捕状」",
-    characterName: "偽警察官",
-    narration: "固定電話に警察官を名乗る人物から電話があり、「あなたの口座が犯罪に使われています。詳しく確認するのでLINEを追加してください」と言われました。LINEを追加すると警察官を名乗る相手から「逮捕状」と書かれた画像が送られてきました。",
+    id: "senior_q01", category: "scam", source: "固定電話・LINE", title: "警察署捜査二課を名乗る電話",
+    characterName: "警察捜査二課",
+    narration: "固定電話に警察を名乗る電話があり、LINEを追加するよう案内されました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "自称・警察官", line: "「このままだと逮捕されます。口座の預金を保護するため、金融庁の安全口座へ全額送金してください。」" },
-      { speaker: "あなた", line: "（本物の逮捕状のような画像まで送られてきた…動揺してしまうがどうすべきか…？）" }
+      { speaker: "自称・警察官", line: "「口座を保護するため、指定の口座へ預金を移してください。」" },
+      { speaker: "あなた", line: "（警察からの連絡だ…どう対応すべきか？）" }
     ],
     point: "警察がSNS（LINE）で連絡を取ったり、逮捕状の画像を送ったり、お金を送金させることは絶対にありません！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.fakePoliceLineScam,
-    desc: "警察を名乗りLINEで逮捕状を見せられ、「お金を安全口座へ送金しろ」と言われた。",
+    desc: "警察を名乗る人物からLINEで画像が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "相手との連絡を直ちに絶ち、相手が示した連絡先ではなく自分で調べた警察署の代表番号へ確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・警察へ確認】偽警察によるSNS誘導詐欺です。警察がお金を送金させることは絶対にありません！" }
     ],
@@ -1279,18 +1286,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q02", category: "scam", source: "スマートフォンSMS", title: "「特別給付金5万円」の受給手続きSMS",
+    id: "senior_q02", category: "scam", source: "スマートフォンSMS", title: "【年金給付センター】特別給付金受給手続きのご案内",
     characterName: "年金給付センターサポート",
-    narration: "スマホに「年金給付センターサポート」を名乗るSMSが届きました。\n内容：【重要】特別給付金50,000円の受給資格が確認されました。本日中に受給手続きを完了してください。受取口座の登録はこちら：http://nenkin-kyufu-auth.jp",
+    narration: "スマホのSMSに通知が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（給付金が5万円もらえるのか？『本日中』と書かれているし早く手続きすべきか…？）" }
+      { speaker: "SMS通知", line: "【特別給付金】本日中に受給手続きを完了してください。" },
+      { speaker: "あなた", line: "（給付金に関する案内が届いている…）" }
     ],
     point: "給付金を装って「本日中」と焦らせ、銀行口座情報や暗証番号を入力させるフィッシング詐欺です。",
-    notification: "📱ピコン 【給付金】受給手続きのお知らせ",
+    notification: "📱ピコン 新着メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.benefitScam,
-    desc: "「特別給付金5万円の受給手続き。本日中にリンクから口座情報を登録してください」と届いた。",
+    desc: "給付金の案内SMSが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "SMSのボタンは押さず、給付金について公的機関の公式サイトや自治体窓口で直接確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・自治体窓口で確認】給付金を騙るフィッシング詐欺です。SMSのリンクを開かず公的窓口で確認が鉄則！" }
     ],
@@ -1301,19 +1309,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q03", category: "scam", source: "固定電話", title: "息子を名乗る「急にお金が必要になった」",
+    id: "senior_q03", category: "scam", source: "固定電話", title: "息子を名乗る人物からの電話",
     characterName: "自称・息子",
-    narration: "固定電話が鳴り、慌てた様子の男の声が聞こえてきました。\n「母さん？ 俺だけど…風邪で声が変なんだ。実は会社の小切手が入ったカバンを無くしてしまって、今日中に補填のお金が必要なんだ。」",
+    narration: "固定電話が鳴り、慌てた様子の男の声が聞こえてきました。",
     dialogue: [
-      { speaker: "自称・息子", line: "携帯も無くしたから番号が変わったんだ。今から同僚が家にお金を取りに行くから用意して！" },
-      { speaker: "あなた", line: "（息子が一大事になっている…急いでお金を用意してあげなければ…！？）" }
+      { speaker: "自称・息子", line: "「母さん？ 俺だけど…カバンを無くして今日中にお金が必要なんだ。同僚が家に取りに行くから用意して！」" },
+      { speaker: "あなた", line: "（息子からの一大事の連絡だ…どう対応すべきか？）" }
     ],
     point: "「電話番号が変わった」「カバンを無くした」「同僚が金を取りに行く」はオレオレ詐欺の王道パターンです！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: null,
-    desc: "息子を名乗り「カバンを落とした。番号が変わった。同僚が金を取りに行く」と電話があった。",
+    desc: "息子を名乗る人物から電話があった。あなたならどうする？",
     correctChoices: [
       { text: "一度電話を切り、あらかじめ手帳に控えてある息子の本当の携帯電話番号へかけて確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・元の番号へ確認】オレオレ詐欺の鉄則は「元の知っている番号にかけ直す」ことです！" }
     ],
@@ -1324,19 +1332,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q04", category: "scam", source: "固定電話", title: "大手電力会社を装う「電気料金が安くなる」勧誘",
+    id: "senior_q04", category: "scam", source: "固定電話", title: "電力会社関連窓口からのプラン切替案内",
     characterName: "自称・電力プラン窓口",
-    narration: "大手電力会社の関連窓口を名乗る人物から電話がありました。\n相手：「電気料金の高騰に伴う特別プランのご案内です。月々の電気代が確実に3割安くなります。現在の検針票をお手元にご用意ください。」",
+    narration: "電話がかかってきました。\n相手：「電気料金の特別プランのご案内です。検針票をお手元にご用意ください。」",
     dialogue: [
-      { speaker: "勧誘電話", line: "プラン切替のため、検針票に記載されている『お客様番号』と『供給地点特定番号』を今すぐ読み上げてください。" },
-      { speaker: "あなた", line: "（大手電力会社を名乗っているし安くなるなら教えるべきか…？）" }
+      { speaker: "勧誘電話", line: "「検針票のお客様番号と供給地点特定番号を読み上げてください。」" },
+      { speaker: "あなた", line: "（電気代が安くなるという案内だが…どう対応すべきか？）" }
     ],
     point: "検針票の番号を教えると、本人の承諾なしに別の電力会社へ勝手に契約を切り替えられ、高額な解約違約金を請求されるトラブルが多発しています。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.electricityPlanScam,
-    desc: "「電気代が安くなる」と電話があり、検針票のお客様番号や契約者情報の読み上げを要求された。",
+    desc: "検針票情報の読み上げを要求された。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「電話での契約変更はしません。書面を送ってください」と断り、検針票の番号は教えない", money: 0, principleTag: "safe", explain: "正解！【喋らない・教えない】検針票の情報は重要な個人情報です。安易に教えないことで勝手な契約変更を防げます！" }
     ],
@@ -1347,19 +1355,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q05", category: "real", source: "郵便・電話", title: "【本物】取引銀行からの「定期預金満期」のご案内",
+    id: "senior_q05", category: "real", source: "郵便・電話", title: "【取引銀行】定期預金満期に関するご案内",
     characterName: "取引銀行の正規支店担当者",
-    narration: "長年利用している地元銀行の担当者から自宅に定期預金の満期案内書類が届き、電話でも丁寧な案内がありました。\n「いつもお世話になっております。満期書類をお送りしましたのでご確認をお願いいたします。暗証番号を聞いたりカードをお預かりすることはございません。」",
+    narration: "利用している銀行から満期案内書類が届き、担当者から電話がありました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "銀行担当者", line: "お手続きは同封の書類または店舗窓口にて承っております。" },
-      { speaker: "あなた", line: "（暗証番号も聞かれず、郵送書類の確認案内だけだった。）" }
+      { speaker: "銀行担当者", line: "「満期書類をお送りいたしましたのでご確認ください。暗証番号をお伺いすることはございません。」" },
+      { speaker: "あなた", line: "（定期預金の案内だ。確認してみよう。）" }
     ],
     point: "取引のある正規の銀行からの案内であり、暗証番号を聞いたりカードを預かる要求が一切ない通知は本物です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.bankMaturityReal,
-    desc: "取引銀行から「定期預金の満期書類をお送りしましたのでご確認ください（カード預かり等なし）」と案内があった。",
+    desc: "取引銀行から満期案内が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "郵送されてきた書類を確認し、必要に応じて店舗窓口へ出向いて手続きする", money: 0, principleTag: "safe", explain: "正解！【正規確認】正規の案内を正しく受け取り、安全に対応できました！" }
     ],
@@ -1370,19 +1378,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q06", category: "scam", source: "自宅訪問", title: "「屋根が壊れている」と突然の点検訪問",
+    id: "senior_q06", category: "scam", source: "自宅訪問", title: "突然の屋根点検訪問",
     characterName: "突然の訪問作業員",
-    narration: "自宅で過ごしていると玄関のインターホンが鳴り、作業服の男が立っていました。\n「近所で工事をしている者ですが、お宅の屋根の瓦がずれて今にも落ちそうです。危険なので今すぐ無料で見てあげます。」",
+    narration: "自宅のインターホンが鳴り、作業服の男が立っていました。\n「近所で工事をしている者ですが、お宅の屋根の瓦がずれてますよ。無料で見てあげます。」",
     dialogue: [
-      { speaker: "作業員", line: "放置すると雨漏りで家が傷みますよ。ハシゴですぐ登って確認しますね。" },
-      { speaker: "あなた", line: "（突然の訪問で屋根が危険と言われたが…無料なら見てもらうべきか…？）" }
+      { speaker: "作業員", line: "「ハシゴですぐ登って確認しますね。」" },
+      { speaker: "あなた", line: "（突然の訪問だが…どう対応すべきか？）" }
     ],
     point: "「危険」「無料」「今すぐ」と不安を煽って屋根に登り、故意に瓦を壊して高額契約を迫る「点検商法」です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.entrance,
-    character: IMAGE_ASSETS.characters.suspiciousVisitor,
+    character: IMAGE_ASSETS.characters.workerLabor,
     screenshot: null,
-    desc: "突然の訪問者が「屋根がずれて危険。今すぐ無料で登って点検する」と迫ってきた。",
+    desc: "「屋根を無料で点検する」と訪問業者が迫ってきた。あなたならどうする？",
     correctChoices: [
       { text: "「知り合いの工務店に見てもらいますので結構です」と断り、絶対に敷地や屋根に上がらせない", money: 0, principleTag: "safe", explain: "正解！【喋らない・家に入れない】突然の点検業者は絶対に家や屋根に上げないことが被害防止の鉄則です！" }
     ],
@@ -1393,19 +1401,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q07", category: "scam", source: "固定電話", title: "「未納料金の支払いにプリペイドカード」要求",
+    id: "senior_q07", category: "scam", source: "固定電話", title: "【重要】インターネット利用料金の未納について",
     characterName: "通信サービス料金窓口",
-    narration: "自宅に電話があり、「インターネットの利用料金に未納があります。本日中に支払わないとサービスを停止し法的手続きに入ります」と言われました。\n相手：「コンビニで電子マネー（プリペイドカード）を購入し、裏面の番号を電話で教えてください。」",
+    narration: "電話がありました。\n相手：「ネット利用料金に未納があります。コンビニで電子マネーを購入し、裏面の番号を教えてください。」",
     dialogue: [
-      { speaker: "電話の相手", line: "番号を教えていただければ、こちらで即座に未納解除の手続きを行います。" },
-      { speaker: "あなた", line: "（ネットが止まったら困る…コンビニでカードを買って番号を教えればいいのか…？）" }
+      { speaker: "電話の相手", line: "「番号を教えていただければ、すぐに未納解除の手続きを行います。」" },
+      { speaker: "あなた", line: "（料金未納の電話だ…どう対応すべきか？）" }
     ],
     point: "どのような企業であっても、未納料金の支払いにコンビニのプリペイドカード番号を要求することは100%詐欺です！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: null,
-    desc: "「未納料金がある。コンビニでプリペイドカードを買って裏の番号を電話で教えろ」と言われた。",
+    desc: "電話で電子マネーカードの購入と番号を要求された。あなたならどうする？",
     correctChoices: [
       { text: "「プリペイドカードで支払いを求めるのは詐欺」と判断し、電話を切って契約先の正規請求書を確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・プリペイド要求は拒絶】架空請求詐欺です。プリペイドカードの番号を電話で要求されたら100%詐欺！" }
     ],
@@ -1416,19 +1424,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q08", category: "scam", source: "自宅訪問・チラシ", title: "水道局を名乗る「水質検査と浄水器交換」チラシ",
+    id: "senior_q08", category: "scam", source: "自宅訪問・チラシ", title: "地域一斉水質検査に関するお知らせ",
     characterName: "自称・水道局指定業者",
-    narration: "ポストに「水道局関係・水質検査実施中。浄水器の交換が必要な場合があります」というチラシが入っており、直後に作業着の男が訪問してきました。\n男：「コップに水道水を入れてください。検査薬を入れると…ほら、水が黄色くなりました！有害物質が入っていますよ！」",
+    narration: "ポストにチラシが入っており、作業着の男が訪ねてきました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "訪問業者", line: "このままでは健康を害します。今なら特別価格20万円で高性能浄水器を取り付けます。" },
-      { speaker: "あなた", line: "（薬を入れたら急に黄色くなった…本当に水道水が危険なのだろうか…？）" }
+      { speaker: "訪問業者", line: "「水質検査薬を入れると黄色くなりました。高性能浄水器を取り付けますね。」" },
+      { speaker: "あなた", line: "（水質検査の案内だ…どう対応すべきか？）" }
     ],
     point: "水道局が個人の住宅を突然訪れて水質検査をしたり、浄水器を販売することは絶対にありません。試薬の化学反応（塩素反応）を利用した詐欺です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.entrance,
     character: IMAGE_ASSETS.characters.suspiciousVisitor,
     screenshot: IMAGE_ASSETS.screenshots.waterPurifierScam,
-    desc: "「水道水が汚れている。20万円の浄水器が必要」と契約を迫られた。",
+    desc: "水質検査と浄水器の設置を勧められた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「水道局が浄水器を販売することはない」と見抜き、「買いません」と断ってドアを閉める", money: 0, principleTag: "safe", explain: "正解！【騙されない・水道局騙りを撃退】水道局を騙る悪質訪問販売です。試薬の変色は塩素反応のトリック！" }
     ],
@@ -1439,19 +1447,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q09", category: "scam", source: "自宅訪問", title: "消防署を名乗る「火事の危険・消火器の強制点検」",
+    id: "senior_q09", category: "scam", source: "自宅訪問", title: "住宅防火対策および消火設備のご案内",
     characterName: "自称・防災点検員",
-    narration: "消防服に似た服を着た人物が訪ねてきました。\n「消防署の方から来ました。最近この地域で住宅火災が増えており、点検したところお宅は非常に危険な状態です。法律で消火器の交換が義務化されました。」",
+    narration: "消防服に似た服を着た人物が訪ねてきました。\n「消防署の方から来ました。消火器の交換が義務化されたので設置します。」",
     dialogue: [
-      { speaker: "訪問者", line: "今すぐ対策しないと火事になりますよ。今日なら特別な防災機器と消火器を35,000円で設置します。" },
-      { speaker: "あなた", line: "（火事になったら近所にも迷惑がかかるし不安だな…その場で契約すべきか…？）" }
+      { speaker: "訪問者", line: "「消火器の費用として35,000円になります。」" },
+      { speaker: "あなた", line: "（消防関係の訪問だ…どう対応すべきか？）" }
     ],
     point: "消防署が消火器の訪問販売や点検を行ったり、金銭を請求することは絶対にありません。「消防署の方（方角）」と言って騙す手口です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.entrance,
     character: IMAGE_ASSETS.characters.suspiciousVisitor,
     screenshot: null,
-    desc: "「消防署の方から来た。消火器の交換が義務化されたので35,000円払え」と請求された。",
+    desc: "「消火器の交換代金を支払え」と請求された。あなたならどうする？",
     correctChoices: [
       { text: "「消防署が消火器の販売や集金をすることはない」と知っているので、その場できっぱり断る", money: 0, principleTag: "safe", explain: "正解！【騙されない・きっぱり拒絶】消防署員を装う悪質な訪問販売です。不安に付け込む手口を冷静に撃退！" }
     ],
@@ -1462,19 +1470,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q10", category: "real", source: "自宅訪問", title: "【本物】法令に基づく「ガス設備定期点検」の訪問",
+    id: "senior_q10", category: "real", source: "自宅訪問", title: "【法令点検】ガス設備定期保安点検のお知らせ",
     characterName: "ガス供給会社点検員",
-    narration: "事前に検針票とともに「〇月〇日に定期点検に伺います」とチラシが入っていた日、制服を着たガス会社の点検員が訪ねてきました。\n「法令で定められた4年に1度のガス漏れ点検に伺いました。身分証はこちらです。点検費用は一切かかりません。」",
+    narration: "事前にチラシが入っていた日、制服を着たガス会社の点検員が訪ねてきました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "点検員", line: "屋外のガスメーターと室内のコンロ・給湯器の検査を行います。お立ち会いをお願いいたします。" },
-      { speaker: "あなた", line: "（事前に案内が入っていたガス点検だ。身分証も提示して費用も無料と言っている。）" }
+      { speaker: "点検員", line: "「4年に1度の定期ガス漏れ点検に伺いました。点検費用は無料です。」" },
+      { speaker: "あなた", line: "（事前通知のあったガス点検だ。確認してみよう。）" }
     ],
     point: "事前にお知らせチラシが投函されており、社員証を明示し、費用の請求や機器の販売を一切行わない点検は正規の法令点検です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.entrance,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.gasInspectionReal,
-    desc: "事前に通知があった正規のガス点検員が、身分証を提示して無料の定期点検に訪れた。",
+    desc: "正規のガス点検員が無料点検に訪れた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "身分証と事前案内を確認し、立ち会いのもとで点検を受けて受領印を押す", money: 0, principleTag: "safe", explain: "正解！【正規確認】事前通知と身分証を確認し、正規の安全点検を正しく受けることができました！" }
     ],
@@ -1485,19 +1493,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q11", category: "scam", source: "固定電話", title: "「年金の手続きを代行します」という電話",
+    id: "senior_q11", category: "scam", source: "固定電話", title: "年金受給手続き代行に関するご案内",
     characterName: "年金手続き代行窓口",
-    narration: "自宅の電話に年金機構の関係者を名乗る人物から電話がありました。\n「年金に関する重要な給付手続きが漏れております。当窓口で手続きを代行できますので、確認のため銀行口座番号と暗証番号を教えてください。」",
+    narration: "電話がありました。\n「年金の重要な受給手続きが漏れております。口座番号と暗証番号を教えてください。」",
     dialogue: [
-      { speaker: "電話の相手", line: "本日中に登録しないと、過去数年分の未払い年金が受け取れなくなりますよ。" },
-      { speaker: "あなた", line: "（年金の手続きを代わりにしてくれるならありがたいが、電話で暗証番号を教えていいのか…？）" }
+      { speaker: "電話の相手", line: "「本日中に登録しないと年金が受け取れなくなりますよ。」" },
+      { speaker: "あなた", line: "（年金に関する連絡だ…どう対応すべきか？）" }
     ],
     point: "公的機関や日本年金機構が電話で銀行の暗証番号を聞き出すことは絶対にありません！",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.pensionProcedureScam,
-    desc: "「年金の手続きを代行する。確認のため銀行口座と暗証番号を教えて」と電話があった。",
+    desc: "電話で口座情報と暗証番号を要求された。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "電話で情報は一切伝えず、日本年金機構の公式ダイヤルや年金事務所へ自分で調べて確認する", money: 0, principleTag: "safe", explain: "正解！【喋らない・公式年金事務所へ照会】年金手続きを口実にした口座情報搾取詐欺です。暗証番号を教えず正解！" }
     ],
@@ -1508,18 +1516,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q12", category: "scam", source: "スマートフォンSMS", title: "宅配便の「お届けできませんでした」偽SMS",
+    id: "senior_q12", category: "scam", source: "スマートフォンSMS", title: "【不在通知】お荷物の持ち帰りについて",
     characterName: "偽宅配ショートメッセージ",
-    narration: "スマホのSMSに通知が届きました。\n内容：【配送業者】お客様宛のお荷物をお届けにあがりましたが不在のため持ち帰りました。配送状況の確認および再配達指定はこちらからご確認ください。http://fake-delivery-check.jp",
+    narration: "スマホのSMSに通知が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（荷物の心当たりはないが、不在通知のリンクを押して確認した方がいいだろうか…？）" }
+      { speaker: "SMS通知", line: "【不在通知】お荷物を持ち帰りました。再配達指定はこちらからご確認ください。" },
+      { speaker: "あなた", line: "（荷物の不在通知だ…確認してみよう。）" }
     ],
     point: "SMSに記載されたリンクを開くと、不正なウイルスアプリをインストールさせられたり個人情報を盗まれます。",
-    notification: "📱ピコン 【不在通知】荷物持ち帰りのお知らせ",
+    notification: "📱ピコン 新着メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.deliverySmishingScam,
-    desc: "「お荷物を持ち帰りました。再配達はこちら」と不審なリンクが記載されたSMSが届いた。",
+    desc: "不在通知のSMSが届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "SMS本文のリンクは絶対にタップせず、そのままメッセージを削除する", money: 0, principleTag: "safe", explain: "正解！【騙されない・偽SMS遮断】偽SMS（スミッシング）です。リンクを開かずに削除するのが鉄則！" }
     ],
@@ -1530,19 +1539,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q13", category: "scam", source: "パソコン・タブレット", title: "「ウイルスに感染！」大音量警告音とサポート詐欺",
+    id: "senior_q13", category: "scam", source: "パソコン・タブレット", title: "パソコンに表示された警告画面",
     characterName: "偽マイクロソフト警告",
-    narration: "パソコンでニュースを見ていると、突然けたたましい警告音が鳴り響き、画面一面に赤い警告が表示されました。\n画面：『警告！システムがウイルスに感染しました。個人情報が流出しています。直ちにサポート窓口（050-XXXX-XXXX）へ電話してください。』",
+    narration: "パソコンの画面に突然警告が表示されました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "警告画面", line: "【警告】電源を切るとパソコンが完全に破壊されます。直ちに電話してください！" },
-      { speaker: "あなた", line: "（大音量の警告音と『破壊される』という文字で心臓がドキドキする…どうすれば…？）" }
+      { speaker: "警告画面", line: "【警告】システムが感染しました。直ちにサポート窓口へ電話してください。" },
+      { speaker: "あなた", line: "（警告音が鳴っている…どう対応すべきか？）" }
     ],
     point: "大音量の警告音や全画面警告は、Webサイト上に表示されているだけの偽物（サポート詐欺）です。電話をかけてはいけません。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.myRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.supportScam,
-    desc: "「ウイルス感染！PCが破壊されます」と大音量で警告画面が表示され、電話をかけるよう要求されている。",
+    desc: "パソコンに警告画面が表示された。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "画面の電話番号には絶対に電話せず、ブラウザを閉じる（またはPCを再起動する）", money: 0, principleTag: "safe", explain: "正解！【騙されない・電話をかけず閉じる】画面に表示されているだけの偽警告です。電話をかけずに画面を閉じれば安全！" }
     ],
@@ -1553,18 +1562,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q14", category: "scam", source: "Eメール・SMS", title: "国税庁を騙る「未納税金の最終差し押さえ予告」",
+    id: "senior_q14", category: "scam", source: "Eメール・SMS", title: "【国税庁】所得税の未納および差押え予告通知",
     characterName: "国税庁納付指導窓口",
-    narration: "メールに「国税庁」を名乗る重要通知が届きました。\n内容：【重要なお知らせ】未納の所得税がございます。納付期限を過ぎているため、24時間以内にご納付いただけない場合、給与や年金・不動産の差し押さえを執行いたします。支払い手続き：http://nta-tax-pay.org",
+    narration: "メールに通知が届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（税金の未納なんてないはずだが、『差し押さえ』と書かれると不安になる…）" }
+      { speaker: "通知メッセージ", line: "【重要】未納の所得税がございます。24時間以内にご納付ください。" },
+      { speaker: "あなた", line: "（差押え予告と書かれている…どう対応すべきか？）" }
     ],
     point: "国税庁や税務署がメールやSMSで納税通知を送ったり、Webサイトからクレジットカードや電子マネーで納付させることは絶対にありません。",
-    notification: "📱ピコン 【国税庁】重要なお知らせ",
+    notification: "📱ピコン 新着通知が届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.silhouette,
     screenshot: IMAGE_ASSETS.screenshots.taxSeizureScam,
-    desc: "国税庁を名乗り「税金の未納がある。24時間以内に支払わないと差し押さえを実行する」とメールが届いた。",
+    desc: "税金の未納通知が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "「公的機関がメールで納税を迫ることはない」と判断し、リンクを開かず削除して税務署へ確認する", money: 0, principleTag: "safe", explain: "正解！【騙されない・税務署へ確認】国税庁を騙る典型的なフィッシング詐欺です。落ち着いて無視して正解！" }
     ],
@@ -1575,18 +1585,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q15", category: "real", source: "スマートフォンSMS", title: "【本物】携帯電話会社からの「月額利用料金の確定」案内",
+    id: "senior_q15", category: "real", source: "スマートフォンSMS", title: "【携帯会社】月額ご利用料金確定のお知らせ",
     characterName: "携帯会社公式",
-    narration: "毎月利用している携帯電話会社からSMSが届きました。\n内容：【お知らせ】今月のご請求金額が確定いたしました。ご請求額および内訳は、公式アプリまたはMyページ（ブックマーク）よりご確認いただけます。※本メッセージから直接のパスワード入力は求めません。",
+    narration: "スマホにSMSが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（毎月届く請求確定の案内だ。直接リンクを踏ませる文面もないな。）" }
+      { speaker: "携帯会社通知", line: "【お知らせ】今月のご請求金額が確定いたしました。公式アプリよりご確認ください。" },
+      { speaker: "あなた", line: "（毎月の請求案内だ。確認してみよう。）" }
     ],
     point: "本文に直接ログインURLを載せず、「公式アプリやブックマークからご確認ください」と案内する通知は正規の公式通知です。",
-    notification: "📱ピコン 携帯料金確定のお知らせ",
+    notification: "📱ピコン 新着メッセージが届きました",
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.mobileBillReal,
-    desc: "「月額料金が確定しました。公式アプリ等からご確認ください（直接のログイン要求なし）」との通知。",
+    desc: "携帯料金の確定通知が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "いつも使っている公式アプリまたはブックマークからマイページを開き、料金を確認する", money: 0, principleTag: "safe", explain: "正解！【正規確認】正しい正規の通知を落ち着いて公式ルートから確認できました！" }
     ],
@@ -1597,18 +1608,19 @@ const QUESTIONS_SENIOR = [
     ]
   },
   {
-    id: "senior_q16", category: "real", source: "Eメール", title: "【本物】クレジットカード会社からの「明細確定」通知",
+    id: "senior_q16", category: "real", source: "Eメール", title: "【〇〇カード】今月のご利用明細確定のご案内",
     characterName: "カード会社公式",
-    narration: "普段利用しているクレジットカード会社からメールが届きました。\n内容：【〇〇カード】今月のご利用代金明細書を作成いたしました。明細内容は公式Webサービス（会員ログイン画面）よりご確認ください。※不審なフィッシングメールにご注意ください。",
+    narration: "カード会社からメールが届きました。\n画面の内容を確認してみよう。",
     dialogue: [
-      { speaker: "あなた", line: "（普段使っているカード会社の定期明細案内だ。）" }
+      { speaker: "カード会社通知", line: "【〇〇カード】今月のご利用代金明細書を作成いたしました。公式サイトよりご確認ください。" },
+      { speaker: "あなた", line: "（カード明細の案内だ。確認してみよう。）" }
     ],
     point: "定期的な利用明細の確定通知であり、個人情報やカード番号の入力を急かす文面がないものは本物の正規連絡です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.livingRoom,
     character: IMAGE_ASSETS.characters.workerGas,
     screenshot: IMAGE_ASSETS.screenshots.cardStatementReal,
-    desc: "クレジットカード会社から「今月のご利用明細が確定しました。公式サイトよりご確認ください」と届いた。",
+    desc: "カードの利用明細案内が届いた。画像の内容をよく確認して、あなたならどうする？",
     correctChoices: [
       { text: "ブラウザのブックマークに保存してあるカード会社の会員サイトへログインして明細を確認する", money: 0, principleTag: "safe", explain: "正解！【正規確認】正規の案内を自ら安全なブックマーク経由で確認できました！" }
     ],
