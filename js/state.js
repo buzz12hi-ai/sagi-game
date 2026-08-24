@@ -1,8 +1,7 @@
 /* =========================================================
    state.js
-   -----------------------------------------------------------
-   ゲーム状態管理・4モード日程＆出題バランス抽出ロジック
-   （大人・高齢者モード：名前入力スキップ対応）
+   ゲーム状態管理・出題バランス抽出ロジック
+   （出題配分ルール完全準拠版）
    ========================================================= */
 
 const state = {
@@ -32,7 +31,6 @@ const state = {
 };
 
 function getPlayerDisplayName() {
-  // 大人モードおよび高齢者モードは名前入力をスキップし「あなた」固定
   if (state.mode === "senior" || state.mode === "adult") return "あなた";
   const name = state.playerName ? state.playerName.trim() : "キミ";
   return `${name}さん`;
@@ -94,39 +92,34 @@ function buildDaySchedule(mode) {
   return schedule;
 }
 
-/* モード別問題の完全ランダム抽出 */
+/* モード別問題の完全ランダム抽出（指定配分ルール準拠） */
 function pickWeeklyQuestions(mode) {
   if (mode === "senior") {
-    // 高齢者モード：3ジャンルからバランスよく計7問抽出（助けるなし）
-    const byGenre = (g) => QUESTIONS_SENIOR.filter(q => q.genre === g);
-
-    const phonePicked  = shuffleArray(byGenre("phone_visit")).slice(0, 3);
-    const mailPicked   = shuffleArray(byGenre("mail_sms")).slice(0, 2);
-    const publicPicked = shuffleArray(byGenre("public_service")).slice(0, 2);
-
-    return shuffleArray([...phonePicked, ...mailPicked, ...publicPicked]);
+    // 高齢者モード（計7問）：詐欺 5問 ＋ 本物 2問（助ける 0問）
+    const pool = shuffleArray(QUESTIONS_SENIOR);
+    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 5);
+    const realPicked = pool.filter(q => q.category === "real").slice(0, 2);
+    return shuffleArray([...scamPicked, ...realPicked]);
   } else if (mode === "adult") {
-    // 一般（大人）モード：助ける問題1問 ＋ 詐欺/本物問題6問（計7問）
-    const helpPool = shuffleArray(QUESTIONS_ADULT.filter(q => q.category === "help"));
-    const otherPool = shuffleArray(QUESTIONS_ADULT.filter(q => q.category !== "help"));
-
-    const helpPicked = helpPool.slice(0, 1);
-    const otherPicked = otherPool.slice(0, 6);
-
-    return shuffleArray([...helpPicked, ...otherPicked]);
+    // 一般（大人）モード（計7問）：詐欺 5問 ＋ 本物 1問 ＋ 助ける 1問
+    const pool = shuffleArray(QUESTIONS_ADULT);
+    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 5);
+    const realPicked = pool.filter(q => q.category === "real").slice(0, 1);
+    const helpPicked = pool.filter(q => q.category === "help").slice(0, 1);
+    return shuffleArray([...scamPicked, ...realPicked, ...helpPicked]);
   } else if (mode === "teen") {
-    // 中高生モード：全16問プールから9問抽出（詐欺4・本物3・助ける2）
+    // 中高生モード（計9問）：詐欺 6問 ＋ 本物 2問 ＋ 助ける 1問
     const pool = shuffleArray(QUESTIONS_TEEN);
-    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 4);
-    const realPicked = pool.filter(q => q.category === "real").slice(0, 3);
-    const helpPicked = pool.filter(q => q.category === "help").slice(0, 2);
+    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 6);
+    const realPicked = pool.filter(q => q.category === "real").slice(0, 2);
+    const helpPicked = pool.filter(q => q.category === "help").slice(0, 1);
     return shuffleArray([...scamPicked, ...realPicked, ...helpPicked]);
   } else {
-    // 小学生モード：全16問プールから9問抽出（詐欺4・本物3・助ける2）
+    // 小学生モード（計9問）：詐欺 6問 ＋ 本物 2問 ＋ 助ける 1問
     const pool = shuffleArray(QUESTIONS_ELEMENTARY);
-    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 4);
-    const realPicked = pool.filter(q => q.category === "real").slice(0, 3);
-    const helpPicked = pool.filter(q => q.category === "help").slice(0, 2);
+    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 6);
+    const realPicked = pool.filter(q => q.category === "real").slice(0, 2);
+    const helpPicked = pool.filter(q => q.category === "help").slice(0, 1);
     return shuffleArray([...scamPicked, ...realPicked, ...helpPicked]);
   }
 }
