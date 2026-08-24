@@ -1,10 +1,8 @@
 /* =========================================================
    ui.js
-   UI描画・4モード表示制御・資料拡大ズーム・コンソールデバッグ
-   （大人主人公画像・二重宣言解消・タップズーム対応版）
+   UI描画・4モード表示制御・Mac文字コード自動修復・拡大ズーム
    ========================================================= */
 
-// デバッグフラグ（重複宣言エラー防止のため window オブジェクトで一元管理）
 window.DEBUG_MODE = true;
 
 function showScreen(screenId) {
@@ -13,6 +11,7 @@ function showScreen(screenId) {
   });
 }
 
+/* ★ 画像割れ・代替テキスト浮きを完全に防ぐ安全画像読み込み関数 ★ */
 function setImageSafely(imgElement, src) {
   if (!imgElement) return;
   if (!src) {
@@ -22,17 +21,32 @@ function setImageSafely(imgElement, src) {
   }
 
   imgElement.classList.remove("is-hidden");
-  
+
+  // 画像読み込み失敗時のMac文字コード（NFD/NFC/URLエンコード）自動修復
   imgElement.onerror = () => {
-    const currentSrc = imgElement.getAttribute("src") || "";
-    if (currentSrc.startsWith("images/")) {
-      imgElement.src = "../resource/images/" + currentSrc.replace("images/", "");
-    } else if (currentSrc.startsWith("../resource/images/")) {
-      imgElement.src = "resource/images/" + currentSrc.replace("../resource/images/", "");
-    } else {
-      imgElement.classList.add("is-hidden");
+    if (!imgElement.dataset.triedNFD) {
+      imgElement.dataset.triedNFD = "true";
+      imgElement.src = src.normalize("NFD");
+      return;
     }
+    if (!imgElement.dataset.triedEncoded) {
+      imgElement.dataset.triedEncoded = "true";
+      imgElement.src = encodeURI(src);
+      return;
+    }
+    if (!imgElement.dataset.triedNFDEncoded) {
+      imgElement.dataset.triedNFDEncoded = "true";
+      imgElement.src = encodeURI(src.normalize("NFD"));
+      return;
+    }
+
+    // すべて試しても読み込めない場合は安全に非表示化（文字浮きを完全防止）
+    imgElement.classList.add("is-hidden");
   };
+
+  delete imgElement.dataset.triedNFD;
+  delete imgElement.dataset.triedEncoded;
+  delete imgElement.dataset.triedNFDEncoded;
 
   imgElement.src = src;
 }
@@ -226,9 +240,10 @@ function showDayIntro(label, onNext, comment) {
   document.getElementById("dayintro-daynum").textContent = slot.dayNumber;
   document.getElementById("dayintro-comment").textContent = comment || "";
 
+  // 曜日画面は暗黒ステージのため背景画像は設定しない（割れ防止）
   const bgImg = document.getElementById("dayintro-bg-image");
   const guideImg = document.getElementById("dayintro-guide-image");
-  setImageSafely(bgImg, IMAGE_ASSETS.backgrounds.schoolRoute);
+  setImageSafely(bgImg, null);
 
   setJoeExpression("cheer");
   setImageSafely(guideImg, getJoeImage(state.joeExpression));
@@ -246,18 +261,23 @@ function showDayIntro(label, onNext, comment) {
   document.getElementById("btn-dayintro-next").onclick = onNext;
 }
 
-/* ★ 資料・画像ポップアップモーダル制御（ズーム拡大対応） ★ */
+/* ★ 資料・画像ポップアップモーダル制御（携帯対応ズーム強化版） ★ */
 function openImageModal(imgSrc) {
   if (!imgSrc) return;
   const modal = document.getElementById("image-modal");
   const modalImg = document.getElementById("image-modal-img");
+  const scrollArea = document.getElementById("image-modal-scroll-area");
   if (!modal || !modalImg) return;
 
   setImageSafely(modalImg, imgSrc);
   modalImg.classList.remove("is-zoomed");
   modal.classList.remove("is-hidden");
 
-  // タップ・クリックでズーム（拡大・縮小）切り替え
+  if (scrollArea) {
+    scrollArea.scrollTop = 0;
+    scrollArea.scrollLeft = 0;
+  }
+
   modalImg.onclick = (e) => {
     e.stopPropagation();
     modalImg.classList.toggle("is-zoomed");
@@ -275,6 +295,62 @@ function closeImageModal() {
   }
 }
 
+/* ★ 直前の会話・通知ログを見直すモーダル制御 ★ */
+function openLogModal() {
+  const modal = document.getElementById("log-modal");
+  const contentEl = document.getElementById("log-modal-content");
+  if (!modal || !contentEl) return;
+
+  const question = currentQuestion();
+  if (!question) return;
+
+  let html = `<div class="log-timeline">`;
+
+  if (question.narration) {
+    html += `
+      <div class="log-entry log-narration">
+        <span class="log-badge">📖 状況</span>
+        <p class="log-text">${question.narration.replace(/\n/g, "<br>")}</p>
+      </div>
+    `;
+  }
+
+  if (question.dialogue && question.dialogue.length > 0) {
+    html += `<div class="log-chat-stream">`;
+    question.dialogue.forEach(line => {
+      const isPlayer = (line.speaker === "主人公" || line.speaker === "あなた");
+      const speakerName = isPlayer ? getPlayerDisplayName() : line.speaker;
+      html += `
+        <div class="log-chat-bubble ${isPlayer ? 'is-player' : 'is-npc'}">
+          <span class="log-speaker-name">${speakerName}</span>
+          <p class="log-line-text">${line.line.replace(/\n/g, "<br>")}</p>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  if (question.notification) {
+    html += `
+      <div class="log-entry log-notification">
+        <span class="log-badge">📱 届いた通知</span>
+        <p class="log-text">${question.notification}</p>
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+  contentEl.innerHTML = html;
+  modal.classList.remove("is-hidden");
+}
+
+function closeLogModal() {
+  const modal = document.getElementById("log-modal");
+  if (modal) {
+    modal.classList.add("is-hidden");
+  }
+}
+
 function renderEventVisual(question) {
   const screenshotImg = document.getElementById("event-screenshot-image");
   const bgImg = document.getElementById("event-bg-image");
@@ -282,7 +358,6 @@ function renderEventVisual(question) {
   const visual = document.getElementById("event-visual");
   const zoomBadge = document.getElementById("zoom-hint-badge");
 
-  // デバッグコンソール出力
   if (window.DEBUG_MODE) {
     const imgInfo = question.screenshot ? question.screenshot : (question.character || question.bg || "なし");
     console.log(`[DEBUG] MODE: ${state.mode} | QUESTION ID: ${question.id} | IMAGE: ${imgInfo}`);

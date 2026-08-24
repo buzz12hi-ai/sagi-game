@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="style.css?v=20260824_final">
+<link rel="stylesheet" href="style.css?v=20260824_final2">
 </head>
 <body>
 
@@ -38,6 +38,7 @@
       <!-- ① タイトル画面 -->
       <section id="screen-title" class="screen active">
         <div class="title-bg-patterns" aria-hidden="true">
+          <!-- テスト用：どのパスで画像が出るか確認 -->
           <span class="bg-icon icon-1">📱</span>
           <span class="bg-icon icon-2">✉️</span>
           <span class="bg-icon icon-3">🔔</span>
@@ -59,7 +60,7 @@
           
           <div class="title-main-hero">
             <div class="title-hero-glow"></div>
-            <img id="title-joe-image" class="title-char-joe-hero" alt="ジョーくん">
+           <img id="title-joe-image" class="title-char-joe-hero" src="ジョー君通常.png" alt="ジョーくん">
           </div>
 
           <p class="game-lead">
@@ -309,7 +310,7 @@
             <img id="event-screenshot-image" class="event-screenshot-image is-hidden" alt="画面">
             
             <div class="zoom-hint-badge is-hidden" id="zoom-hint-badge">
-              <span>🔍 クリック/タップで拡大</span>
+              <span>🔍 タップで全画面・ズーム拡大</span>
             </div>
 
             <div class="joe-support-bubble" id="joe-support-bubble">
@@ -372,6 +373,9 @@
             <p class="result-point-title" id="result-point-title">今回のポイント</p>
             <p class="result-point-text" id="result-point"></p>
           </div>
+
+          <!-- ★ 案A：直前の会話・通知ログを見直すボタン ★ -->
+          <button id="btn-open-log" class="btn-review-log" type="button">📜 直前の会話・通知を見直す</button>
 
           <button id="btn-next" class="btn btn-primary">次の日へ</button>
         </div>
@@ -436,26 +440,40 @@
 
     </main>
 
-    <!-- ★ 特大画像ポップアップモーダル（全デバイス対応） ★ -->
+    <!-- ★ 特大画像ポップアップモーダル（ズーム強化版） ★ -->
     <div id="image-modal" class="image-modal-overlay is-hidden">
       <div class="image-modal-dialog">
-        <button id="btn-close-image-modal" class="image-modal-close" type="button">✕ 閉じる</button>
-        <div class="image-modal-body">
+        <div class="image-modal-controls">
+          <span class="image-modal-hint">🔍 タップで拡大 / 縮小</span>
+          <button id="btn-close-image-modal" class="image-modal-close" type="button">✕ 閉じる</button>
+        </div>
+        <div class="image-modal-body" id="image-modal-scroll-area">
           <img id="image-modal-img" src="" alt="拡大画像">
         </div>
+      </div>
+    </div>
+
+    <!-- ★ 案A：直前の会話・通知を見直すポップアップモーダル ★ -->
+    <div id="log-modal" class="log-modal-overlay is-hidden">
+      <div class="log-modal-dialog">
+        <header class="log-modal-header">
+          <h3>📜 直前のやり取り（会話ログ）</h3>
+          <button id="btn-close-log-modal" class="log-modal-close" type="button">✕ 閉じる</button>
+        </header>
+        <div class="log-modal-body" id="log-modal-content"></div>
       </div>
     </div>
 
   </div>
 
   <!-- スクリプト群（読み込み順） -->
-  <script src="js/assets.js?v=20260824_final"></script>
-  <script src="js/data.js?v=20260824_final"></script>
-  <script src="js/state.js?v=20260824_final"></script>
-  <script src="js/ui.js?v=20260824_final"></script>
-  <script src="js/story.js?v=20260824_final"></script>
-  <script src="js/validator.js?v=20260824_final"></script>
-  <script src="js/preview.js?v=20260824_final"></script>
-  <script src="js/main.js?v=20260824_final"></script>
+  <script src="js/assets.js?v=20260824_final2"></script>
+  <script src="js/data.js?v=20260824_final2"></script>
+  <script src="js/state.js?v=20260824_final2"></script>
+  <script src="js/ui.js?v=20260824_final2"></script>
+  <script src="js/story.js?v=20260824_final2"></script>
+  <script src="js/validator.js?v=20260824_final2"></script>
+  <script src="js/preview.js?v=20260824_final2"></script>
+  <script src="js/main.js?v=20260824_final2"></script>
 </body>
 </html>

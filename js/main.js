@@ -1,8 +1,6 @@
 /* =========================================================
    main.js
-   -----------------------------------------------------------
-   4モード分岐・動的4択・判定演出・エンディング・アンケート制御
-   （大人・高齢者モード：名前入力・欲しい物スキップ対応）
+   4モード分岐・動的4択・判定演出・会話ログ・エンディング制御
    ========================================================= */
 
 function renderTitleVisual() {
@@ -33,7 +31,6 @@ function handleSelectDevice(selectedDevice) {
     }
   }
 
-  // デバイス選択後、モード選択画面へ遷移
   showScreen("screen-mode-select");
 }
 
@@ -51,17 +48,14 @@ function handleSelectMode(selectedMode) {
   }
 
   if (selectedMode === "senior") {
-    // 高齢者モード：名前入力・欲しい物選択をスキップ
     state.playerName = "あなた";
     state.selectedItem = null;
     showJoeIntro(startSeniorWeek);
   } else if (selectedMode === "adult") {
-    // 一般（大人）モード：名前入力・欲しい物選択をスキップして直接自己紹介へ
     state.playerName = "あなた";
     state.selectedItem = null;
     showJoeIntro(startAdultWeek);
   } else {
-    // 小学生・中高生モード：名前入力へ進み、欲しい物選択も行う
     openNameInput();
   }
 }
@@ -94,7 +88,6 @@ function handleNameSubmit() {
   if (errorEl) errorEl.classList.add("is-hidden");
   state.playerName = typedName;
 
-  // 小学生・中高生モードは欲しい物選択へ
   showJoeIntro(goToItemSelect);
 }
 
@@ -150,7 +143,6 @@ function initGameState() {
   state.damages = { money: 0, personalInfo: 0, account: 0, line: 0 };
   state.answeredQuestions = [];
   
-  // モード別ランダム抽出
   state.weeklyQuestions = pickWeeklyQuestions(state.mode);
   state.daySchedule = buildDaySchedule(state.mode);
 }
@@ -163,13 +155,13 @@ function showSynopsis() {
     card.innerHTML = `
       特殊詐欺の被害件数は年々増加し、その手口は非常に巧妙になっています。<br><br>
       警察や市役所を騙る電話、突然の訪問業者、携帯電話への不審なメッセージなど、詐欺は日常のふとした瞬間にやってきます。<br><br>
-      大切なお金と安心を守るため、これから始まる1週間（全7問）の詐欺対策チャレンジに挑戦しましょう！
+      大切なお金と安心を守るため、これから始まる1週間の防犯チャレンジに挑戦しましょう！
     `;
   } else if (state.mode === "adult") {
     card.innerHTML = `
       あなたの1週間の防犯チャレンジが始まります。<br><br>
-      税金の還付や未納通知、サブスクリプションの自動更新トラブル、銀行を騙る不正アクセス、巧妙な投資・副業勧誘など、大人の日常やビジネスには巧妙な罠が潜んでいます。<br><br>
-      手元資金50,000円を守り抜きながら、1日1問（全7問）のリアルな詐欺・正規通知を正しく見極めましょう！
+      税金の還付通知、サブスクリプションの自動更新トラブル、銀行を騙る不正アクセス、マッチングアプリの金銭要求など、大人の日常には巧妙な罠が潜んでいます。<br><br>
+      手元資金50,000円を守り抜きながら、1週間のリアルな通知や連絡を正しく見極めましょう！
     `;
   } else if (state.mode === "elementary") {
     const item = state.selectedItem;
@@ -177,17 +169,16 @@ function showSynopsis() {
       キミの <ruby>名<rt>な</rt></ruby><ruby>前<rt>まえ</rt></ruby>は「${getPlayerRawName()}」。<br><br>
       ずっと <ruby>欲<rt>ほ</rt></ruby>しかった「${item.name}（¥${item.price.toLocaleString("ja-JP")}）」を、お<ruby>小遣<rt>こづか</rt></ruby>いで <ruby>買<rt>か</rt></ruby>うと <ruby>決<rt>き</rt></ruby>めたよ！<br>
       50,000<ruby>円<rt>えん</rt></ruby>を しっかり <ruby>守<rt>まも</rt></ruby>りながら、1<ruby>週間<rt>しゅうかん</rt></ruby>をすごそう。<br><br>
-      でも、ネットや まちの<ruby>中<rt>なか</rt></ruby>には、いろんな「あやしい<ruby>罠<rt>わな</rt></ruby>」が まっているよ……。<br>
-      さあ、${getPlayerDisplayName()}の 1<ruby>週間<rt>しゅうかん</rt></ruby>が、いま スタート！
+      ネットや まちの<ruby>中<rt>なか</rt></ruby>の いろんな<ruby>出来事<rt>できごと</rt></ruby>に おちついて チャレンジしよう！
     `;
   } else {
-    // 中高生モード (teen)
+    // teen
     const item = state.selectedItem;
     card.innerHTML = `
       キミの名前は「${getPlayerRawName()}」。<br><br>
       ずっと欲しかった「${item.name}（¥${item.price.toLocaleString("ja-JP")}）」を、自分のお小遣いで買うと決めた。<br>
       50,000円を守りながら、1週間を過ごすことになる。<br><br>
-      でも、街にもSNSやネットの中にも、色々な「落とし穴」が潜んでいる……。<br>
+      街にもSNSやネットの中にも、色々な通知や連絡が届く……。<br>
       さあ、${getPlayerDisplayName()}の1週間が、いま始まる。
     `;
   }
@@ -249,7 +240,7 @@ function showQuestion() {
   document.getElementById("event-title").innerHTML = question.title;
   document.getElementById("event-desc").innerHTML = question.desc;
 
-  const supportMsgs = ["落ち着いて判断しよう！", "怪しいポイントを探してみよう！", "じっくり考えて選んでね！"];
+  const supportMsgs = ["画像の内容をよく見よう！", "落ち着いて判断しよう！", "細部まで確認してみよう！"];
   setJoeSupportMessage(shuffleArray(supportMsgs)[0]);
 
   renderEventVisual(question);
@@ -287,7 +278,7 @@ function handleChoiceWithDelay(choice) {
   setTimeout(() => {
     if (thinkingOverlay) thinkingOverlay.classList.add("is-hidden");
     handleChoice(choice);
-  }, 900);
+  }, 800);
 }
 
 function getNextButtonLabel() {
@@ -310,7 +301,7 @@ function resultCharacterFor(choiceType) {
 const REACTION_COMMENTS = {
   correct: ["確認して正解だった！", "ちゃんと判断できた！", "これで安心だね！"],
   partial: ["うーん、おしかったかも…", "もう一歩、気をつけたいね。"],
-  wrong: ["危なかった…", "次は気をつけよう。", "相談することが大切だね！"]
+  wrong: ["危なかった…", "次は気をつけよう。", "確認することが大切だね！"]
 };
 
 function getReactionComment(choiceType) {
@@ -358,22 +349,22 @@ function handleChoice(choice) {
   if (popOverlay) popOverlay.classList.remove("is-danger-flash");
 
   if (question.category === "real" && isCorrect) {
-    popBadge.textContent = "⭕ 本物を見抜けた！";
+    popBadge.textContent = "⭕ 安全に確認できた！";
     popBadge.classList.add("is-correct");
-    popSub.textContent = "正しい手続きで安全に確認できました！";
+    popSub.textContent = "正規の手続きで正しく処理できました！";
     setJoeExpression("happy");
   } else if (isCorrect) {
-    popBadge.textContent = "✨ 詐欺を防げた！";
+    popBadge.textContent = "✨ 被害を防げた！";
     popBadge.classList.add("is-correct");
     popSub.textContent = "冷静な判断でお金をしっかり守れたね！";
     setJoeExpression("cheer");
   } else {
-    popBadge.textContent = "⚠️ 危険！だまされてしまった…";
+    popBadge.textContent = "⚠️ 被害発生！";
     popBadge.classList.add("is-wrong");
-    popSub.textContent = `被害：${Math.abs(choice.money).toLocaleString("ja-JP")}円！`;
+    popSub.textContent = `被害額：${Math.abs(choice.money).toLocaleString("ja-JP")}円！`;
     setJoeExpression("sad");
 
-    if (popOverlay) popOverlay.classList.remove("is-danger-flash");
+    if (popOverlay) popOverlay.classList.add("is-danger-flash");
   }
 
   if (choice.money > 0) {
@@ -404,15 +395,15 @@ function handleChoice(choice) {
   damageAlertEl.classList.add("is-hidden");
 
   if (question.category === "real" && isCorrect) {
-    badge.textContent = "⭕ 本物を見抜けた！";
+    badge.textContent = "⭕ 安全に確認完了！";
     badge.classList.add("is-correct");
-    pointTitleEl.textContent = "🎉 無事に確認完了！ポイント";
+    pointTitleEl.textContent = "🎉 正規手続きのポイント";
   } else if (isCorrect) {
-    badge.textContent = "⭕ 詐欺を防げた！";
+    badge.textContent = "⭕ 被害を防げた！";
     badge.classList.add("is-correct");
     pointTitleEl.textContent = "今回の防犯ポイント";
   } else {
-    badge.textContent = "❌ 詐欺被害！";
+    badge.textContent = "❌ トラブル発生！";
     badge.classList.add("is-wrong");
     pointTitleEl.textContent = "防犯のポイント";
 
@@ -423,7 +414,7 @@ function handleChoice(choice) {
       damageAlertEl.textContent = "⚠️ アカウント乗っ取りリスク！";
       damageAlertEl.classList.remove("is-hidden");
     } else if (choice.damageType === "line_takeover") {
-      damageAlertEl.textContent = "⚠️ LINE・SNS乗っ取りリスク！";
+      damageAlertEl.textContent = "⚠️ SNS・LINE乗っ取りリスク！";
       damageAlertEl.classList.remove("is-hidden");
     }
   }
@@ -458,7 +449,7 @@ function handleChoice(choice) {
       popOverlay.classList.remove("is-danger-flash");
     }
     showScreen("screen-result");
-  }, 1400);
+  }, 1200);
 }
 
 function goToNextDay() {
@@ -519,7 +510,7 @@ function showEnding() {
         : `1週間お疲れさまでした。学んだ防犯知識をぜひ日頃の防犯にお役立てください！`;
     } else if (state.mode === "adult") {
       joeCommentEl.textContent = canAfford
-        ? `見事全問正解です！ 巧妙な詐欺手口を完璧に見抜きました！`
+        ? `見事全問正解です！ 巧妙な手口を完璧に見抜きました！`
         : `1週間お疲れさまでした。身につけた知識を日常のリスク管理に活かしてください！`;
     } else if (state.mode === "elementary") {
       joeCommentEl.innerHTML = canAfford
@@ -554,11 +545,11 @@ function showEnding() {
   const hasOtherDamages = state.damages.personalInfo > 0 || state.damages.account > 0 || state.damages.line > 0;
   const damagesBreakdownHTML = hasOtherDamages ? `
     <div class="damages-breakdown">
-      <p class="damages-title">⚠️ 発生したその他の被害</p>
+      <p class="damages-title">⚠️ 発生したその他の被害リスク</p>
       <ul>
         ${state.damages.personalInfo > 0 ? `<li>個人情報流出リスク: ${state.damages.personalInfo}回</li>` : ""}
         ${state.damages.account > 0 ? `<li>アカウント乗っ取りリスク: ${state.damages.account}回</li>` : ""}
-        ${state.damages.line > 0 ? `<li>SNS・LINE乗っ取りリスク: ${state.damages.line}回</li>` : ""}
+        ${state.damages.line > 0 ? `<li>SNS乗っ取りリスク: ${state.damages.line}回</li>` : ""}
       </ul>
     </div>
   ` : "";
@@ -639,7 +630,6 @@ function showEnding() {
   showScreen("screen-ending");
 }
 
-// 最終アンケート画面の表示
 function showSurveyScreen() {
   const bgImg = document.getElementById("survey-bg-image");
   const guideImg = document.getElementById("survey-guide-image");
@@ -689,11 +679,9 @@ function restartGame() {
    ========================================================= */
 document.getElementById("btn-start").addEventListener("click", handleStartClick);
 
-// デバイスレイアウト選択ボタン
 document.getElementById("btn-device-mobile").addEventListener("click", () => handleSelectDevice("mobile"));
 document.getElementById("btn-device-desktop").addEventListener("click", () => handleSelectDevice("desktop"));
 
-// モード選択ボタン（4モード）
 document.getElementById("btn-mode-elementary").addEventListener("click", () => handleSelectMode("elementary"));
 document.getElementById("btn-mode-teen").addEventListener("click", () => handleSelectMode("teen"));
 document.getElementById("btn-mode-adult").addEventListener("click", () => handleSelectMode("adult"));
@@ -722,7 +710,7 @@ if (retireBtn) {
   retireBtn.addEventListener("click", handleRetire);
 }
 
-// 画像拡大モーダルの閉じるイベント登録
+// 画像拡大モーダル関連
 const closeImageModalBtn = document.getElementById("btn-close-image-modal");
 if (closeImageModalBtn) {
   closeImageModalBtn.addEventListener("click", (e) => {
@@ -736,6 +724,29 @@ if (imageModalOverlay) {
   imageModalOverlay.addEventListener("click", (e) => {
     if (e.target === imageModalOverlay) {
       closeImageModal();
+    }
+  });
+}
+
+// ★ 案A：直前の会話ログ見直しボタン・モーダル関連 ★
+const openLogBtn = document.getElementById("btn-open-log");
+if (openLogBtn) {
+  openLogBtn.addEventListener("click", openLogModal);
+}
+
+const closeLogBtn = document.getElementById("btn-close-log-modal");
+if (closeLogBtn) {
+  closeLogBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeLogModal();
+  });
+}
+
+const logModalOverlay = document.getElementById("log-modal");
+if (logModalOverlay) {
+  logModalOverlay.addEventListener("click", (e) => {
+    if (e.target === logModalOverlay) {
+      closeLogModal();
     }
   });
 }
