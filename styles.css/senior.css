@@ -1,0 +1,243 @@
+/* =========================================================
+   senior.css
+   高齢者モード専用アクセシビリティスタイル
+   【スマホ版 24px〜28px / iPad・PC版 26px〜32px / 太字強調 / UI破綻防止】
+   ========================================================= */
+
+/* =========================================================
+   1. 高齢者モード基本設定（スマートフォン・縦画面基準）
+   ========================================================= */
+.app-shell.is-senior-mode {
+  font-size: 24px;
+}
+
+/* 問題タイトル（大きく太く強調） */
+.app-shell.is-senior-mode .bubble-title {
+  font-size: 28px !important;
+  line-height: 1.4 !important;
+  font-weight: 900 !important;
+  margin-bottom: 8px !important;
+}
+
+/* 問題文・状況説明・ナレーション（24px〜26px・太字） */
+.app-shell.is-senior-mode .bubble-text,
+.app-shell.is-senior-mode .narration-text {
+  font-size: 24px !important;
+  line-height: 1.65 !important;
+  font-weight: 700 !important;
+  color: var(--color-navy) !important;
+}
+
+/* 問題枠内の見直しボタン（高齢者モード時の拡大・押しやすさ向上） */
+.app-shell.is-senior-mode .btn-review-log-in-event {
+  font-size: 20px !important;
+  padding: 12px 20px !important;
+  font-weight: 900 !important;
+  border-width: 2.5px !important;
+  margin: 6px 0 8px !important;
+}
+
+/* 促しテキスト */
+.app-shell.is-senior-mode .choice-prompt {
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  margin: 6px 0 2px !important;
+}
+
+/* 選択肢ボタン（24px・太字・押しやすいタップ領域） */
+.app-shell.is-senior-mode .choice-btn {
+  font-size: 24px !important;
+  line-height: 1.5 !important;
+  font-weight: 700 !important;
+  padding: 16px 20px !important;
+  border-width: 2.5px !important;
+}
+
+.app-shell.is-senior-mode .choice-btn:hover {
+  transform: scale(1.015);
+}
+
+/* 会話ステージのセリフ枠（文字拡大に合わせて高さを拡張） */
+.app-shell.is-senior-mode .story-textbox {
+  height: 155px !important;
+  max-height: 155px !important;
+  padding: 12px 16px !important;
+}
+
+.app-shell.is-senior-mode .story-player-image {
+  bottom: 155px !important;
+  height: calc(100% - 165px) !important;
+}
+
+.app-shell.is-senior-mode .story-textbox-speaker {
+  font-size: 16px !important;
+  padding: 3px 12px !important;
+  font-weight: 900 !important;
+}
+
+.app-shell.is-senior-mode .story-textbox-text {
+  font-size: 24px !important;
+  line-height: 1.55 !important;
+  font-weight: 700 !important;
+}
+
+/* あらすじ・自己紹介パネル */
+.app-shell.is-senior-mode .story-panel-title {
+  font-size: 26px !important;
+  font-weight: 900 !important;
+}
+
+.app-shell.is-senior-mode .story-panel-text,
+.app-shell.is-senior-mode .synopsis-large-text {
+  font-size: 25px !important;
+  line-height: 1.8 !important;
+  font-weight: 700 !important;
+}
+
+/* ジョーくんのアドバイス・吹き出し */
+.app-shell.is-senior-mode .guide-bubble-line {
+  font-size: 23px !important;
+  line-height: 1.6 !important;
+  font-weight: 700 !important;
+}
+
+.app-shell.is-senior-mode .joe-support-text {
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+/* =========================================================
+   2. 結果・解説画面（高齢者モード）
+   ========================================================= */
+.app-shell.is-senior-mode .result-badge-large {
+  font-size: 36px !important;
+  font-weight: 900 !important;
+}
+
+.app-shell.is-senior-mode .result-reaction {
+  font-size: 20px !important;
+  padding: 6px 18px !important;
+  font-weight: 700 !important;
+}
+
+.app-shell.is-senior-mode .result-money-large {
+  font-size: 32px !important;
+  font-weight: 900 !important;
+}
+
+.app-shell.is-senior-mode .result-current-money {
+  font-size: 18px !important;
+  padding: 6px 16px !important;
+}
+
+.app-shell.is-senior-mode .result-point-title {
+  font-size: 22px !important;
+  font-weight: 900 !important;
+}
+
+.app-shell.is-senior-mode .result-point-text {
+  font-size: 24px !important;
+  line-height: 1.7 !important;
+  font-weight: 700 !important;
+}
+
+.app-shell.is-senior-mode .btn-review-log {
+  font-size: 17px !important;
+  padding: 12px 20px !important;
+}
+
+/* =========================================================
+   3. 曜日イントロ & エンディング画面（高齢者モード）
+   ========================================================= */
+.app-shell.is-senior-mode .dayintro-daynum {
+  font-size: 24px !important;
+}
+
+.app-shell.is-senior-mode .dayintro-title {
+  font-size: 48px !important;
+}
+
+.app-shell.is-senior-mode .ending-title {
+  font-size: 28px !important;
+  font-weight: 900 !important;
+}
+
+.app-shell.is-senior-mode .ending-stat-label {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+.app-shell.is-senior-mode .ending-stat-value {
+  font-size: 24px !important;
+  font-weight: 900 !important;
+}
+
+.app-shell.is-senior-mode .principles-title {
+  font-size: 18px !important;
+}
+
+.app-shell.is-senior-mode .principle-head {
+  font-size: 17px !important;
+  font-weight: 900 !important;
+}
+
+.app-shell.is-senior-mode .principle-desc {
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+}
+
+/* =========================================================
+   4. iPad・パソコン・ワイド画面（幅768px以上 / .layout-desktop）
+   ========================================================= */
+@media (min-width: 768px) {
+  .app-shell.is-senior-mode {
+    font-size: 26px;
+  }
+
+  .app-shell.is-senior-mode .bubble-title {
+    font-size: 32px !important;
+  }
+
+  .app-shell.is-senior-mode .bubble-text,
+  .app-shell.is-senior-mode .narration-text {
+    font-size: 26px !important;
+    line-height: 1.75 !important;
+  }
+
+  .app-shell.is-senior-mode .btn-review-log-in-event {
+    font-size: 22px !important;
+    padding: 14px 24px !important;
+  }
+
+  .app-shell.is-senior-mode .choice-btn {
+    font-size: 26px !important;
+    line-height: 1.55 !important;
+    padding: 18px 24px !important;
+  }
+
+  .app-shell.is-senior-mode .story-textbox {
+    height: auto !important;
+    max-height: 52% !important;
+    padding: 18px 28px !important;
+  }
+
+  .app-shell.is-senior-mode .story-player-image {
+    bottom: 0 !important;
+    height: 84% !important;
+  }
+
+  .app-shell.is-senior-mode .story-textbox-text {
+    font-size: 26px !important;
+    line-height: 1.75 !important;
+  }
+
+  .app-shell.is-senior-mode .synopsis-large-text {
+    font-size: 26px !important;
+    line-height: 1.85 !important;
+  }
+
+  .app-shell.is-senior-mode .result-point-text {
+    font-size: 26px !important;
+    line-height: 1.75 !important;
+  }
+}
