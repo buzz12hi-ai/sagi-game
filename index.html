@@ -130,7 +130,7 @@
         </div>
       </section>
 
-      <!-- ①.2 プレイヤー名前入力画面（高齢者モード時はスキップ） -->
+      <!-- ①.2 プレイヤー名前入力画面（スキップボタン対応） -->
       <section id="screen-name-input" class="screen">
         <div class="story-stage" id="name-input-stage">
           <img id="name-guide-image" class="story-player-image is-center" alt="ジョーくん">
@@ -142,7 +142,10 @@
         <div class="name-input-panel">
           <p id="name-input-error" class="name-input-error is-hidden">⚠️ 名前を入力してください！</p>
           <input type="text" id="input-player-name" class="name-input-field" placeholder="名前を入力してください" maxlength="10">
-          <button id="btn-name-submit" class="btn btn-primary">決定</button>
+          <div class="name-input-btn-group">
+            <button id="btn-name-submit" class="btn btn-primary">決定</button>
+            <button id="btn-name-skip" class="btn btn-secondary btn-name-skip" type="button">スキップ（「あなた」で進む）</button>
+          </div>
         </div>
       </section>
 
@@ -159,7 +162,7 @@
         <button id="btn-intro-next" class="btn btn-primary">次へ進む</button>
       </section>
 
-      <!-- ② 欲しい物を選択する画面（小学生・中高生モードのみ） -->
+      <!-- ② 欲しい物を選択する画面（難易度グループ別表示対応） -->
       <section id="screen-item" class="screen">
         <div class="item-intro">
           <h2 class="item-intro-title">1週間後、欲しいものを買えるかな？</h2>
@@ -171,7 +174,7 @@
             <p class="guide-bubble-line">何を買いたい？目標を選ぼう！</p>
           </div>
         </div>
-        <div id="item-list" class="item-grid"></div>
+        <div id="item-list" class="item-list-container"></div>
       </section>
 
       <!-- ③ あらすじ画面 -->

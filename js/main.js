@@ -1,7 +1,7 @@
 /* =========================================================
    main.js
    4モード分岐・動的4択・判定演出・会話ログ・エンディング制御
-   （タイトルジョーくん初期表示・不具合修正版）
+   （名前スキップ対応・欲しい物難易度グループ別表示対応版）
    ========================================================= */
 
 function renderTitleVisual() {
@@ -93,22 +93,64 @@ function handleNameSubmit() {
   showJoeIntro(goToItemSelect);
 }
 
+// ★ 名前入力スキップ処理（名前を「あなた」として進行） ★
+function handleNameSkip() {
+  const errorEl = document.getElementById("name-input-error");
+  if (errorEl) errorEl.classList.add("is-hidden");
+  
+  state.playerName = "あなた";
+  showJoeIntro(goToItemSelect);
+}
+
+// 難易度グループ定義テーブル
+const ITEM_DIFFICULTY_GROUPS = [
+  { key: "初級", icon: "🟢", label: "初級", desc: "比較的達成しやすい目標", class: "group-beginner" },
+  { key: "普通", icon: "🔵", label: "普通", desc: "少し頑張れば狙える目標", class: "group-normal" },
+  { key: "上級", icon: "🟣", label: "上級", desc: "かなりお金を守る必要がある目標", class: "group-advanced" },
+  { key: "MAX",  icon: "🔴", label: "MAX",  desc: "最高難易度", class: "group-max" }
+];
+
 function goToItemSelect() {
   document.getElementById("status-bar").classList.add("hidden");
-  const list = document.getElementById("item-list");
-  list.innerHTML = "";
+  const container = document.getElementById("item-list");
+  container.innerHTML = "";
 
-  ITEMS.forEach((item) => {
-    const card = document.createElement("button");
-    card.className = "item-card";
-    card.type = "button";
-    card.innerHTML = `
-      ${itemVisualHTML(item, "item-photo")}
-      <span class="item-name">${item.name}</span>
-      <span class="item-price">¥${item.price.toLocaleString("ja-JP")}</span>
+  // 4段階の難易度グループ別に見出し・説明文・グリッドを構築
+  ITEM_DIFFICULTY_GROUPS.forEach(groupDef => {
+    const groupItems = ITEMS.filter(item => item.group === groupDef.key);
+    if (groupItems.length === 0) return;
+
+    const sectionEl = document.createElement("div");
+    sectionEl.className = `item-group-section ${groupDef.class}`;
+
+    const headerEl = document.createElement("div");
+    headerEl.className = "item-group-header";
+    headerEl.innerHTML = `
+      <div class="item-group-title-row">
+        <span class="item-group-badge">${groupDef.icon} ${groupDef.label}</span>
+      </div>
+      <p class="item-group-desc">${groupDef.desc}</p>
     `;
-    card.addEventListener("click", () => startWeek(item));
-    list.appendChild(card);
+    sectionEl.appendChild(headerEl);
+
+    const gridEl = document.createElement("div");
+    gridEl.className = "item-grid";
+
+    groupItems.forEach((item) => {
+      const card = document.createElement("button");
+      card.className = "item-card";
+      card.type = "button";
+      card.innerHTML = `
+        ${itemVisualHTML(item, "item-photo")}
+        <span class="item-name">${item.name}</span>
+        <span class="item-price">¥${item.price.toLocaleString("ja-JP")}</span>
+      `;
+      card.addEventListener("click", () => startWeek(item));
+      gridEl.appendChild(card);
+    });
+
+    sectionEl.appendChild(gridEl);
+    container.appendChild(sectionEl);
   });
 
   const guideImg = document.getElementById("item-guide-image");
@@ -674,7 +716,6 @@ function restartGame() {
   state.answeredQuestions = [];
   document.getElementById("status-bar").classList.add("hidden");
   showScreen("screen-title");
-  // リタイア時もタイトルジョーくんを正常レンダリング
   renderTitleVisual();
 }
 
@@ -692,6 +733,13 @@ document.getElementById("btn-mode-adult").addEventListener("click", () => handle
 document.getElementById("btn-mode-senior").addEventListener("click", () => handleSelectMode("senior"));
 
 document.getElementById("btn-name-submit").addEventListener("click", handleNameSubmit);
+
+// ★ 名前スキップボタンのイベント登録 ★
+const btnNameSkip = document.getElementById("btn-name-skip");
+if (btnNameSkip) {
+  btnNameSkip.addEventListener("click", handleNameSkip);
+}
+
 document.getElementById("btn-synopsis-next").addEventListener("click", showEvent);
 document.getElementById("btn-narration-next").addEventListener("click", handleNarrationNext);
 document.getElementById("btn-dialogue-next").addEventListener("click", goToDialogueNext);
