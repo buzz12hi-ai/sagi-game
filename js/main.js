@@ -1,10 +1,10 @@
 /* =========================================================
    main.js
    4モード分岐・動的4択・判定演出・会話ログ・エンディング制御
-   （タイトル画面限定：金・銀・銅ジョー君レアリティ確率抽選対応版）
+   （タイトル画面限定：金・銀・銅 ＆ ノーマル枠全9表情ランダム対応版）
    ========================================================= */
 
-// ★ タイトル画面のジョーくんイラスト選出（金 0.1% / 銀 1.0% / 銅 5.0% / ノーマル 93.9%） ★
+// ★ タイトル画面のジョーくん選出（金 0.1% / 銀 1.0% / 銅 5.0% / ノーマル全9表情ランダム 93.9%） ★
 function renderTitleVisual() {
   const titleJoeImg = document.getElementById("title-joe-image");
   if (!titleJoeImg) return;
@@ -22,13 +22,19 @@ function renderTitleVisual() {
     // 🥉 銅ジョー君 (R): 5.0% (1.1%〜6.1%)
     imgSrc = IMAGE_ASSETS.characters.joeBronze;
   } else {
-    // 🐻 ノーマルジョー君: 93.9% (全9表情からランダム)
-    const standardExpressions = [
-      "normal", "happy", "sad", "surprised",
-      "thinking", "cheer", "worry", "angry", "relax"
+    // 🐻 ノーマル枠 (93.9%): 色んなジョーくん（全9表情）の中からランダム選出
+    const allNormalJoeList = [
+      IMAGE_ASSETS.characters.joe,          // 通常
+      IMAGE_ASSETS.characters.joeHappy,     // 喜
+      IMAGE_ASSETS.characters.joeSad,       // 哀
+      IMAGE_ASSETS.characters.joeSurprised, // 驚き
+      IMAGE_ASSETS.characters.joeThinking,  // 考える
+      IMAGE_ASSETS.characters.joeCheer,     // 応援
+      IMAGE_ASSETS.characters.joeWorry,     // 困り
+      IMAGE_ASSETS.characters.joeAngry,     // 怒
+      IMAGE_ASSETS.characters.joeRelax      // 楽
     ];
-    const randomExpr = standardExpressions[Math.floor(Math.random() * standardExpressions.length)];
-    imgSrc = getJoeImage(randomExpr);
+    imgSrc = allNormalJoeList[Math.floor(Math.random() * allNormalJoeList.length)];
   }
 
   setImageSafely(titleJoeImg, imgSrc);
