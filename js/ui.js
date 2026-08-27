@@ -1,6 +1,7 @@
 /* =========================================================
    ui.js
    UI描画・4モード表示制御・ピンチズーム・会話ログ・Mac文字コード自動修復
+   （全モード月〜日ステータスバートラッカー対応・不具合解消版）
    ========================================================= */
 
 window.DEBUG_MODE = true;
@@ -190,6 +191,7 @@ function updateTargetItemDisplay() {
   }
 }
 
+// ★ 全モード共通（月〜日：7日間）の曜日トラッカー描画 ★
 function renderDayTracker() {
   const tracker = document.getElementById("day-tracker");
   if (!tracker) return;
@@ -198,9 +200,9 @@ function renderDayTracker() {
   const slot = currentScheduleSlot();
   const currentWeekdayIndex = slot.weekdayIndex;
 
-  const allLabels = (state.mode === "senior" || state.mode === "adult")
+  const allLabels = (typeof SEVEN_DAY_LABELS !== "undefined")
     ? SEVEN_DAY_LABELS
-    : [...WEEKDAY_LABELS, SHOPPING_LABEL];
+    : ["月", "火", "水", "木", "金", "土", "日"];
 
   allLabels.forEach((label, i) => {
     const dot = document.createElement("div");
@@ -314,7 +316,7 @@ function openImageModal(imgSrc) {
     scrollArea.scrollLeft = 0;
   }
 
-  // 1. クリック / タップで拡大・縮小トグル
+  // クリック / タップで拡大・縮小トグル
   modalImg.onclick = (e) => {
     e.stopPropagation();
     if (zoomState.scale > 1.2) {
@@ -326,7 +328,7 @@ function openImageModal(imgSrc) {
     }
   };
 
-  // 2. スマホ実機の 2本指ピンチイン・ピンチアウト処理
+  // スマホ実機の 2本指ピンチイン・ピンチアウト処理
   const touchArea = scrollArea || modalImg;
 
   touchArea.ontouchstart = (e) => {
@@ -351,7 +353,7 @@ function openImageModal(imgSrc) {
       );
       const factor = currentDist / zoomState.startDistance;
       let nextScale = zoomState.initialScale * factor;
-      nextScale = Math.min(Math.max(1.0, nextScale), 3.5); // 1倍〜3.5倍
+      nextScale = Math.min(Math.max(1.0, nextScale), 3.5);
       zoomState.scale = nextScale;
       updateImageTransform(modalImg);
     } else if (e.touches.length === 1 && zoomState.isDragging && zoomState.scale > 1) {
@@ -373,7 +375,6 @@ function openImageModal(imgSrc) {
     }
   };
 
-  // 等倍リセットボタン
   const resetBtn = document.getElementById("btn-zoom-reset");
   if (resetBtn) {
     resetBtn.onclick = (e) => {

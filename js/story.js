@@ -1,7 +1,8 @@
 /* =========================================================
    story.js
    -----------------------------------------------------------
-   会話・あらすじ・自己紹介・通知（4モード対応・ルビinnerHTML対応）
+   会話・あらすじ・自己紹介・通知・週末ふりかえりストーリー演出
+   （4モード対応・ルビinnerHTML対応・お買い物前ストーリー強化版）
    ========================================================= */
 
 const FALLBACK_SCENE_BG = IMAGE_ASSETS.backgrounds.livingRoom;
@@ -215,6 +216,7 @@ function showPikonNotification() {
   }, 2000);
 }
 
+// ★ 全問題終了後の週末ふりかえり・ストーリー画面 ★
 function showWeekRecap() {
   const bgImg = document.getElementById("week-recap-bg-image");
   const playerImg = document.getElementById("week-recap-player-image");
@@ -248,18 +250,20 @@ function showWeekRecap() {
       `;
     } else if (state.mode === "elementary") {
       recapTextEl.innerHTML = `
-        1<ruby>週間<rt>しゅうかん</rt></ruby>、お<ruby>疲<rt>つか</rt></ruby>れさま！<br><br>
-        あやしいメール、<ruby>知<rt>し</rt></ruby>らない<ruby>人<rt>ひと</rt></ruby>からのメッセージ、そして こまっている おじいさん……<br>
-        いろんな <ruby>出来事<rt>できごと</rt></ruby>があったけれど、${getPlayerDisplayName()}は <ruby>一<rt>ひと</rt></ruby>つひとつ おちついて <ruby>見<rt>み</rt></ruby>やぶってきたね！<br><br>
-        さあ、さいごは お<ruby>買<rt>か</rt></ruby>いものの <ruby>時間<rt>じかん</rt></ruby>だよ！
+        1<ruby>週間<rt>しゅうかん</rt></ruby>、すべての チャレンジが おわったよ！<br>
+        ${getPlayerDisplayName()}、<ruby>本当<rt>ほんとう</rt></ruby>に よく<ruby>頑張<rt>がんば</rt></ruby>ったね！<br><br>
+        あやしいメールやメッセージ、<ruby>危<rt>あぶ</rt></ruby>ないお<ruby>誘<rt>さそ</rt></ruby>いも おちついて <ruby>見<rt>み</rt></ruby>ぬいてきたね。<br><br>
+        ✨ <strong>さぁ！ ずっと まちにまった お<ruby>買<rt>か</rt></ruby>いものの <ruby>時間<rt>じかん</rt></ruby>だ！</strong><br>
+        お<ruby>小遣<rt>こづか</rt></ruby>いを まもって、<ruby>欲<rt>ほ</rt></ruby>しかったものは かえるかな…！？
       `;
     } else {
       // 中高生モード (teen)
       recapTextEl.innerHTML = `
-        1週間、お疲れさま！<br><br>
-        届いたメール、SNSのDM、怪しい広告、そして困っている人……<br>
-        いろんな出来事があったけれど、${getPlayerDisplayName()}は一つひとつ落ち着いて向き合ってきたね。<br><br>
-        さあ、最後は楽しみにしていた買い物の時間だ！
+        1週間、すべてのトラブルと出来事を乗り切ったぞ！<br>
+        ${getPlayerDisplayName()}、本当によく冷静に対処してきたね！<br><br>
+        届いた不審なDM、偽の通知、怪しい誘いにも騙されず、しっかり自分のお金を守り抜いてきた。<br><br>
+        ✨ <strong>さあ！ 待ちに待った買い物の時間だ！</strong><br>
+        目標にしていたあのアイテムを、無事に手に入れることはできるのか……！？
       `;
     }
   }

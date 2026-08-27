@@ -1,7 +1,7 @@
 /* =========================================================
    assets.js
    画像アセット・ファイルパス定義
-   （resource/images/ 読み込み完全確定版）
+   【金・銀・銅ジョー君追加・いらすとや規約準拠完全確定版】
    ========================================================= */
 
 const IMG_BASE = "resource/images/";
@@ -29,7 +29,7 @@ const IMAGE_ASSETS = {
 
   // キャラクター立ち絵
   characters: {
-    // ジョーくん（全9表情）
+    // ── 【ジョーくん】（全9表情） ──
     joe:               IMG_BASE + "ジョー君通常.png",
     joeHappy:          IMG_BASE + "ジョー君喜.png",
     joeSad:            IMG_BASE + "ジョー君哀.png",
@@ -40,27 +40,32 @@ const IMAGE_ASSETS = {
     joeAngry:          IMG_BASE + "ジョー君怒.png",
     joeRelax:          IMG_BASE + "ジョー君楽.png",
 
-    // 学生主人公（小学生・中高生モード用）
+    // ── 【レアジョーくん（タイトル画面限定）】 ──
+    joeGold:           IMG_BASE + "金ジョー君.png",
+    joeSilver:         IMG_BASE + "銀ジョー君.png",
+    joeBronze:         IMG_BASE + "銅ジョー君.png",
+
+    // ── 【学生主人公】（小学生・中高生モード用：厳選4点に統合） ──
     studentNeutral:    IMG_BASE + "普通主人公.png",
     studentHappy:      IMG_BASE + "主人公喜び.png",
-    studentSad:        IMG_BASE + "主人公泣き.png",
-    studentQuestion:   IMG_BASE + "主人公疑問.png",
+    studentSad:        IMG_BASE + "主人公困り.png",
+    studentQuestion:   IMG_BASE + "主人公困り.png",
     studentWorry:      IMG_BASE + "主人公困り.png",
-    studentWalking:    IMG_BASE + "通学主人公.png",
+    studentWalking:    IMG_BASE + "普通主人公.png",
     studentSmartphone: IMG_BASE + "携帯みる主人公.png",
 
-    // 一般（大人）主人公（大人モード用）
+    // ── 【一般（大人）主人公】（大人モード用：厳選4点に統合） ──
     adultNeutral:      IMG_BASE + "一般主人公.png",
     adultHappy:        IMG_BASE + "一般主人公喜.png",
     adultSad:          IMG_BASE + "一般主人公哀.png",
-    adultQuestion:     IMG_BASE + "一般主人公考える.png",
-    adultThinking:     IMG_BASE + "一般主人公考える.png",
+    adultQuestion:     IMG_BASE + "一般主人公.png",
+    adultThinking:     IMG_BASE + "一般主人公.png",
     adultWorry:        IMG_BASE + "一般主人公哀.png",
     adultWalking:      IMG_BASE + "一般主人公.png",
     adultSmartphone:   IMG_BASE + "一般主人公仕事中.png",
-    adultAngry:        IMG_BASE + "一般主人公怒.png",
+    adultAngry:        IMG_BASE + "一般主人公哀.png",
 
-    // 高齢者主人公（高齢者モード用）
+    // ── 【高齢者主人公】（高齢者モード用：厳選3点に統合） ──
     seniorNeutral:     IMG_BASE + "高齢者.png",
     seniorHappy:       IMG_BASE + "高齢者笑顔.png",
     seniorSad:         IMG_BASE + "困っている高齢者.png",
@@ -69,20 +74,21 @@ const IMAGE_ASSETS = {
     seniorWalking:     IMG_BASE + "高齢者.png",
     seniorSmartphone:  IMG_BASE + "高齢者笑顔.png",
 
-    // NPC・家族・同僚・作業員・店員
+    // ── 【NPC・家族・同僚・作業員・店員】（厳選5点に統合） ──
     colleagueTroubled: IMG_BASE + "困ってる同僚.png",
     workerLabor:       IMG_BASE + "作業員.png",
-    fireTruck:         IMG_BASE + "消防車.png",
+    fireTruck:         IMG_BASE + "作業員.png",
+    suspiciousVisitor: IMG_BASE + "作業員.png",
     workerGas:         IMG_BASE + "コンビニ店員.png",
     elderlyWomanCane:  IMG_BASE + "困っている高齢者.png",
     elderlyWoman:      IMG_BASE + "高齢者.png",
     elderlyManGlasses: IMG_BASE + "高齢者笑顔.png",
     motherWorried:     IMG_BASE + "親困り.png",
-    motherSmile:       IMG_BASE + "親笑顔.png",
+    motherSmile:       IMG_BASE + "親困り.png",
     silhouette:        IMG_BASE + "シルエット.png"
   },
 
-  // 証拠スクリーンショット・資料画像（4モード完全直結）
+  // 証拠スクリーンショット・資料画像（4モード直結）
   screenshots: {
 
     // ── 【小学生モード用（13枚）】 ──
@@ -115,7 +121,7 @@ const IMAGE_ASSETS = {
     teenCopyrightScam:                IMG_BASE + "中高生_著作権警告詐欺.jpg",
     teenAiFakeAdScam:                 IMG_BASE + "中高生_AI有名人偽広告.jpg",
 
-    // ── 【一般（大人）モード用（14枚）】 ──
+    // ── 【一般（大人）モード用（15枚）】 ──
     subscriptionScam:                 IMG_BASE + "一般_サブスク自動更新詐欺.jpg",
     taxRefundScam:                    IMG_BASE + "一般_eTax還付金詐欺.jpg",
     bankOtpScam:                      IMG_BASE + "銀行ワンタイム詐欺.jpg",

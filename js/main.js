@@ -1,16 +1,38 @@
 /* =========================================================
    main.js
    4モード分岐・動的4択・判定演出・会話ログ・エンディング制御
-   （名前スキップ対応・欲しい物難易度グループ別表示対応版）
+   （タイトル画面限定：金・銀・銅ジョー君レアリティ確率抽選対応版）
    ========================================================= */
 
+// ★ タイトル画面のジョーくんイラスト選出（金 0.1% / 銀 1.0% / 銅 5.0% / ノーマル 93.9%） ★
 function renderTitleVisual() {
   const titleJoeImg = document.getElementById("title-joe-image");
-  if (titleJoeImg) {
-    // 正しいアセット定義から画像パスを取得して確実にセット
-    setImageSafely(titleJoeImg, getJoeImage("cheer"));
-    applyCharacterBlend(titleJoeImg, getJoeImage("cheer"));
+  if (!titleJoeImg) return;
+
+  const rand = Math.random() * 100; // 0.0 〜 100.0 の乱数
+  let imgSrc;
+
+  if (rand < 0.1) {
+    // 🥇 金ジョー君 (UR): 0.1%
+    imgSrc = IMAGE_ASSETS.characters.joeGold;
+  } else if (rand < 1.1) {
+    // 🥈 銀ジョー君 (SR): 1.0% (0.1%〜1.1%)
+    imgSrc = IMAGE_ASSETS.characters.joeSilver;
+  } else if (rand < 6.1) {
+    // 🥉 銅ジョー君 (R): 5.0% (1.1%〜6.1%)
+    imgSrc = IMAGE_ASSETS.characters.joeBronze;
+  } else {
+    // 🐻 ノーマルジョー君: 93.9% (全9表情からランダム)
+    const standardExpressions = [
+      "normal", "happy", "sad", "surprised",
+      "thinking", "cheer", "worry", "angry", "relax"
+    ];
+    const randomExpr = standardExpressions[Math.floor(Math.random() * standardExpressions.length)];
+    imgSrc = getJoeImage(randomExpr);
   }
+
+  setImageSafely(titleJoeImg, imgSrc);
+  applyCharacterBlend(titleJoeImg, imgSrc);
 }
 
 // ① 「はじめる」クリックで「表示デザイン選択画面」へ
@@ -93,7 +115,7 @@ function handleNameSubmit() {
   showJoeIntro(goToItemSelect);
 }
 
-// ★ 名前入力スキップ処理（名前を「あなた」として進行） ★
+// 名前入力スキップ処理（名前を「あなた」として進行）
 function handleNameSkip() {
   const errorEl = document.getElementById("name-input-error");
   if (errorEl) errorEl.classList.add("is-hidden");
@@ -115,7 +137,6 @@ function goToItemSelect() {
   const container = document.getElementById("item-list");
   container.innerHTML = "";
 
-  // 4段階の難易度グループ別に見出し・説明文・グリッドを構築
   ITEM_DIFFICULTY_GROUPS.forEach(groupDef => {
     const groupItems = ITEMS.filter(item => item.group === groupDef.key);
     if (groupItems.length === 0) return;
@@ -238,11 +259,7 @@ function showSynopsis() {
 
 function showEvent() {
   if (state.slotIndex >= state.weeklyQuestions.length) {
-    if (state.mode === "senior" || state.mode === "adult") {
-      showWeekRecap();
-    } else {
-      showShoppingScreen();
-    }
+    showWeekRecap();
     return;
   }
 
@@ -328,7 +345,7 @@ function handleChoiceWithDelay(choice) {
 function getNextButtonLabel() {
   const nextIndex = state.slotIndex + 1;
   if (nextIndex >= state.weeklyQuestions.length) {
-    return (state.mode === "senior" || state.mode === "adult") ? "結果発表へ" : "買い物へ";
+    return "1週間のふりかえりへ";
   }
 
   const currentWeekday = state.daySchedule[state.slotIndex].weekdayIndex;
@@ -734,7 +751,6 @@ document.getElementById("btn-mode-senior").addEventListener("click", () => handl
 
 document.getElementById("btn-name-submit").addEventListener("click", handleNameSubmit);
 
-// ★ 名前スキップボタンのイベント登録 ★
 const btnNameSkip = document.getElementById("btn-name-skip");
 if (btnNameSkip) {
   btnNameSkip.addEventListener("click", handleNameSkip);
