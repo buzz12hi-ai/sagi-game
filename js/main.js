@@ -1,7 +1,7 @@
 /* =========================================================
    main.js
    4モード分岐・動的4択・判定演出・会話ログ・エンディング制御
-   （タイトル画面限定：金・銀・銅 ＆ ノーマル枠全9表情ランダム対応版）
+   （スマホ画面復帰・pageshow完全対応：金銀銅＆ノーマル全9表情ランダム版）
    ========================================================= */
 
 // ★ タイトル画面のジョーくん選出（金 0.1% / 銀 1.0% / 銅 5.0% / ノーマル全9表情ランダム 93.9%） ★
@@ -829,6 +829,15 @@ if (logModalOverlay) {
     }
   });
 }
+
+// ★ スマホの初回読み込み・画面復帰時（pageshow）にも確実にランダム実行 ★
+window.addEventListener("pageshow", () => {
+  renderTitleVisual();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderTitleVisual();
+});
 
 renderTitleVisual();
 showScreen("screen-title");
