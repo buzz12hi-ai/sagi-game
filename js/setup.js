@@ -1,10 +1,17 @@
 /* =========================================================
    setup.js
    ゲーム準備・モード選択・名前入力・欲しい物選択・状態初期化・あらすじ
+   （分析データ自動記録・テストプレイ連携対応版）
    ========================================================= */
 
 // ① 「はじめる」クリックで「表示デザイン選択画面」へ
 function handleStartClick() {
+  state.isTestMode = false; // 通常プレイとして開始
+  const badge = document.getElementById("test-mode-badge");
+  const drawer = document.getElementById("test-controller-drawer");
+  if (badge) badge.classList.add("is-hidden");
+  if (drawer) drawer.classList.add("is-hidden");
+
   showScreen("screen-device-select");
 }
 
@@ -182,6 +189,11 @@ function initGameState() {
   
   state.weeklyQuestions = pickWeeklyQuestions(state.mode);
   state.daySchedule = buildDaySchedule(state.mode);
+
+  // ★ 通常プレイ時のみ、プレイ開始を分析ストレージに自動記録 ★
+  if (typeof recordAnalyticsGameStart === "function") {
+    recordAnalyticsGameStart(state.mode);
+  }
 }
 
 // ③ あらすじ画面

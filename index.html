@@ -10,13 +10,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 
 <!-- 分割したCSSファイルの読み込み（styles.css/ フォルダ内） -->
-<link rel="stylesheet" href="styles.css/base.css?v=20260827_v3">
-<link rel="stylesheet" href="styles.css/screens.css?v=20260827_v3">
-<link rel="stylesheet" href="styles.css/event.css?v=20260827_v3">
-<link rel="stylesheet" href="styles.css/senior.css?v=20260827_v3">
-<link rel="stylesheet" href="styles.css/preview.css?v=20260827_v3">
+<link rel="stylesheet" href="styles.css/base.css?v=20260827_v4">
+<link rel="stylesheet" href="styles.css/screens.css?v=20260827_v4">
+<link rel="stylesheet" href="styles.css/event.css?v=20260827_v4">
+<link rel="stylesheet" href="styles.css/senior.css?v=20260827_v4">
+<link rel="stylesheet" href="styles.css/preview.css?v=20260827_v4">
+<link rel="stylesheet" href="styles.css/analytics.css?v=20260827_v4">
 </head>
 <body>
+
+  <!-- ★ テストプレイ中 常設バッジ ★ -->
+  <div id="test-mode-badge" class="test-mode-badge-floating is-hidden">🛠️ TEST MODE</div>
 
   <div class="app-shell" id="app-shell">
 
@@ -76,7 +80,7 @@
         </div>
       </section>
 
-      <!-- ①.05 デバイス/レイアウト選択画面 -->
+      <!-- ①.05 デバイス/レイアウト選択画面（製作者メニューボタン付き） -->
       <section id="screen-device-select" class="screen">
         <div class="device-select-container">
           <h2 class="device-select-title">表示デザインを選んでください</h2>
@@ -92,6 +96,11 @@
               <div class="device-badge badge-desktop">💻 iPad・パソコン版デザイン</div>
               <p class="device-card-desc">タブレットやPC画面にぴったりの見やすいワイド表示</p>
             </button>
+          </div>
+
+          <!-- 製作者用パスコード認証ランチャーボタン -->
+          <div class="dev-auth-launcher-area">
+            <button id="btn-open-dev-auth" class="btn-dev-auth-trigger" type="button">🔐 製作者メニュー（パスコード認証）</button>
           </div>
         </div>
       </section>
@@ -479,19 +488,155 @@
       </div>
     </div>
 
+    <!-- ★ 製作者用 パスコード認証モーダル（A5158） ★ -->
+    <div id="auth-modal" class="auth-modal-overlay is-hidden">
+      <div class="auth-modal-window">
+        <h3 class="auth-modal-title">🔐 製作者認証</h3>
+        <p class="auth-modal-desc">製作者用パスコード（5文字）を入力してください</p>
+        <input type="password" id="auth-passcode-input" class="auth-input-field" maxlength="10" placeholder="•••••">
+        <p id="auth-error-msg" class="auth-error-msg is-hidden">⚠️ パスコードが正しくありません。</p>
+        <div class="auth-btn-group">
+          <button id="btn-auth-cancel" class="btn btn-secondary" type="button">キャンセル</button>
+          <button id="btn-auth-submit" class="btn btn-primary" type="button">認証する</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ 製作者用 制作・分析画面モーダル ★ -->
+    <div id="analytics-modal" class="analytics-modal-overlay is-hidden">
+      <div class="analytics-modal-window">
+        <header class="analytics-header">
+          <div class="analytics-header-title">
+            <h2>📊 SCAM HUNTER｜制作・分析</h2>
+            <span class="analytics-badge-label">通常プレイ分析</span>
+          </div>
+          <button id="btn-close-analytics" class="analytics-btn-close" type="button">✕ 閉じる</button>
+        </header>
+
+        <div class="analytics-body">
+          <!-- ツールバー -->
+          <div class="analytics-actions-bar">
+            <select id="analytics-mode-filter" class="analytics-filter-select">
+              <option value="all">すべてのモード</option>
+              <option value="elementary">小学生モード</option>
+              <option value="teen">中高生モード</option>
+              <option value="adult">一般（大人）モード</option>
+              <option value="senior">高齢者モード</option>
+            </select>
+            <div class="analytics-btn-row">
+              <button id="btn-export-csv" class="btn-analytics-csv" type="button">📥 CSVエクスポート</button>
+              <button id="btn-reset-analytics" class="btn-analytics-reset" type="button">🗑️ データをリセット</button>
+            </div>
+          </div>
+
+          <!-- サマリーカード -->
+          <div class="analytics-summary-grid">
+            <div class="analytics-summary-card">
+              <span class="summary-card-label">総プレイ回数</span>
+              <span id="stat-total-plays" class="summary-card-value">0 回</span>
+            </div>
+            <div class="analytics-summary-card">
+              <span class="summary-card-label">クリア率</span>
+              <span id="stat-clear-rate" class="summary-card-value highlight">0 %</span>
+            </div>
+            <div class="analytics-summary-card">
+              <span class="summary-card-label">平均最終スコア</span>
+              <span id="stat-avg-score" class="summary-card-value">¥0</span>
+            </div>
+            <div class="analytics-summary-card">
+              <span class="summary-card-label">最も間違われた問題</span>
+              <span id="stat-worst-question" class="summary-card-value warning" style="font-size: 15px;">-</span>
+            </div>
+          </div>
+
+          <!-- モード別プレイ数 -->
+          <div class="analytics-section-panel">
+            <h3 class="analytics-section-title">👥 モード別プレイ数</h3>
+            <div class="analytics-mode-grid">
+              <div class="mode-stat-box">
+                <div class="mode-stat-label">🎒 小学生</div>
+                <div id="stat-mode-elementary" class="mode-stat-count">0 回</div>
+              </div>
+              <div class="mode-stat-box">
+                <div class="mode-stat-label">🏫 中高生</div>
+                <div id="stat-mode-teen" class="mode-stat-count">0 回</div>
+              </div>
+              <div class="mode-stat-box">
+                <div class="mode-stat-label">👔 一般（大人）</div>
+                <div id="stat-mode-adult" class="mode-stat-count">0 回</div>
+              </div>
+              <div class="mode-stat-box">
+                <div class="mode-stat-label">👵 高齢者</div>
+                <div id="stat-mode-senior" class="mode-stat-count">0 回</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 曜日別離脱率 -->
+          <div class="analytics-section-panel">
+            <h3 class="analytics-section-title">📉 曜日別離脱状況（どこで中断したか）</h3>
+            <div id="analytics-drop-chart" class="analytics-drop-chart"></div>
+          </div>
+
+          <!-- 問題別正答率 -->
+          <div class="analytics-section-panel">
+            <h3 class="analytics-section-title">🎯 問題別正答率（Q1〜Q16）</h3>
+            <div id="analytics-q-list" class="analytics-q-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ テストプレイ用デバッグコントロールバー（開閉式） ★ -->
+    <div id="test-controller-drawer" class="test-controller-drawer is-hidden">
+      <button id="btn-toggle-test-drawer" class="test-drawer-toggle" type="button">🛠️ テストコントロール</button>
+      
+      <div class="test-controller-row">
+        <label style="font-size: 11px;">曜日移動:</label>
+        <select id="test-select-weekday" class="test-ctrl-select">
+          <option value="0">月曜日</option>
+          <option value="1">火曜日</option>
+          <option value="2">水曜日</option>
+          <option value="3">木曜日</option>
+          <option value="4">金曜日</option>
+          <option value="5">土曜日</option>
+          <option value="6">日曜日</option>
+        </select>
+        <button id="btn-test-skip-q" class="test-ctrl-btn" type="button">⏭️ スキップ</button>
+      </div>
+
+      <div class="test-controller-row">
+        <label style="font-size: 11px;">所持金:</label>
+        <button class="test-ctrl-btn" onclick="setTestMoney(0)">0円</button>
+        <button class="test-ctrl-btn" onclick="setTestMoney(30000)">3万円</button>
+        <button class="test-ctrl-btn" onclick="setTestMoney(50000)">5万円</button>
+        <button class="test-ctrl-btn" onclick="setTestMoney(80000)">8万円</button>
+      </div>
+
+      <div class="test-controller-row">
+        <label style="font-size: 11px;">EDテスト:</label>
+        <button class="test-ctrl-btn" onclick="testJumpEnding('shop_success')">🎉 買い物成功</button>
+        <button class="test-ctrl-btn" onclick="testJumpEnding('shop_fail')">😢 買い物失敗</button>
+        <button class="test-ctrl-btn" onclick="testJumpEnding('rank_s')">🏆 Sランク</button>
+        <button class="test-ctrl-btn" onclick="testJumpEnding('rank_d')">⚠️ Dランク</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- スクリプト群（分割JSを完全順序で読み込み・キャッシュ更新パラメータ付き） -->
-  <script src="js/assets.js?v=20260827_v3"></script>
-  <script src="js/data.js?v=20260827_v3"></script>
-  <script src="js/state.js?v=20260827_v3"></script>
-  <script src="js/ui.js?v=20260827_v3"></script>
-  <script src="js/story.js?v=20260827_v3"></script>
-  <script src="js/setup.js?v=20260827_v3"></script>
-  <script src="js/event.js?v=20260827_v3"></script>
-  <script src="js/ending.js?v=20260827_v3"></script>
-  <script src="js/validator.js?v=20260827_v3"></script>
-  <script src="js/preview.js?v=20260827_v3"></script>
-  <script src="js/main.js?v=20260827_v3"></script>
+  <script src="js/assets.js?v=20260827_v4"></script>
+  <script src="js/data.js?v=20260827_v4"></script>
+  <script src="js/state.js?v=20260827_v4"></script>
+  <script src="js/ui.js?v=20260827_v4"></script>
+  <script src="js/story.js?v=20260827_v4"></script>
+  <script src="js/analytics.js?v=20260827_v4"></script>
+  <script src="js/test-mode.js?v=20260827_v4"></script>
+  <script src="js/setup.js?v=20260827_v4"></script>
+  <script src="js/event.js?v=20260827_v4"></script>
+  <script src="js/ending.js?v=20260827_v4"></script>
+  <script src="js/validator.js?v=20260827_v4"></script>
+  <script src="js/preview.js?v=20260827_v4"></script>
+  <script src="js/main.js?v=20260827_v4"></script>
 </body>
 </html>

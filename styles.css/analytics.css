@@ -1,0 +1,546 @@
+/* =========================================================
+   analytics.css
+   製作者用「制作・分析画面」・パスコード認証・テストプレイモード専用スタイル
+   ========================================================= */
+
+/* =========================================================
+   1. 製作者用ランチャーボタン（表示デザイン選択画面下部）
+   ========================================================= */
+.dev-auth-launcher-area {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn-dev-auth-trigger {
+  background: transparent;
+  color: var(--color-navy-soft);
+  border: 1px dashed var(--color-border);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.btn-dev-auth-trigger:hover {
+  opacity: 1;
+  background: #FFFFFF;
+  border-color: var(--color-money);
+  color: var(--color-navy);
+}
+
+/* =========================================================
+   2. パスコード（A5158）認証モーダル
+   ========================================================= */
+.auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 15, 30, 0.90);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s var(--ease-gentle);
+}
+
+.auth-modal-window {
+  width: 100%;
+  max-width: 380px;
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  border: 2.5px solid var(--color-money);
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.auth-modal-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--color-navy);
+}
+
+.auth-modal-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-navy-soft);
+  text-align: center;
+}
+
+.auth-input-field {
+  width: 100%;
+  text-align: center;
+  font-family: monospace, var(--font-display);
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-navy-soft);
+  background: var(--color-bg);
+  color: var(--color-navy);
+  outline: none;
+  text-transform: uppercase;
+}
+
+.auth-input-field:focus {
+  border-color: var(--color-money);
+  background: #FFFFFF;
+  box-shadow: 0 0 10px rgba(245, 166, 35, 0.3);
+}
+
+.auth-error-msg {
+  color: var(--color-danger);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.auth-btn-group {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.auth-btn-group .btn {
+  flex: 1;
+  font-size: 14.5px;
+  padding: 10px 14px;
+}
+
+/* =========================================================
+   3. 制作・分析画面モーダル（SCAM HUNTER｜制作・分析）
+   ========================================================= */
+.analytics-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(10, 15, 30, 0.94);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.analytics-modal-window {
+  width: 100%;
+  max-width: 1050px;
+  height: 94vh;
+  max-height: 94dvh;
+  background: #EDF1F7;
+  border-radius: var(--radius-md);
+  border: 2.5px solid var(--color-money);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.analytics-header {
+  background: var(--color-navy);
+  color: #FFFFFF;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.analytics-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.analytics-header-title h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.analytics-badge-label {
+  background: var(--color-money);
+  color: var(--color-navy);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.analytics-btn-close {
+  background: var(--color-danger);
+  color: #FFFFFF;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.analytics-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ツールバー（CSV出力・データリセット） */
+.analytics-actions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFFFFF;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.analytics-filter-select {
+  font-family: var(--font-display);
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1.5px solid var(--color-navy-soft);
+  outline: none;
+}
+
+.analytics-btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-analytics-csv {
+  background: var(--color-safe);
+  color: #FFFFFF;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-analytics-reset {
+  background: #FFFFFF;
+  color: var(--color-danger);
+  border: 1.5px solid var(--color-danger);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* サマリーカードグリッド */
+.analytics-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 650px) {
+  .analytics-summary-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.analytics-summary-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-sm);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1.5px solid var(--color-border);
+  box-shadow: 0 3px 10px rgba(27, 42, 74, 0.05);
+}
+
+.summary-card-label {
+  font-size: 12px;
+  color: var(--color-navy-soft);
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.summary-card-value {
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 900;
+  color: var(--color-navy);
+}
+
+.summary-card-value.highlight { color: var(--color-safe); }
+.summary-card-value.warning { color: var(--color-money); }
+
+/* セクションパネル（グラフ・リスト） */
+.analytics-section-panel {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  padding: 16px 14px;
+  border: 1.5px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.analytics-section-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--color-navy);
+  border-left: 4px solid var(--color-money);
+  padding-left: 8px;
+}
+
+/* モード別プレイ数カード */
+.analytics-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 650px) {
+  .analytics-mode-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.mode-stat-box {
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 8px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+}
+
+.mode-stat-label { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.mode-stat-count { font-family: var(--font-display); font-size: 18px; font-weight: 900; color: var(--color-navy); }
+
+/* 曜日別離脱率バーチャート */
+.analytics-drop-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.drop-chart-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+}
+
+.drop-day-label {
+  width: 42px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.drop-bar-track {
+  flex: 1;
+  height: 14px;
+  background: var(--color-bg);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.drop-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-safe), var(--color-danger));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.drop-rate-text {
+  width: 70px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* 問題別正答率リスト */
+.analytics-q-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.analytics-q-item {
+  background: var(--color-bg);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.q-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+}
+
+.q-item-title {
+  font-weight: 700;
+  color: var(--color-navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.q-item-rate {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.q-item-bar-track {
+  width: 100%;
+  height: 8px;
+  background: #FFFFFF;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.q-item-bar-fill {
+  height: 100%;
+  background: var(--color-safe);
+  border-radius: 999px;
+}
+
+.q-item-bar-fill.is-low { background: var(--color-danger); }
+.q-item-bar-fill.is-mid { background: var(--color-money); }
+
+/* =========================================================
+   4. テストモード中 常設UI（TEST MODEバッジ ＆ コントローラーバー）
+   ========================================================= */
+.test-mode-badge-floating {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background: #E85C4A;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1.5px solid #FFFFFF;
+  box-shadow: 0 4px 12px rgba(232, 92, 74, 0.4);
+  letter-spacing: 0.08em;
+  pointer-events: none;
+  animation: pulseZoom 2s infinite alternate;
+}
+
+/* テストプレイ専用コントロールバー（画面下部固定・開閉式） */
+.test-controller-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 990;
+  width: 100%;
+  max-width: 600px;
+  background: rgba(27, 42, 74, 0.96);
+  backdrop-filter: blur(8px);
+  border-top: 2px solid var(--color-money);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  padding: 8px 12px 10px;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.3s ease;
+}
+
+.test-controller-drawer.is-collapsed {
+  transform: translate(-50%, calc(100% - 30px));
+}
+
+.test-drawer-toggle {
+  align-self: center;
+  background: var(--color-money);
+  color: var(--color-navy);
+  border: none;
+  padding: 2px 14px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.test-controller-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.test-ctrl-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.test-ctrl-btn:hover {
+  background: var(--color-money);
+  color: var(--color-navy);
+  border-color: var(--color-money);
+}
+
+.test-ctrl-select {
+  background: #0B1426;
+  color: #FFFFFF;
+  border: 1px solid var(--color-money);
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  outline: none;
+}

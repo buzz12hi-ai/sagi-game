@@ -1,6 +1,7 @@
 /* =========================================================
    event.js
    問題出題・選択肢回答判定・ダメージ計算・結果表示・進行制御
+   （通常プレイ時分析データ自動記録・到達曜日再プレイ対応版）
    ========================================================= */
 
 function showEvent() {
@@ -148,6 +149,11 @@ function handleChoice(choice) {
     questionId: question.id,
     isCorrect: isCorrect
   });
+
+  // ★ 通常プレイ時のみ、問題ごとの正誤を分析データに記録 ★
+  if (typeof recordAnalyticsAnswer === "function") {
+    recordAnalyticsAnswer(question.id, isCorrect);
+  }
 
   const popOverlay = document.getElementById("instant-pop-overlay");
   const popBadge = document.getElementById("instant-pop-badge");

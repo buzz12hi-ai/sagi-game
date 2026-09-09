@@ -1,7 +1,7 @@
 /* =========================================================
    main.js
    アプリケーション統合エントリポイント
-   （タイトルレアリティ抽選・イベントリスナー一括登録・画面初期化）
+   （タイトルレアリティ抽選・製作者機能・イベントリスナー一括登録・画面初期化）
    ========================================================= */
 
 // ★ タイトル画面のジョーくん選出（金 0.1% / 銀 1.0% / 銅 5.0% / ノーマル全9表情ランダム 93.9%） ★
@@ -45,33 +45,95 @@ function renderTitleVisual() {
    イベントリスナー一括登録
    ========================================================= */
 
-// タイトル画面 → 表示デザイン選択
+// 1. タイトル画面 → 表示デザイン選択
 document.getElementById("btn-start").addEventListener("click", handleStartClick);
 
-// 表示デザイン（デバイス）選択
+// 2. 表示デザイン（デバイス）選択
 document.getElementById("btn-device-mobile").addEventListener("click", () => handleSelectDevice("mobile"));
 document.getElementById("btn-device-desktop").addEventListener("click", () => handleSelectDevice("desktop"));
 
-// モード選択（4モード）
+// 3. 製作者用パスコード認証ランチャー
+const btnOpenDevAuth = document.getElementById("btn-open-dev-auth");
+if (btnOpenDevAuth) {
+  btnOpenDevAuth.addEventListener("click", () => openAuthModal("analytics"));
+}
+
+const btnAuthSubmit = document.getElementById("btn-auth-submit");
+if (btnAuthSubmit) {
+  btnAuthSubmit.addEventListener("click", handleAuthSubmit);
+}
+
+const btnAuthCancel = document.getElementById("btn-auth-cancel");
+if (btnAuthCancel) {
+  btnAuthCancel.addEventListener("click", closeAuthModal);
+}
+
+const authPasscodeInput = document.getElementById("auth-passcode-input");
+if (authPasscodeInput) {
+  authPasscodeInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") handleAuthSubmit();
+  });
+}
+
+// 4. 制作・分析画面モーダル制御
+const btnCloseAnalytics = document.getElementById("btn-close-analytics");
+if (btnCloseAnalytics) {
+  btnCloseAnalytics.addEventListener("click", closeAnalyticsModal);
+}
+
+const btnExportCsv = document.getElementById("btn-export-csv");
+if (btnExportCsv) {
+  btnExportCsv.addEventListener("click", exportAnalyticsCSV);
+}
+
+const btnResetAnalytics = document.getElementById("btn-reset-analytics");
+if (btnResetAnalytics) {
+  btnResetAnalytics.addEventListener("click", resetAnalyticsData);
+}
+
+const analyticsModeFilter = document.getElementById("analytics-mode-filter");
+if (analyticsModeFilter) {
+  analyticsModeFilter.addEventListener("change", renderAnalyticsDashboard);
+}
+
+// 5. テストプレイ用デバッグバー制御
+const btnToggleTestDrawer = document.getElementById("btn-toggle-test-drawer");
+if (btnToggleTestDrawer) {
+  btnToggleTestDrawer.addEventListener("click", toggleTestDrawer);
+}
+
+const testSelectWeekday = document.getElementById("test-select-weekday");
+if (testSelectWeekday) {
+  testSelectWeekday.addEventListener("change", (e) => {
+    jumpToWeekday(e.target.value);
+  });
+}
+
+const btnTestSkipQ = document.getElementById("btn-test-skip-q");
+if (btnTestSkipQ) {
+  btnTestSkipQ.addEventListener("click", skipCurrentQuestion);
+}
+
+// 6. ゲーム本編：モード選択（4モード）
 document.getElementById("btn-mode-elementary").addEventListener("click", () => handleSelectMode("elementary"));
 document.getElementById("btn-mode-teen").addEventListener("click", () => handleSelectMode("teen"));
 document.getElementById("btn-mode-adult").addEventListener("click", () => handleSelectMode("adult"));
 document.getElementById("btn-mode-senior").addEventListener("click", () => handleSelectMode("senior"));
 
-// 名前入力 ＆ スキップ
+// 7. 名前入力 ＆ スキップ
 document.getElementById("btn-name-submit").addEventListener("click", handleNameSubmit);
 const btnNameSkip = document.getElementById("btn-name-skip");
 if (btnNameSkip) {
   btnNameSkip.addEventListener("click", handleNameSkip);
 }
 
-// あらすじ・ストーリー進行
+// 8. あらすじ・ストーリー進行
 document.getElementById("btn-synopsis-next").addEventListener("click", showEvent);
 document.getElementById("btn-narration-next").addEventListener("click", handleNarrationNext);
 document.getElementById("btn-dialogue-next").addEventListener("click", goToDialogueNext);
 document.getElementById("btn-next").addEventListener("click", goToNextDay);
 
-// 週末ふりかえり画面 → 買い物/エンディングへの分岐
+// 9. 週末ふりかえり画面 → 買い物/エンディングへの分岐
 document.getElementById("btn-week-recap-next").addEventListener("click", () => {
   if (state.mode === "senior" || state.mode === "adult") {
     showEnding();
@@ -80,18 +142,18 @@ document.getElementById("btn-week-recap-next").addEventListener("click", () => {
   }
 });
 
-// 買い物 → エンディング → アンケート → 再スタート
+// 10. 買い物 → エンディング → アンケート → 再スタート
 document.getElementById("btn-ending").addEventListener("click", showEnding);
 document.getElementById("btn-to-survey").addEventListener("click", showSurveyScreen);
 document.getElementById("btn-restart").addEventListener("click", restartGame);
 
-// リタイアボタン
+// 11. リタイアボタン
 const retireBtn = document.getElementById("btn-retire");
 if (retireBtn) {
   retireBtn.addEventListener("click", handleRetire);
 }
 
-// 画像拡大モーダル制御
+// 12. 画像拡大モーダル制御
 const closeImageModalBtn = document.getElementById("btn-close-image-modal");
 if (closeImageModalBtn) {
   closeImageModalBtn.addEventListener("click", (e) => {
@@ -109,7 +171,7 @@ if (imageModalOverlay) {
   });
 }
 
-// 会話ログ見直しボタン（問題画面 ＆ 結果画面）
+// 13. 会話ログ見直しボタン（問題画面 ＆ 結果画面）
 const openLogBtnResult = document.getElementById("btn-open-log");
 if (openLogBtnResult) {
   openLogBtnResult.addEventListener("click", openLogModal);
@@ -137,7 +199,7 @@ if (logModalOverlay) {
   });
 }
 
-// スマホの初回読み込み・画面復帰時（pageshow / BFCache）対応
+// 14. スマホの初回読み込み・画面復帰時（pageshow / BFCache）対応
 window.addEventListener("pageshow", () => {
   renderTitleVisual();
 });

@@ -1,6 +1,7 @@
 /* =========================================================
    ending.js
    お買い物判定・エンディングランク計算・結果発表・アンケート・再起動制御
+   （クリア/離脱分析データ自動記録対応版）
    ========================================================= */
 
 // ⑩ 買い物イベント画面（小学生・中高生モードのみ）
@@ -50,6 +51,11 @@ function showEnding() {
   const canAfford = isNoShopMode ? (state.money === 50000) : (state.money >= (item ? item.price : 0));
 
   const endingCharacter = getPlayerImage(canAfford ? "playerHappy" : "playerSad");
+
+  // ★ 通常プレイ時のみ、クリア実績と最終スコアを分析データに記録 ★
+  if (typeof recordAnalyticsClear === "function") {
+    recordAnalyticsClear(state.money);
+  }
 
   const joeCommentEl = document.getElementById("ending-joe-comment");
   if (joeCommentEl) {
@@ -204,6 +210,10 @@ function showSurveyScreen() {
 // リタイア確認
 function handleRetire() {
   if (confirm("途中でリタイアして最初からやり直しますか？")) {
+    // リタイア時の離脱曜日を記録
+    if (typeof recordAnalyticsDropout === "function") {
+      recordAnalyticsDropout();
+    }
     restartGame();
   }
 }
@@ -222,6 +232,14 @@ function restartGame() {
   state.preventedScamsCount = 0;
   state.damages = { money: 0, personalInfo: 0, account: 0, line: 0 };
   state.answeredQuestions = [];
+  state.isTestMode = false; // 通常状態へリセット
+
+  // テストUIを非表示
+  const badge = document.getElementById("test-mode-badge");
+  const drawer = document.getElementById("test-controller-drawer");
+  if (badge) badge.classList.add("is-hidden");
+  if (drawer) drawer.classList.add("is-hidden");
+
   document.getElementById("status-bar").classList.add("hidden");
   showScreen("screen-title");
   renderTitleVisual();
