@@ -1,9 +1,9 @@
 /* =========================================================
    screens.css
    各画面レイアウト
-   （タイトル（リッチ装飾・寂しさ解消版）、デバイス選択、モード選択、
-    名前入力（スキップ対応）、欲しい物選択（4段階難易度グループ対応）、
-    ステージ、あらすじ、曜日イントロ、日常行動、通知、買い物、エンディング、アンケート）
+   （タイトル、デバイス選択、モード選択、名前入力、欲しい物選択、
+    ステージ、あらすじ、曜日イントロ、日常行動、スマホ通知（バイブ＆フラッシュ）、
+    買い物、エンディング、アンケート）
    ========================================================= */
 
 /* =========================================================
@@ -190,7 +190,7 @@
 }
 
 /* =========================================================
-   タイトル画面（リッチ装飾・光彩・アニメーション強化）
+   タイトル画面
    ========================================================= */
 #screen-title {
   justify-content: center;
@@ -263,7 +263,6 @@
   letter-spacing: 0.05em;
 }
 
-/* タイトルロゴ枠（立体ゴールド枠＆パルスグロー） */
 .title-header-wrapper {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 249, 235, 0.96) 100%);
   backdrop-filter: blur(8px);
@@ -315,7 +314,6 @@
   font-size: 1.06em;
 }
 
-/* ジョーくんヒーロービジュアル枠 */
 .title-main-hero {
   position: relative;
   width: 100%;
@@ -410,7 +408,7 @@
 }
 
 /* =========================================================
-   名前入力画面（スキップボタン対応）
+   名前入力画面
    ========================================================= */
 .name-input-panel {
   display: flex;
@@ -656,7 +654,7 @@
   z-index: 10 !important;
   background: rgba(255, 255, 255, 0.94) !important;
   backdrop-filter: blur(6px) !important;
-  border: 2.5px solid var(--color-money) !important;
+  border: 2.5px solid var(--color-money);
   border-radius: var(--radius-md) !important;
   padding: 16px 18px !important;
   display: flex !important;
@@ -813,7 +811,7 @@
 }
 
 /* =========================================================
-   欲しい物選択画面（4段階難易度グループ対応）
+   欲しい物選択画面
    ========================================================= */
 .item-intro {
   display: flex;
@@ -868,7 +866,6 @@
 
 .guide-bubble-inline { flex: 1; }
 
-/* グループ別アイテムリストコンテナ */
 .item-list-container {
   display: flex;
   flex-direction: column;
@@ -884,7 +881,6 @@
   }
 }
 
-/* 個別グループセクション */
 .item-group-section {
   background: var(--color-surface);
   border-radius: var(--radius-md);
@@ -1102,7 +1098,7 @@
 }
 
 /* =========================================================
-   スマホ通知画面
+   スマホ通知画面（バイブレーション・フラッシュグロー・タイピング対応）
    ========================================================= */
 .phone-screen-container {
   flex: 1;
@@ -1112,6 +1108,7 @@
   padding: 4px 0;
 }
 
+/* ★ 端末フレーム（バイブレーション左右振動アニメーション） ★ */
 .smartphone-frame.tall-phone {
   width: 100%;
   max-width: 330px;
@@ -1126,6 +1123,20 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+/* 通知時のバイブレーション振動クラス */
+.smartphone-frame.tall-phone.is-vibrating {
+  animation: vibrationShake 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes vibrationShake {
+  0% { transform: translateX(0px) rotate(0deg); }
+  20% { transform: translateX(-4px) rotate(-0.5deg); }
+  40% { transform: translateX(4px) rotate(0.5deg); }
+  60% { transform: translateX(-3px) rotate(-0.3deg); }
+  80% { transform: translateX(3px) rotate(0.3deg); }
+  100% { transform: translateX(0px) rotate(0deg); }
 }
 
 .phone-header-bar {
@@ -1150,7 +1161,7 @@
 }
 
 .phone-wallpaper { position: absolute; inset: 0; z-index: 1; }
-.phone-bg-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55); }
+.phone-bg-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); transition: filter 0.3s ease; }
 
 .phone-player-img {
   position: absolute;
@@ -1181,6 +1192,7 @@
 
 .phone-date-text { font-size: 12.5px; font-weight: 700; margin: 3px 0 0; opacity: 0.9; }
 
+/* ★ 通知カード（フラッシュグロー・ポップイン光彩） ★ */
 .phone-notification-card {
   position: relative;
   z-index: 10;
@@ -1190,6 +1202,16 @@
   border-radius: 16px;
   padding: 12px 14px;
   box-shadow: 0 6px 18px rgba(245, 166, 35, 0.4);
+}
+
+.phone-notification-card.is-flashing {
+  animation: notifFlashGlow 0.6s ease-out forwards;
+}
+
+@keyframes notifFlashGlow {
+  0% { transform: scale(0.85); box-shadow: 0 0 35px #FFD700, 0 0 15px #FFFFFF; filter: brightness(1.5); }
+  50% { transform: scale(1.05); box-shadow: 0 0 25px #F5A623; filter: brightness(1.2); }
+  100% { transform: scale(1); box-shadow: 0 6px 18px rgba(245, 166, 35, 0.4); filter: brightness(1); }
 }
 
 .phone-app-header {
@@ -1209,6 +1231,31 @@
 .phone-card-body { display: flex; align-items: center; gap: 8px; }
 .notification-icon { font-size: 22px; flex-shrink: 0; }
 .notification-text { font-size: 14.5px; line-height: 1.55; font-weight: 700; color: #FFFFFF !important; margin: 0; }
+
+/* ★ 相手が入力中...（タイピング波打ちインジケーター） ★ */
+.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--color-money);
+  border-radius: 50%;
+  animation: typingWave 1.3s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingWave {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
 
 .phone-bottom-bubble {
   position: relative;

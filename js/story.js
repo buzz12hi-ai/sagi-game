@@ -2,7 +2,7 @@
    story.js
    -----------------------------------------------------------
    会話・あらすじ・自己紹介・通知・週末ふりかえりストーリー演出
-   （4モード対応・ルビinnerHTML対応・お買い物前ストーリー強化版）
+   （スマホ壁紙ランダム選出・バイブレーション・フラッシュグロー・タイピング演出対応版）
    ========================================================= */
 
 const FALLBACK_SCENE_BG = IMAGE_ASSETS.backgrounds.livingRoom;
@@ -141,12 +141,30 @@ function handleNarrationNext() {
   }
 }
 
+// 会話画面表示（相手が話す直前のタイピング波打ち演出付き）
 function showDialogueLine() {
   const question = currentQuestion();
   const line = question.dialogue[state.dialogueIndex];
+  const isPlayerSpeaking = line.speaker === "主人公" || line.speaker === "あなた";
 
   document.getElementById("dialogue-speaker").innerHTML = getDisplaySpeakerName(line.speaker);
-  document.getElementById("dialogue-line").innerHTML = line.line;
+  const textEl = document.getElementById("dialogue-line");
+
+  // 相手（NPC/詐欺犯）のセリフの場合は一瞬タイピング波打ちインジケーターを表示
+  if (!isPlayerSpeaking) {
+    textEl.innerHTML = `
+      <span class="typing-indicator">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </span>
+    `;
+    setTimeout(() => {
+      textEl.innerHTML = line.line;
+    }, 380);
+  } else {
+    textEl.innerHTML = line.line;
+  }
 
   renderDialogueStage(question, line);
   showScreen("screen-dialogue");
@@ -194,6 +212,7 @@ function goToAfterDialogue() {
   }
 }
 
+// ★ スマホ通知画面（壁紙ランダム切替 ＆ バイブレーション ＆ フラッシュグロー演出） ★
 function showPikonNotification() {
   const question = currentQuestion();
   const notifTextEl = document.getElementById("notification-text");
@@ -205,18 +224,50 @@ function showPikonNotification() {
   const playerImg = document.getElementById("notification-player-image");
   const phonePlayerImg = getPlayerImage("playerSmartphone");
   
-  setImageSafely(bgImg, IMAGE_ASSETS.backgrounds.myRoom);
+  // スマホ壁紙をランダム選出（50%の確率で スマホ背景1 または スマホ背景2）
+  const chosenWallpaper = (Math.random() < 0.5)
+    ? IMAGE_ASSETS.backgrounds.phoneWallpaper1
+    : IMAGE_ASSETS.backgrounds.phoneWallpaper2;
+
+  setImageSafely(bgImg, chosenWallpaper || IMAGE_ASSETS.backgrounds.myRoom);
   setImageSafely(playerImg, phonePlayerImg);
   applyCharacterBlend(playerImg, phonePlayerImg);
+
+  const phoneFrame = document.querySelector(".smartphone-frame.tall-phone");
+  const notifCard = document.getElementById("notification-toast");
+
+  // 1. スマホフレームのバイブレーション左右振動
+  if (phoneFrame) {
+    phoneFrame.classList.remove("is-vibrating");
+    void phoneFrame.offsetWidth;
+    phoneFrame.classList.add("is-vibrating");
+  }
+
+  // 2. 通知カードのフラッシュグロー発光エフェクト
+  if (notifCard) {
+    notifCard.classList.remove("is-flashing");
+    void notifCard.offsetWidth;
+    notifCard.classList.add("is-flashing");
+  }
+
+  // 3. 実機バイブレーション連動（Web Vibration API：ブルルッ、ブルルッ）
+  if (typeof navigator !== "undefined" && navigator.vibrate) {
+    try {
+      navigator.vibrate([120, 60, 120, 60, 150]);
+    } catch (e) {
+      // 非対応環境では安全にスキップ
+    }
+  }
 
   showScreen("screen-notification");
 
   setTimeout(() => {
+    if (phoneFrame) phoneFrame.classList.remove("is-vibrating");
     showQuestion();
-  }, 2000);
+  }, 2200);
 }
 
-// ★ 全問題終了後の週末ふりかえり・ストーリー画面 ★
+// 週末ふりかえり・ストーリー画面
 function showWeekRecap() {
   const bgImg = document.getElementById("week-recap-bg-image");
   const playerImg = document.getElementById("week-recap-player-image");

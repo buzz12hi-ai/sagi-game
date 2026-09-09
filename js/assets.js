@@ -1,7 +1,7 @@
 /* =========================================================
    assets.js
    画像アセット・ファイルパス定義
-   【金・銀・銅ジョー君追加・いらすとや規約準拠完全確定版】
+   【スマホ壁紙1・2追加・金銀銅ジョー君・いらすとや規約準拠確定版】
    ========================================================= */
 
 const IMG_BASE = "resource/images/";
@@ -24,7 +24,11 @@ const IMAGE_ASSETS = {
     policeStation:            IMG_BASE + "警察署.jpg",
     atm:                      IMG_BASE + "ATM.jpeg",
     convenienceStoreFallback: IMG_BASE + "ショッピングモール.jpg",
-    secretBase:               IMG_BASE + "秘密基地（使わないかも）.jpg"
+    secretBase:               IMG_BASE + "秘密基地（使わないかも）.jpg",
+    
+    // スマホ通知画面用ランダム壁紙
+    phoneWallpaper1:          IMG_BASE + "スマホ背景１ .png",
+    phoneWallpaper2:          IMG_BASE + "スマホ背景２ .png"
   },
 
   // キャラクター立ち絵
