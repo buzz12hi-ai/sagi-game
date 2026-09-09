@@ -111,15 +111,16 @@
 
 .auth-btn-group {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
   margin-top: 4px;
 }
 
 .auth-btn-group .btn {
-  flex: 1;
-  font-size: 14.5px;
-  padding: 10px 14px;
+  width: 100%;
+  font-size: 14px;
+  padding: 9px 12px;
 }
 
 /* =========================================================
@@ -207,7 +208,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* ツールバー（CSV出力・データリセット） */
+/* ツールバー（CSV出力・データリセット・全問題プレビュー） */
 .analytics-actions-bar {
   display: flex;
   flex-wrap: wrap;
@@ -231,7 +232,26 @@
 
 .analytics-btn-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
+}
+
+.btn-analytics-preview {
+  background: #4A5A7C;
+  color: #FFFFFF;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-analytics-preview:hover {
+  background: #2E4374;
+  transform: translateY(-1px);
 }
 
 .btn-analytics-csv {
@@ -244,6 +264,12 @@
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-analytics-csv:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 .btn-analytics-reset {
@@ -256,6 +282,11 @@
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-analytics-reset:hover {
+  background: #FFF5F5;
 }
 
 /* サマリーカードグリッド */
@@ -476,22 +507,23 @@
   transform: translateX(-50%);
   z-index: 990;
   width: 100%;
-  max-width: 600px;
-  background: rgba(27, 42, 74, 0.96);
-  backdrop-filter: blur(8px);
-  border-top: 2px solid var(--color-money);
+  max-width: 620px;
+  background: rgba(27, 42, 74, 0.98);
+  backdrop-filter: blur(10px);
+  border-top: 2.5px solid var(--color-money);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
-  padding: 8px 12px 10px;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+  padding: 6px 12px 10px;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
   color: #FFFFFF;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* 格納時の状態（トグルボタン部分のみ露出） */
 .test-controller-drawer.is-collapsed {
-  transform: translate(-50%, calc(100% - 30px));
+  transform: translate(-50%, calc(100% - 32px));
 }
 
 .test-drawer-toggle {
@@ -499,24 +531,54 @@
   background: var(--color-money);
   color: var(--color-navy);
   border: none;
-  padding: 2px 14px;
+  padding: 4px 16px;
   border-radius: 999px;
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 900;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.test-drawer-toggle:hover {
+  filter: brightness(1.08);
+}
+
+.test-drawer-toggle:active {
+  transform: scale(0.97);
+}
+
+#test-drawer-arrow {
+  font-size: 10px;
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+/* 内部スクロール領域 */
+.test-drawer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 48vh;
+  overflow-y: auto;
+  padding-right: 4px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .test-controller-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
   align-items: center;
   justify-content: center;
 }
 
 .test-ctrl-btn {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.14);
   color: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 4px 8px;
@@ -525,13 +587,34 @@
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .test-ctrl-btn:hover {
   background: var(--color-money);
   color: var(--color-navy);
   border-color: var(--color-money);
+}
+
+.test-ctrl-btn:active {
+  transform: scale(0.96);
+}
+
+/* テストモード終了ボタン（危険色） */
+.test-ctrl-btn-exit {
+  background: rgba(232, 92, 74, 0.25) !important;
+  border-color: var(--color-danger) !important;
+  color: #FFB4AB !important;
+  padding: 6px 14px !important;
+  font-size: 11.5px !important;
+  margin-top: 2px;
+}
+
+.test-ctrl-btn-exit:hover {
+  background: var(--color-danger) !important;
+  color: #FFFFFF !important;
+  border-color: var(--color-danger) !important;
 }
 
 .test-ctrl-select {

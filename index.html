@@ -496,8 +496,9 @@
         <input type="password" id="auth-passcode-input" class="auth-input-field" maxlength="10" placeholder="•••••">
         <p id="auth-error-msg" class="auth-error-msg is-hidden">⚠️ パスコードが正しくありません。</p>
         <div class="auth-btn-group">
+          <button id="btn-auth-analytics" class="btn btn-primary" type="button">📊 制作・分析画面</button>
+          <button id="btn-auth-testplay" class="btn btn-primary" type="button">🛠️ テストプレイ</button>
           <button id="btn-auth-cancel" class="btn btn-secondary" type="button">キャンセル</button>
-          <button id="btn-auth-submit" class="btn btn-primary" type="button">認証する</button>
         </div>
       </div>
     </div>
@@ -524,6 +525,7 @@
               <option value="senior">高齢者モード</option>
             </select>
             <div class="analytics-btn-row">
+              <button id="btn-analytics-open-preview" class="btn-analytics-preview" type="button">🛠️ 全問題プレビュー</button>
               <button id="btn-export-csv" class="btn-analytics-csv" type="button">📥 CSVエクスポート</button>
               <button id="btn-reset-analytics" class="btn-analytics-reset" type="button">🗑️ データをリセット</button>
             </div>
@@ -587,38 +589,66 @@
       </div>
     </div>
 
-    <!-- ★ テストプレイ用デバッグコントロールバー（開閉式） ★ -->
+    <!-- ★ テストプレイ用デバッグコントロールバー（開閉式・機能拡張版） ★ -->
     <div id="test-controller-drawer" class="test-controller-drawer is-hidden">
-      <button id="btn-toggle-test-drawer" class="test-drawer-toggle" type="button">🛠️ テストコントロール</button>
+      <button id="btn-toggle-test-drawer" class="test-drawer-toggle" type="button">
+        <span id="test-drawer-arrow">▼</span> 🛠️ テストコントロール
+      </button>
       
-      <div class="test-controller-row">
-        <label style="font-size: 11px;">曜日移動:</label>
-        <select id="test-select-weekday" class="test-ctrl-select">
-          <option value="0">月曜日</option>
-          <option value="1">火曜日</option>
-          <option value="2">水曜日</option>
-          <option value="3">木曜日</option>
-          <option value="4">金曜日</option>
-          <option value="5">土曜日</option>
-          <option value="6">日曜日</option>
-        </select>
-        <button id="btn-test-skip-q" class="test-ctrl-btn" type="button">⏭️ スキップ</button>
-      </div>
+      <div class="test-drawer-content" id="test-drawer-content">
+        <!-- 曜日移動（決定ボタン方式） -->
+        <div class="test-controller-row">
+          <label style="font-size: 11px;">曜日移動:</label>
+          <select id="test-select-weekday" class="test-ctrl-select">
+            <option value="0">月曜日</option>
+            <option value="1">火曜日</option>
+            <option value="2">水曜日</option>
+            <option value="3">木曜日</option>
+            <option value="4">金曜日</option>
+            <option value="5">土曜日</option>
+            <option value="6">日曜日</option>
+          </select>
+          <button id="btn-test-jump-weekday" class="test-ctrl-btn" type="button">決定</button>
+          <button id="btn-test-skip-q" class="test-ctrl-btn" type="button">⏭️ スキップ</button>
+        </div>
 
-      <div class="test-controller-row">
-        <label style="font-size: 11px;">所持金:</label>
-        <button class="test-ctrl-btn" onclick="setTestMoney(0)">0円</button>
-        <button class="test-ctrl-btn" onclick="setTestMoney(30000)">3万円</button>
-        <button class="test-ctrl-btn" onclick="setTestMoney(50000)">5万円</button>
-        <button class="test-ctrl-btn" onclick="setTestMoney(80000)">8万円</button>
-      </div>
+        <!-- 候補A: 判定シミュレーション -->
+        <div class="test-controller-row">
+          <label style="font-size: 11px;">回答判定:</label>
+          <button class="test-ctrl-btn" onclick="forceTestAnswer(true)" type="button">⭕ 強制正解</button>
+          <button class="test-ctrl-btn" onclick="forceTestAnswer(false)" type="button">❌ 強制不正解</button>
+        </div>
 
-      <div class="test-controller-row">
-        <label style="font-size: 11px;">EDテスト:</label>
-        <button class="test-ctrl-btn" onclick="testJumpEnding('shop_success')">🎉 買い物成功</button>
-        <button class="test-ctrl-btn" onclick="testJumpEnding('shop_fail')">😢 買い物失敗</button>
-        <button class="test-ctrl-btn" onclick="testJumpEnding('rank_s')">🏆 Sランク</button>
-        <button class="test-ctrl-btn" onclick="testJumpEnding('rank_d')">⚠️ Dランク</button>
+        <!-- 所持金調整 -->
+        <div class="test-controller-row">
+          <label style="font-size: 11px;">所持金:</label>
+          <button class="test-ctrl-btn" onclick="setTestMoney(0)" type="button">0円</button>
+          <button class="test-ctrl-btn" onclick="setTestMoney(30000)" type="button">3万円</button>
+          <button class="test-ctrl-btn" onclick="setTestMoney(50000)" type="button">5万円</button>
+          <button class="test-ctrl-btn" onclick="setTestMoney(80000)" type="button">8万円</button>
+        </div>
+
+        <!-- 候補B: 被害リスク付加 -->
+        <div class="test-controller-row">
+          <label style="font-size: 11px;">被害付加:</label>
+          <button class="test-ctrl-btn" onclick="addTestDamage('personalInfo')" type="button">⚠️ 個人情報</button>
+          <button class="test-ctrl-btn" onclick="addTestDamage('account')" type="button">⚠️ アカウント</button>
+          <button class="test-ctrl-btn" onclick="addTestDamage('line')" type="button">⚠️ SNS乗取</button>
+        </div>
+
+        <!-- 候補C: 画面直行 ＆ EDテスト -->
+        <div class="test-controller-row">
+          <label style="font-size: 11px;">直行・ED:</label>
+          <button class="test-ctrl-btn" onclick="jumpToDirectScreen('shopping')" type="button">🛒 買い物</button>
+          <button class="test-ctrl-btn" onclick="jumpToDirectScreen('survey')" type="button">📋 アンケート</button>
+          <button class="test-ctrl-btn" onclick="testJumpEnding('rank_s')" type="button">🏆 Sランク</button>
+          <button class="test-ctrl-btn" onclick="testJumpEnding('rank_d')" type="button">⚠️ Dランク</button>
+        </div>
+
+        <!-- 候補D: テストモード終了 -->
+        <div class="test-controller-row">
+          <button id="btn-test-exit" class="test-ctrl-btn test-ctrl-btn-exit" onclick="exitTestMode()" type="button">⏹️ テストモード終了（通常へ戻る）</button>
+        </div>
       </div>
     </div>
 

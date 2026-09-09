@@ -2,30 +2,22 @@
    preview.js
    開発用「全問題プレビュー・ビジュアルチェッカー」
    全64問の画像サムネイル・問題文・3原則タグ選択肢を一括目視確認
-   （DEBUG_MODE = true 時のみ有効）
+   【制作・分析画面ツールバー連携版】
    ========================================================= */
 
 function initQuestionPreview() {
-  if (typeof DEBUG_MODE === "undefined" || !DEBUG_MODE) return;
-
-  // 1. タイトル画面に開発用プレビューを開くボタンを注入
-  injectPreviewLauncherButton();
-
-  // 2. プレビュー用モーダルUIの作成
+  // 1. プレビュー用モーダルUIの作成
   createPreviewModalDOM();
+
+  // 2. 制作・分析画面内のプレビューボタンと連携
+  bindAnalyticsPreviewButton();
 }
 
-function injectPreviewLauncherButton() {
-  const titleCard = document.querySelector(".title-card-full");
-  if (!titleCard) return;
-
-  const launchBtn = document.createElement("button");
-  launchBtn.id = "btn-open-preview";
-  launchBtn.type = "button";
-  launchBtn.className = "btn-dev-preview-launcher";
-  launchBtn.innerHTML = "🛠️ 開発用：全問題・画像プレビューを開く";
-  launchBtn.onclick = () => openPreviewModal();
-  titleCard.appendChild(launchBtn);
+function bindAnalyticsPreviewButton() {
+  const btn = document.getElementById("btn-analytics-open-preview");
+  if (btn) {
+    btn.onclick = () => openPreviewModal();
+  }
 }
 
 function createPreviewModalDOM() {
@@ -201,7 +193,7 @@ function renderPreviewCards() {
       choicesHTML += `<li class="preview-choice-item is-safe"><span class="tag-badge tag-safe">⭕ 騙されない</span> ${c.text} <b>(±0円)</b></li>`;
     }
     if (q.wrongChoices && q.wrongChoices.length > 0) {
-      q.wrongChoices.forEach(w => {
+      q.wrongChoices.forEach((w) => {
         let tagBadge = `<span class="tag-badge tag-fooled">❌ 騙された</span>`;
         if (w.principleTag === "speak") tagBadge = `<span class="tag-badge tag-speak">❌ 喋った</span>`;
         if (w.principleTag === "pay") tagBadge = `<span class="tag-badge tag-pay">❌ 払った</span>`;
@@ -261,7 +253,7 @@ function renderPreviewCards() {
   if (countBadge) countBadge.textContent = `表示中: ${visibleCount} / 64問`;
 }
 
-// 読み込み時にプレビュー機能を初期化
+// 読み込み完了時にプレビュー機能を初期化
 window.addEventListener("DOMContentLoaded", () => {
   initQuestionPreview();
 });

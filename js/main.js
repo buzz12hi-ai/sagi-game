@@ -58,21 +58,9 @@ if (btnOpenDevAuth) {
   btnOpenDevAuth.addEventListener("click", () => openAuthModal("analytics"));
 }
 
-const btnAuthSubmit = document.getElementById("btn-auth-submit");
-if (btnAuthSubmit) {
-  btnAuthSubmit.addEventListener("click", handleAuthSubmit);
-}
-
 const btnAuthCancel = document.getElementById("btn-auth-cancel");
 if (btnAuthCancel) {
   btnAuthCancel.addEventListener("click", closeAuthModal);
-}
-
-const authPasscodeInput = document.getElementById("auth-passcode-input");
-if (authPasscodeInput) {
-  authPasscodeInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") handleAuthSubmit();
-  });
 }
 
 // 4. 制作・分析画面モーダル制御
@@ -96,44 +84,26 @@ if (analyticsModeFilter) {
   analyticsModeFilter.addEventListener("change", renderAnalyticsDashboard);
 }
 
-// 5. テストプレイ用デバッグバー制御
-const btnToggleTestDrawer = document.getElementById("btn-toggle-test-drawer");
-if (btnToggleTestDrawer) {
-  btnToggleTestDrawer.addEventListener("click", toggleTestDrawer);
-}
-
-const testSelectWeekday = document.getElementById("test-select-weekday");
-if (testSelectWeekday) {
-  testSelectWeekday.addEventListener("change", (e) => {
-    jumpToWeekday(e.target.value);
-  });
-}
-
-const btnTestSkipQ = document.getElementById("btn-test-skip-q");
-if (btnTestSkipQ) {
-  btnTestSkipQ.addEventListener("click", skipCurrentQuestion);
-}
-
-// 6. ゲーム本編：モード選択（4モード）
+// 5. ゲーム本編：モード選択（4モード）
 document.getElementById("btn-mode-elementary").addEventListener("click", () => handleSelectMode("elementary"));
 document.getElementById("btn-mode-teen").addEventListener("click", () => handleSelectMode("teen"));
 document.getElementById("btn-mode-adult").addEventListener("click", () => handleSelectMode("adult"));
 document.getElementById("btn-mode-senior").addEventListener("click", () => handleSelectMode("senior"));
 
-// 7. 名前入力 ＆ スキップ
+// 6. 名前入力 ＆ スキップ
 document.getElementById("btn-name-submit").addEventListener("click", handleNameSubmit);
 const btnNameSkip = document.getElementById("btn-name-skip");
 if (btnNameSkip) {
   btnNameSkip.addEventListener("click", handleNameSkip);
 }
 
-// 8. あらすじ・ストーリー進行
+// 7. あらすじ・ストーリー進行
 document.getElementById("btn-synopsis-next").addEventListener("click", showEvent);
 document.getElementById("btn-narration-next").addEventListener("click", handleNarrationNext);
 document.getElementById("btn-dialogue-next").addEventListener("click", goToDialogueNext);
 document.getElementById("btn-next").addEventListener("click", goToNextDay);
 
-// 9. 週末ふりかえり画面 → 買い物/エンディングへの分岐
+// 8. 週末ふりかえり画面 → 買い物/エンディングへの分岐
 document.getElementById("btn-week-recap-next").addEventListener("click", () => {
   if (state.mode === "senior" || state.mode === "adult") {
     showEnding();
@@ -142,18 +112,18 @@ document.getElementById("btn-week-recap-next").addEventListener("click", () => {
   }
 });
 
-// 10. 買い物 → エンディング → アンケート → 再スタート
+// 9. 買い物 → エンディング → アンケート → 再スタート
 document.getElementById("btn-ending").addEventListener("click", showEnding);
 document.getElementById("btn-to-survey").addEventListener("click", showSurveyScreen);
 document.getElementById("btn-restart").addEventListener("click", restartGame);
 
-// 11. リタイアボタン
+// 10. リタイアボタン
 const retireBtn = document.getElementById("btn-retire");
 if (retireBtn) {
   retireBtn.addEventListener("click", handleRetire);
 }
 
-// 12. 画像拡大モーダル制御
+// 11. 画像拡大モーダル制御
 const closeImageModalBtn = document.getElementById("btn-close-image-modal");
 if (closeImageModalBtn) {
   closeImageModalBtn.addEventListener("click", (e) => {
@@ -171,7 +141,7 @@ if (imageModalOverlay) {
   });
 }
 
-// 13. 会話ログ見直しボタン（問題画面 ＆ 結果画面）
+// 12. 会話ログ見直しボタン（問題画面 ＆ 結果画面）
 const openLogBtnResult = document.getElementById("btn-open-log");
 if (openLogBtnResult) {
   openLogBtnResult.addEventListener("click", openLogModal);
@@ -199,7 +169,7 @@ if (logModalOverlay) {
   });
 }
 
-// 14. スマホの初回読み込み・画面復帰時（pageshow / BFCache）対応
+// 13. 初回読み込み・画面復帰時（pageshow / BFCache）対応
 window.addEventListener("pageshow", () => {
   renderTitleVisual();
 });
