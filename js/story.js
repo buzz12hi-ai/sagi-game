@@ -1,8 +1,7 @@
 /* =========================================================
    story.js
-   -----------------------------------------------------------
    会話・あらすじ・自己紹介・通知・週末ふりかえりストーリー演出
-   （スマホ壁紙ランダム選出・バイブレーション・フラッシュグロー・タイピング演出対応版）
+   （2人並列・スマホ背景多段階バインド対応版）
    ========================================================= */
 
 const FALLBACK_SCENE_BG = IMAGE_ASSETS.backgrounds.livingRoom;
@@ -41,7 +40,6 @@ function showJoeIntro(onNext) {
         あやしい<ruby>詐欺<rt>さぎ</rt></ruby>（うそ）を<ruby>見<rt>み</rt></ruby>ぬく<ruby>力<rt>ちから</rt></ruby>を いっしょに <ruby>身<rt>み</rt></ruby>につけよう！
       `;
     } else {
-      // 中高生モード (teen)
       introTextEl.innerHTML = `
         はじめまして！ 僕はジョーくん！<br><br>
         この1週間、${getPlayerDisplayName()}をしっかりサポートするよ！<br>
@@ -60,7 +58,6 @@ function startEventFlow() {
   const slot = currentScheduleSlot();
   const weekdayName = slot.weekdayName;
   
-  // 小学生・中高生モードかつ特定曜日のみ日常行動を表示（大人・高齢者モードはスキップ）
   if ((state.mode === "elementary" || state.mode === "teen") && !slot.isSunday && slot.isFirstOfSlot && DAILY_ACTIONS_BY_DAY[weekdayName]) {
     showDailyActionChoice(weekdayName);
   } else {
@@ -141,7 +138,6 @@ function handleNarrationNext() {
   }
 }
 
-// 会話画面表示（相手が話す直前のタイピング波打ち演出付き）
 function showDialogueLine() {
   const question = currentQuestion();
   const line = question.dialogue[state.dialogueIndex];
@@ -150,7 +146,6 @@ function showDialogueLine() {
   document.getElementById("dialogue-speaker").innerHTML = getDisplaySpeakerName(line.speaker);
   const textEl = document.getElementById("dialogue-line");
 
-  // 相手（NPC/詐欺犯）のセリフの場合は一瞬タイピング波打ちインジケーターを表示
   if (!isPlayerSpeaking) {
     textEl.innerHTML = `
       <span class="typing-indicator">
@@ -181,7 +176,6 @@ function goToDialogueNext() {
   }
 }
 
-// 会話画面（主人公＝左側固定、相手＝右側）
 function renderDialogueStage(question, line) {
   const bgImg = document.getElementById("dialogue-bg-image");
   const leftImg = document.getElementById("dialogue-left-image");
@@ -189,12 +183,10 @@ function renderDialogueStage(question, line) {
 
   setImageSafely(bgImg, question.bg || FALLBACK_SCENE_BG);
 
-  // 主人公（左側固定）
   const playerImage = getPlayerImage("playerNeutral");
   setImageSafely(leftImg, playerImage);
   applyCharacterBlend(leftImg, playerImage);
 
-  // 相手キャラ（右側）
   setImageSafely(rightImg, question.character);
   applyCharacterBlend(rightImg, question.character);
 
@@ -212,7 +204,7 @@ function goToAfterDialogue() {
   }
 }
 
-// ★ スマホ通知画面（壁紙ランダム切替 ＆ バイブレーション ＆ フラッシュグロー演出） ★
+// スマホ通知画面（壁紙1・2の完全ランダム切替・バイブ・フラッシュ）
 function showPikonNotification() {
   const question = currentQuestion();
   const notifTextEl = document.getElementById("notification-text");
@@ -224,39 +216,39 @@ function showPikonNotification() {
   const playerImg = document.getElementById("notification-player-image");
   const phonePlayerImg = getPlayerImage("playerSmartphone");
   
-  // スマホ壁紙をランダム選出（50%の確率で スマホ背景1 または スマホ背景2）
-  const chosenWallpaper = (Math.random() < 0.5)
+  // スマホ壁紙1とスマホ壁紙2を50%の確率でランダム選出
+  const isWallpaperOne = Math.random() < 0.5;
+  const chosenWallpaper = isWallpaperOne
     ? IMAGE_ASSETS.backgrounds.phoneWallpaper1
     : IMAGE_ASSETS.backgrounds.phoneWallpaper2;
 
-  setImageSafely(bgImg, chosenWallpaper || IMAGE_ASSETS.backgrounds.myRoom);
-  setImageSafely(playerImg, phonePlayerImg);
-  applyCharacterBlend(playerImg, phonePlayerImg);
+  setImageSafely(bgImg, chosenWallpaper);
+
+  // 主人公画像のセット
+  if (playerImg) {
+    setImageSafely(playerImg, phonePlayerImg);
+    applyCharacterBlend(playerImg, phonePlayerImg);
+  }
 
   const phoneFrame = document.querySelector(".smartphone-frame.tall-phone");
   const notifCard = document.getElementById("notification-toast");
 
-  // 1. スマホフレームのバイブレーション左右振動
   if (phoneFrame) {
     phoneFrame.classList.remove("is-vibrating");
     void phoneFrame.offsetWidth;
     phoneFrame.classList.add("is-vibrating");
   }
 
-  // 2. 通知カードのフラッシュグロー発光エフェクト
   if (notifCard) {
     notifCard.classList.remove("is-flashing");
     void notifCard.offsetWidth;
     notifCard.classList.add("is-flashing");
   }
 
-  // 3. 実機バイブレーション連動（Web Vibration API：ブルルッ、ブルルッ）
   if (typeof navigator !== "undefined" && navigator.vibrate) {
     try {
       navigator.vibrate([120, 60, 120, 60, 150]);
-    } catch (e) {
-      // 非対応環境では安全にスキップ
-    }
+    } catch (e) {}
   }
 
   showScreen("screen-notification");
@@ -267,7 +259,7 @@ function showPikonNotification() {
   }, 2200);
 }
 
-// 週末ふりかえり・ストーリー画面
+// 週末ふりかえり画面（主人公＝左、ジョーくん＝右の2人並び）
 function showWeekRecap() {
   const bgImg = document.getElementById("week-recap-bg-image");
   const playerImg = document.getElementById("week-recap-player-image");
@@ -276,13 +268,18 @@ function showWeekRecap() {
 
   setImageSafely(bgImg, IMAGE_ASSETS.backgrounds.livingRoom);
 
+  // 主人公画像（左側）
   const playerImage = getPlayerImage("playerHappy");
   setImageSafely(playerImg, playerImage);
   applyCharacterBlend(playerImg, playerImage);
 
+  // ジョーくん画像（右側）
   setJoeExpression("cheer");
-  setImageSafely(guideImg, getJoeImage("cheer"));
-  applyCharacterBlend(guideImg, getJoeImage("cheer"));
+  if (guideImg) {
+    const joeImgSrc = getJoeImage("cheer");
+    setImageSafely(guideImg, joeImgSrc);
+    applyCharacterBlend(guideImg, joeImgSrc);
+  }
 
   if (recapTextEl) {
     if (state.mode === "senior") {
@@ -308,7 +305,6 @@ function showWeekRecap() {
         お<ruby>小遣<rt>こづか</rt></ruby>いを まもって、<ruby>欲<rt>ほ</rt></ruby>しかったものは かえるかな…！？
       `;
     } else {
-      // 中高生モード (teen)
       recapTextEl.innerHTML = `
         1週間、すべてのトラブルと出来事を乗り切ったぞ！<br>
         ${getPlayerDisplayName()}、本当によく冷静に対処してきたね！<br><br>

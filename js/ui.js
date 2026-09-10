@@ -1,7 +1,7 @@
 /* =========================================================
    ui.js
    UI描画・4モード表示制御・ピンチズーム・会話ログ・Mac文字コード自動修復
-   （全モード月〜日ステータスバートラッカー対応・不具合解消版）
+   （多段階フォールバック対応版）
    ========================================================= */
 
 window.DEBUG_MODE = true;
@@ -12,7 +12,7 @@ function showScreen(screenId) {
   });
 }
 
-/* ★ Mac特有の日本語ファイル名（NFD/NFC）を自動補正して必ず表示する安全関数 ★ */
+/* ★ 多段階自動フォールバック画像ローダー（スペース・全角半角・大文字小文字・エンコード対応） ★ */
 function setImageSafely(imgElement, src) {
   if (!imgElement) return;
   if (!src) {
@@ -23,31 +23,53 @@ function setImageSafely(imgElement, src) {
 
   imgElement.classList.remove("is-hidden");
 
+  // フォールバック候補リストの生成
+  const candidates = [];
+  candidates.push(src); // 1. 元のパス
+  candidates.push(encodeURI(src)); // 2. URLエンコード
+
+  // 末尾スペースの有無・全角半角の揺れ吸収
+  if (src.includes(" ")) {
+    candidates.push(src.replace(/\s+/g, "")); // スペース全除去
+    candidates.push(encodeURI(src.replace(/\s+/g, "")));
+  }
+  if (src.includes("１")) {
+    candidates.push(src.replace(/１/g, "1")); // 全角1 -> 半角1
+    candidates.push(src.replace(/１\s*/g, "1")); // 全角1+スペース -> 半角1
+    candidates.push(encodeURI(src.replace(/１\s*/g, "1")));
+  }
+  if (src.includes("２")) {
+    candidates.push(src.replace(/２/g, "2")); // 全角2 -> 半角2
+    candidates.push(src.replace(/２\s*/g, "2")); // 全角2+スペース -> 半角2
+    candidates.push(encodeURI(src.replace(/２\s*/g, "2")));
+  }
+
+  // 大文字小文字拡張子
+  if (src.endsWith(".png")) candidates.push(src.replace(/\.png$/, ".PNG"));
+  if (src.endsWith(".jpg")) candidates.push(src.replace(/\.jpg$/, ".jpeg"));
+
+  let attemptIndex = 0;
+
   imgElement.onerror = () => {
-    if (!imgElement.dataset.triedNFD) {
-      imgElement.dataset.triedNFD = "true";
-      imgElement.src = src.normalize("NFD");
+    attemptIndex++;
+    if (attemptIndex < candidates.length) {
+      imgElement.src = candidates[attemptIndex];
       return;
     }
-    if (!imgElement.dataset.triedEncoded) {
-      imgElement.dataset.triedEncoded = "true";
-      imgElement.src = encodeURI(src);
-      return;
-    }
-    if (!imgElement.dataset.triedNFDEncoded) {
-      imgElement.dataset.triedNFDEncoded = "true";
-      imgElement.src = encodeURI(src.normalize("NFD"));
-      return;
+
+    // 最終手段：スマホ背景の場合は安全なデフォルト背景へフォールバック
+    if (src.includes("スマホ背景")) {
+      if (IMAGE_ASSETS && IMAGE_ASSETS.backgrounds && IMAGE_ASSETS.backgrounds.myRoom) {
+        imgElement.onerror = null;
+        imgElement.src = IMAGE_ASSETS.backgrounds.myRoom;
+        return;
+      }
     }
 
     imgElement.classList.add("is-hidden");
   };
 
-  delete imgElement.dataset.triedNFD;
-  delete imgElement.dataset.triedEncoded;
-  delete imgElement.dataset.triedNFDEncoded;
-
-  imgElement.src = src;
+  imgElement.src = candidates[0];
 }
 
 const JOE_EXPRESSIONS = {
@@ -86,7 +108,6 @@ function setJoeExpression(expression) {
   });
 }
 
-// 主人公画像のモード別切替（小学生/中高生・一般大人・高齢者）
 function getPlayerImage(expressionType) {
   if (state.mode === "senior") {
     const map = {
@@ -191,7 +212,6 @@ function updateTargetItemDisplay() {
   }
 }
 
-// ★ 全モード共通（月〜日：7日間）の曜日トラッカー描画 ★
 function renderDayTracker() {
   const tracker = document.getElementById("day-tracker");
   if (!tracker) return;
@@ -233,7 +253,6 @@ function applyCharacterBlend(imgElement, src) {
   imgElement.classList.remove("blend-multiply", "blend-screen");
 }
 
-/* ★ 曜日ごとの背景画像割り当てテーブル ★ */
 const DAY_BACKGROUND_MAP = {
   "月": IMAGE_ASSETS.backgrounds.schoolRoute,
   "火": IMAGE_ASSETS.backgrounds.schoolRoute2,
@@ -273,7 +292,6 @@ function showDayIntro(label, onNext, comment) {
   document.getElementById("btn-dayintro-next").onclick = onNext;
 }
 
-/* ★ 資料・画像ポップアップ（スマホ対応ピンチズーム・パン・タップ拡大） ★ */
 let zoomState = {
   scale: 1,
   startDistance: 0,
@@ -316,7 +334,6 @@ function openImageModal(imgSrc) {
     scrollArea.scrollLeft = 0;
   }
 
-  // クリック / タップで拡大・縮小トグル
   modalImg.onclick = (e) => {
     e.stopPropagation();
     if (zoomState.scale > 1.2) {
@@ -328,7 +345,6 @@ function openImageModal(imgSrc) {
     }
   };
 
-  // スマホ実機の 2本指ピンチイン・ピンチアウト処理
   const touchArea = scrollArea || modalImg;
 
   touchArea.ontouchstart = (e) => {
@@ -395,7 +411,6 @@ function closeImageModal() {
   }
 }
 
-/* ★ 会話・通知ログ見直しモーダル制御 ★ */
 function openLogModal() {
   const modal = document.getElementById("log-modal");
   const contentEl = document.getElementById("log-modal-content");

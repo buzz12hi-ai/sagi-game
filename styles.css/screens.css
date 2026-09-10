@@ -3,7 +3,7 @@
    各画面レイアウト
    （タイトル、デバイス選択、モード選択、名前入力、欲しい物選択、
     ステージ、あらすじ、曜日イントロ、日常行動、スマホ通知（バイブ＆フラッシュ）、
-    買い物、エンディング、アンケート）
+    買い物、エンディング、アンケート、週末ふりかえり最適化）
    ========================================================= */
 
 /* =========================================================
@@ -978,6 +978,106 @@
 }
 
 /* =========================================================
+   週末ふりかえり画面レイアウト（2人並列・絶対に重ならない配置）
+   ========================================================= */
+#screen-week-recap {
+  position: relative;
+  display: none;
+  flex-direction: column;
+  height: 100%;
+}
+
+#screen-week-recap.active {
+  display: flex;
+}
+
+#screen-week-recap .story-stage {
+  position: relative;
+  flex: 1;
+  min-height: 240px;
+  max-height: 48%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* ★ 主人公を左側に配置 ★ */
+#screen-week-recap #week-recap-player-image,
+#screen-week-recap .story-player-image {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 28% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  height: 94% !important;
+  max-height: 94% !important;
+  width: auto !important;
+  max-width: 50% !important;
+  object-fit: contain !important;
+  z-index: 2 !important;
+}
+
+/* ★ ジョーくんを右側に並べて配置 ★ */
+#screen-week-recap #week-recap-guide-image {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 72% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  height: 84% !important;
+  max-height: 84% !important;
+  width: auto !important;
+  max-width: 46% !important;
+  object-fit: contain !important;
+  z-index: 3 !important;
+}
+
+.week-recap-panel {
+  position: relative;
+  z-index: 5;
+  background: var(--overlay-light);
+  backdrop-filter: blur(6px);
+  border: 2px solid var(--color-money);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  box-shadow: var(--shadow-card);
+}
+
+.week-recap-text-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 4px;
+}
+
+.week-recap-body-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-navy);
+  margin: 0;
+  white-space: pre-line;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  #screen-week-recap .story-stage {
+    max-height: 55%;
+  }
+  .week-recap-panel {
+    max-height: 260px;
+    padding: 16px 20px;
+  }
+  .week-recap-body-text {
+    font-size: 16.5px;
+    line-height: 1.75;
+  }
+}
+
+/* =========================================================
    エンディング画面
    ========================================================= */
 .ending-card {
@@ -1099,7 +1199,7 @@
 }
 
 /* =========================================================
-   スマホ通知画面（バイブレーション・フラッシュグロー・タイピング対応）
+   スマホ通知画面（壁紙完全表示・バイブ・フラッシュ・タイピング）
    ========================================================= */
 .phone-screen-container {
   flex: 1;
@@ -1109,7 +1209,6 @@
   padding: 4px 0;
 }
 
-/* ★ 端末フレーム（バイブレーション左右振動アニメーション） ★ */
 .smartphone-frame.tall-phone {
   width: 100%;
   max-width: 330px;
@@ -1126,7 +1225,6 @@
   justify-content: space-between;
 }
 
-/* 通知時のバイブレーション振動クラス */
 .smartphone-frame.tall-phone.is-vibrating {
   animation: vibrationShake 0.45s ease-in-out infinite alternate;
 }
@@ -1161,8 +1259,30 @@
   margin-top: -5px;
 }
 
-.phone-wallpaper { position: absolute; inset: 0; z-index: 1; }
-.phone-bg-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); transition: filter 0.3s ease; }
+/* 壁紙コンテナと画像要素の確実な描画（透過防止・最背面固定） */
+.phone-wallpaper {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1C2B4A;
+}
+
+.phone-bg-img,
+#notification-bg-image {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  filter: brightness(0.85) contrast(1.05) !important;
+  z-index: 1 !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
 
 .phone-player-img {
   position: absolute;
@@ -1181,6 +1301,7 @@
   text-align: center;
   color: #FFFFFF;
   margin-top: 10px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
 }
 
 .phone-big-time {
@@ -1191,9 +1312,8 @@
   line-height: 1;
 }
 
-.phone-date-text { font-size: 12.5px; font-weight: 700; margin: 3px 0 0; opacity: 0.9; }
+.phone-date-text { font-size: 12.5px; font-weight: 700; margin: 3px 0 0; opacity: 0.95; }
 
-/* ★ 通知カード（フラッシュグロー・ポップイン光彩） ★ */
 .phone-notification-card {
   position: relative;
   z-index: 10;
@@ -1233,7 +1353,6 @@
 .notification-icon { font-size: 22px; flex-shrink: 0; }
 .notification-text { font-size: 14.5px; line-height: 1.55; font-weight: 700; color: #FFFFFF !important; margin: 0; }
 
-/* ★ 相手が入力中...（タイピング波打ちインジケーター） ★ */
 .typing-indicator {
   display: inline-flex;
   align-items: center;

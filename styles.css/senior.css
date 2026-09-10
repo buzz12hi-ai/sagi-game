@@ -107,7 +107,55 @@
 }
 
 /* =========================================================
-   2. 結果・解説画面（最大級高齢者モード）
+   2. 週末ふりかえり画面（高齢者モード文字サイズ最適化）
+   ========================================================= */
+.app-shell.is-senior-mode #screen-week-recap {
+  font-size: 18px !important;
+}
+
+.app-shell.is-senior-mode #screen-week-recap .story-stage {
+  flex: 1 !important;
+  min-height: 280px !important;
+  max-height: 56% !important;
+}
+
+.app-shell.is-senior-mode #screen-week-recap .story-player-image,
+.app-shell.is-senior-mode #screen-week-recap #week-recap-player-image {
+  height: 94% !important;
+  max-height: 94% !important;
+  bottom: 0 !important;
+  z-index: 2 !important;
+}
+
+.app-shell.is-senior-mode #screen-week-recap #week-recap-guide-image {
+  height: 84% !important;
+  max-height: 84% !important;
+  bottom: 0 !important;
+  z-index: 3 !important;
+}
+
+.app-shell.is-senior-mode #screen-week-recap .week-recap-panel {
+  max-height: 180px !important;
+  padding: 10px 14px !important;
+  margin-top: 6px !important;
+}
+
+.app-shell.is-senior-mode #screen-week-recap #week-recap-text,
+.app-shell.is-senior-mode #screen-week-recap .week-recap-body-text {
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  font-weight: 700 !important;
+  color: var(--color-navy) !important;
+}
+
+.app-shell.is-senior-mode #screen-week-recap .btn {
+  font-size: 18px !important;
+  padding: 12px 24px !important;
+  margin-top: 6px !important;
+}
+
+/* =========================================================
+   3. 結果・解説画面（最大級高齢者モード）
    ========================================================= */
 .app-shell.is-senior-mode .result-badge-large {
   font-size: 44px !important;
@@ -147,7 +195,7 @@
 }
 
 /* =========================================================
-   3. 曜日イントロ & エンディング画面（最大級高齢者モード）
+   4. 曜日イントロ & エンディング画面（最大級高齢者モード）
    ========================================================= */
 .app-shell.is-senior-mode .dayintro-daynum {
   font-size: 28px !important;
@@ -187,7 +235,7 @@
 }
 
 /* =========================================================
-   4. iPad・パソコン・ワイド画面（幅768px以上 / .layout-desktop）
+   5. iPad・パソコン・ワイド画面（幅768px以上 / .layout-desktop）
    ========================================================= */
 @media (min-width: 768px) {
   .app-shell.is-senior-mode {
@@ -239,5 +287,20 @@
   .app-shell.is-senior-mode .result-point-text {
     font-size: 36px !important;
     line-height: 1.65 !important;
+  }
+
+  /* PC版・高齢者モードの週末ふりかえり画面 */
+  .app-shell.is-senior-mode #screen-week-recap .story-stage {
+    max-height: 60% !important;
+  }
+
+  .app-shell.is-senior-mode #screen-week-recap .week-recap-panel {
+    max-height: 200px !important;
+  }
+
+  .app-shell.is-senior-mode #screen-week-recap #week-recap-text,
+  .app-shell.is-senior-mode #screen-week-recap .week-recap-body-text {
+    font-size: 20px !important;
+    line-height: 1.7 !important;
   }
 }

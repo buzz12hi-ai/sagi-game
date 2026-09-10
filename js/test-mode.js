@@ -112,7 +112,8 @@ function startTestPlayMode() {
     updateDrawerArrow(true);
   }
 
-  showScreen("screen-mode-select");
+  // 表示デザイン選択画面を経由させる
+  showScreen("screen-device-select");
 }
 
 /* =========================================================
@@ -164,7 +165,7 @@ function skipCurrentQuestion() {
   showEvent();
 }
 
-// 候補A: 判定シミュレーション（強制正解 / 強制不正解）
+// 判定シミュレーション（強制正解 / 強制不正解）
 function forceTestAnswer(isCorrect) {
   if (!state.isTestMode) return;
 
@@ -184,7 +185,7 @@ function forceTestAnswer(isCorrect) {
   }
 }
 
-// 候補B: 被害リスクの直接付加
+// 被害リスクの直接付加
 function addTestDamage(type) {
   if (!state.isTestMode) return;
 
@@ -203,7 +204,7 @@ function addTestDamage(type) {
   updateMoneyDisplay();
 }
 
-// 候補C: 画面直行ショートカット（買い物 / アンケート）
+// 画面直行ショートカット（買い物 / アンケート）
 function jumpToDirectScreen(screenName) {
   if (!state.isTestMode) return;
 
@@ -217,7 +218,7 @@ function jumpToDirectScreen(screenName) {
   }
 }
 
-// 候補D: テストモード終了（通常へ戻る）
+// テストモード終了（通常へ戻る）
 function exitTestMode() {
   if (confirm("テストプレイモードを終了し、通常のタイトル画面へ戻りますか？")) {
     state.isTestMode = false;
@@ -268,7 +269,6 @@ function testJumpEnding(type) {
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // パスコードモーダル用
   const btnAnalytics = document.getElementById("btn-auth-analytics");
   if (btnAnalytics) {
     btnAnalytics.addEventListener("click", handleAuthAnalytics);
@@ -289,7 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // テストコントロールバー用
   const btnToggleDrawer = document.getElementById("btn-toggle-test-drawer");
   if (btnToggleDrawer) {
     btnToggleDrawer.addEventListener("click", toggleTestDrawer);

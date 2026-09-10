@@ -94,7 +94,6 @@ const IMAGE_ASSETS = {
 
   // 証拠スクリーンショット・資料画像（4モード直結）
   screenshots: {
-
     // ── 【小学生モード用（13枚）】 ──
     elementaryPoliceMailScam:         IMG_BASE + "小学生_偽警察メール詐欺.jpg",
     elementaryGamePrizeScam:          IMG_BASE + "小学生_ゲーム機当選詐欺.jpg",
