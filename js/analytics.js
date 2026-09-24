@@ -2,6 +2,7 @@
    analytics.js
    製作者用「制作・分析」データ管理・自動集計・CSV出力・リセット
    【通常プレイのみ自動記録／テストプレイは完全遮断・Googleフォーム非依存】
+   （リストからの問題直接実演ジャンプ機能追加版）
    ========================================================= */
 
 const ANALYTICS_STORAGE_KEY = "scam_hunter_analytics_v1";
@@ -60,7 +61,7 @@ function saveAnalyticsData(data) {
 
 // ① ゲーム開始時
 function recordAnalyticsGameStart(mode) {
-  if (state.isTestMode) return; // テスト時は遮断
+  if (state.isTestMode) return;
 
   const data = getAnalyticsData();
   data.totalPlays += 1;
@@ -72,7 +73,7 @@ function recordAnalyticsGameStart(mode) {
 
 // ② 問題回答時
 function recordAnalyticsAnswer(questionId, isCorrect) {
-  if (state.isTestMode) return; // テスト時は遮断
+  if (state.isTestMode) return;
   if (!questionId) return;
 
   const data = getAnalyticsData();
@@ -88,7 +89,7 @@ function recordAnalyticsAnswer(questionId, isCorrect) {
 
 // ③ リタイア・途中離脱時
 function recordAnalyticsDropout() {
-  if (state.isTestMode) return; // テスト時は遮断
+  if (state.isTestMode) return;
 
   const slot = currentScheduleSlot();
   const currentDay = slot ? slot.weekdayName : "月";
@@ -102,7 +103,7 @@ function recordAnalyticsDropout() {
 
 // ④ 最終クリア・エンディング到達時
 function recordAnalyticsClear(finalMoney) {
-  if (state.isTestMode) return; // テスト時は遮断
+  if (state.isTestMode) return;
 
   const data = getAnalyticsData();
   data.completedPlays += 1;
@@ -242,7 +243,7 @@ function renderQuestionStatsList(data, filterMode) {
     }
   }
 
-  // 問題一覧の表示
+  // 問題一覧の表示（クリックまたは実演ボタンで該当問題へ直接ジャンプ）
   calculatedStats.forEach(q => {
     const rateText = q.rate !== null ? `${q.rate}%` : "未プレイ";
     const attemptsText = `${q.corrects} / ${q.attempts}問 正解`;
@@ -254,18 +255,110 @@ function renderQuestionStatsList(data, filterMode) {
     }
 
     const item = document.createElement("div");
-    item.className = "analytics-q-item";
+    item.className = "analytics-q-item is-playable";
+    item.title = "クリックしてこの問題を実演プレイ";
     item.innerHTML = `
       <div class="q-item-header">
         <span class="q-item-title">[${q.modeLabel} Q${q.qNum}] ${q.title.replace(/<[^>]+>/g, '')}</span>
-        <span class="q-item-rate">${rateText} (${attemptsText})</span>
+        <div class="q-item-meta-right">
+          <span class="q-item-rate">${rateText} (${attemptsText})</span>
+          <button type="button" class="btn-q-item-play">🎯 実演</button>
+        </div>
       </div>
       <div class="q-item-bar-track">
         <div class="q-item-bar-fill ${barClass}" style="width: ${q.rate !== null ? q.rate : 0}%;"></div>
       </div>
     `;
+
+    // 行全体またはボタン押下で直接起動
+    item.addEventListener("click", () => {
+      launchDirectQuestion(q.id, q.modeKey);
+    });
+
     listContainer.appendChild(item);
   });
+}
+
+/* =========================================================
+   実演用：指定問題への直接ジャンプ実行処理
+   ========================================================= */
+function launchDirectQuestion(questionId, modeKey) {
+  // 1. 分析画面を閉じる
+  closeAnalyticsModal();
+
+  // 2. 実演プレイとしてテストモードフラグをON（分析データの汚染防止）
+  state.isTestMode = true;
+
+  // テスト用UIを表示
+  const badge = document.getElementById("test-mode-badge");
+  const drawer = document.getElementById("test-controller-drawer");
+  if (badge) badge.classList.remove("is-hidden");
+  if (drawer) {
+    drawer.classList.remove("is-hidden");
+    drawer.classList.remove("is-collapsed");
+    if (typeof updateDrawerArrow === "function") updateDrawerArrow(true);
+  }
+
+  // 3. モードとUIの同期
+  state.mode = modeKey;
+  const shell = document.getElementById("app-shell");
+  if (shell) {
+    if (modeKey === "senior") {
+      shell.classList.add("is-senior-mode");
+    } else {
+      shell.classList.remove("is-senior-mode");
+    }
+  }
+
+  if (modeKey === "senior" || modeKey === "adult") {
+    state.playerName = "あなた";
+    state.selectedItem = null;
+  } else {
+    state.playerName = state.playerName || "あなた";
+    if (!state.selectedItem && typeof ITEMS !== "undefined" && ITEMS.length > 0) {
+      state.selectedItem = ITEMS[0];
+    }
+  }
+
+  // 4. 該当問題の抽出
+  let pool = [];
+  if (modeKey === "elementary" && typeof QUESTIONS_ELEMENTARY !== "undefined") pool = QUESTIONS_ELEMENTARY;
+  else if (modeKey === "teen" && typeof QUESTIONS_TEEN !== "undefined") pool = QUESTIONS_TEEN;
+  else if (modeKey === "adult" && typeof QUESTIONS_ADULT !== "undefined") pool = QUESTIONS_ADULT;
+  else if (modeKey === "senior" && typeof QUESTIONS_SENIOR !== "undefined") pool = QUESTIONS_SENIOR;
+
+  let targetQuestion = pool.find(q => q.id === questionId);
+  if (!targetQuestion) {
+    const allPools = [
+      ...(typeof QUESTIONS_ELEMENTARY !== "undefined" ? QUESTIONS_ELEMENTARY : []),
+      ...(typeof QUESTIONS_TEEN !== "undefined" ? QUESTIONS_TEEN : []),
+      ...(typeof QUESTIONS_ADULT !== "undefined" ? QUESTIONS_ADULT : []),
+      ...(typeof QUESTIONS_SENIOR !== "undefined" ? QUESTIONS_SENIOR : [])
+    ];
+    targetQuestion = allPools.find(q => q.id === questionId);
+  }
+
+  if (!targetQuestion) {
+    alert("指定された問題データが見つかりませんでした。");
+    return;
+  }
+
+  // 5. 単一問題としてスケジュールをセットアップ
+  state.weeklyQuestions = [targetQuestion];
+  state.daySchedule = [{
+    weekdayIndex: 0,
+    dayNumber: "実演",
+    weekdayName: "実演",
+    periodLabel: "",
+    isFirstOfSlot: true,
+    isSunday: false
+  }];
+  state.slotIndex = 0;
+  state.dialogueIndex = 0;
+
+  // 6. 出題フローを開始（ナレーション・会話・通知から通常通り再生）
+  updateStatusBar();
+  continueEventFlow();
 }
 
 /* =========================================================
