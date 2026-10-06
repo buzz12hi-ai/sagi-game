@@ -1,7 +1,6 @@
 /* =========================================================
    analytics.css
-   製作者用「制作・分析画面」・パスコード認証・テストプレイモード専用スタイル
-   （問題別正答率リストからの直接実演起動対応版）
+   製作者用「制作・分析画面」・パスコード認証・フルスクリーン管理コンソール・実演バー・透視タグスタイル
    ========================================================= */
 
 /* =========================================================
@@ -125,7 +124,447 @@
 }
 
 /* =========================================================
-   3. 制作・分析画面モーダル（SCAM HUNTER｜制作・分析）
+   3. フルスクリーン管理コンソール（#dev-dashboard-screen）
+   ========================================================= */
+.dev-dashboard-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9995;
+  background: radial-gradient(circle at 50% 10%, #152445 0%, #0B1426 70%, #070D1A 100%);
+  color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  animation: fadeIn 0.25s var(--ease-gentle);
+}
+
+.dev-dashboard-container {
+  width: 100%;
+  max-width: 1240px;
+  min-height: 100vh;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.dev-dash-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(27, 42, 74, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(245, 166, 35, 0.4);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dev-dash-branding {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dash-shield-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 8px rgba(245, 166, 35, 0.5));
+}
+
+.dash-system-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #FFFFFF;
+}
+
+.dash-system-sub {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: #B4C4DB;
+  font-weight: 500;
+}
+
+.dev-dash-status-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dash-badge-auth {
+  background: rgba(46, 158, 130, 0.2);
+  border: 1px solid var(--color-safe);
+  color: #5BE6C2;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 900;
+  padding: 5px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+}
+
+.btn-dash-action {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+}
+
+.btn-dash-return {
+  background: var(--color-money);
+  color: var(--color-navy);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.35);
+}
+
+.btn-dash-return:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-dash-logout {
+  background: rgba(232, 92, 74, 0.18);
+  border: 1px solid var(--color-danger);
+  color: #FF9B8E;
+}
+
+.btn-dash-logout:hover {
+  background: var(--color-danger);
+  color: #FFFFFF;
+}
+
+.dev-dash-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.dev-dash-intro-box {
+  background: rgba(18, 28, 52, 0.65);
+  border-left: 4.5px solid var(--color-money);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 18px;
+}
+
+.dash-sec-heading {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--color-money);
+}
+
+.dash-sec-desc {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #C8D6EC;
+}
+
+.dev-dash-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+@media (min-width: 850px) {
+  .dev-dash-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.dev-feature-card {
+  background: linear-gradient(160deg, rgba(27, 42, 74, 0.85) 0%, rgba(15, 24, 48, 0.95) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-md);
+  padding: 22px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.dev-feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-money);
+  box-shadow: 0 16px 40px rgba(245, 166, 35, 0.25), 0 0 20px rgba(245, 166, 35, 0.15);
+  background: linear-gradient(160deg, rgba(35, 54, 94, 0.9) 0%, rgba(18, 28, 56, 0.98) 100%);
+}
+
+.feature-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feature-card-icon {
+  font-size: 38px;
+  flex-shrink: 0;
+}
+
+.feature-card-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.feature-card-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.feature-card-tag {
+  font-size: 11.5px;
+  color: var(--color-money);
+  font-weight: 700;
+}
+
+.feature-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.feature-desc-lead {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #E2ECFC;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.feature-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.feature-checklist li {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #BACADE;
+  padding-left: 18px;
+  position: relative;
+}
+
+.feature-checklist li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--color-safe);
+  font-weight: 900;
+}
+
+.btn-card-launch {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-sm);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 900;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.dev-feature-card:hover .btn-card-launch {
+  background: var(--color-money);
+  color: var(--color-navy);
+  border-color: var(--color-money);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.4);
+}
+
+.dev-dash-system-footer {
+  background: rgba(18, 28, 52, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12.5px;
+}
+
+.sys-info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sys-info-label {
+  color: #8E9FB8;
+  font-weight: 700;
+}
+
+.sys-info-val {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+/* =========================================================
+   3.5 カンペ確認用モーダル（#peek-point-modal）
+   ========================================================= */
+.peek-point-window {
+  width: 100%;
+  max-width: 480px;
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  border: 2.5px solid var(--color-money);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.peek-point-header {
+  background: var(--color-navy);
+  color: #FFFFFF;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.peek-point-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.peek-icon { font-size: 20px; }
+
+.peek-point-title-group h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 900;
+  color: var(--color-money);
+}
+
+.peek-close-btn {
+  background: var(--color-danger);
+  color: #FFFFFF;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.peek-point-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.peek-qname {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 900;
+  color: var(--color-navy);
+  border-bottom: 1.5px solid var(--color-border);
+  padding-bottom: 6px;
+}
+
+.peek-content-box {
+  background: rgba(245, 166, 35, 0.12);
+  border: 1px solid rgba(245, 166, 35, 0.4);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.peek-box-label {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  color: #A06400;
+}
+
+.peek-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+/* =========================================================
+   4. 3原則タグ透視スタイル（選択肢ハイライト）
+   ========================================================= */
+.choice-btn.hint-safe {
+  border-color: #2E9E82 !important;
+  background: #EAF8F4 !important;
+  box-shadow: 0 0 12px rgba(46, 158, 130, 0.35) !important;
+}
+
+.choice-btn.hint-speak {
+  border-color: #E85C4A !important;
+  background: #FFF0EE !important;
+  box-shadow: 0 0 12px rgba(232, 92, 74, 0.35) !important;
+}
+
+.choice-btn.hint-pay {
+  border-color: #D9534F !important;
+  background: #FFF0EE !important;
+  box-shadow: 0 0 12px rgba(217, 83, 79, 0.35) !important;
+}
+
+.choice-btn.hint-fooled {
+  border-color: #F5A623 !important;
+  background: #FFF9EC !important;
+  box-shadow: 0 0 12px rgba(245, 166, 35, 0.35) !important;
+}
+
+.hint-badge-tag {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  color: #FFFFFF;
+}
+
+.hint-badge-tag.tag-safe   { background: var(--color-safe); }
+.hint-badge-tag.tag-speak  { background: #E85C4A; }
+.hint-badge-tag.tag-pay    { background: #D9534F; }
+.hint-badge-tag.tag-fooled { background: #F5A623; color: var(--color-navy); }
+
+/* =========================================================
+   5. 制作・分析画面モーダル（SCAM HUNTER｜制作・分析）
    ========================================================= */
 .analytics-modal-overlay {
   position: fixed;
@@ -209,7 +648,6 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* ツールバー（CSV出力・データリセット・全問題プレビュー） */
 .analytics-actions-bar {
   display: flex;
   flex-wrap: wrap;
@@ -290,7 +728,6 @@
   background: #FFF5F5;
 }
 
-/* サマリーカードグリッド */
 .analytics-summary-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -331,7 +768,6 @@
 .summary-card-value.highlight { color: var(--color-safe); }
 .summary-card-value.warning { color: var(--color-money); }
 
-/* セクションパネル（グラフ・リスト） */
 .analytics-section-panel {
   background: #FFFFFF;
   border-radius: var(--radius-md);
@@ -352,7 +788,6 @@
   padding-left: 8px;
 }
 
-/* モード別プレイ数カード */
 .analytics-mode-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -376,7 +811,6 @@
 .mode-stat-label { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
 .mode-stat-count { font-family: var(--font-display); font-size: 18px; font-weight: 900; color: var(--color-navy); }
 
-/* 曜日別離脱率バーチャート */
 .analytics-drop-chart {
   display: flex;
   flex-direction: column;
@@ -420,7 +854,6 @@
   flex-shrink: 0;
 }
 
-/* 問題別正答率リスト（実演クリック可能スタイル） */
 .analytics-q-list {
   display: flex;
   flex-direction: column;
@@ -518,7 +951,7 @@
 .q-item-bar-fill.is-mid { background: var(--color-money); }
 
 /* =========================================================
-   4. テストモード中 常設UI（TEST MODEバッジ ＆ コントローラーバー）
+   6. 実演コントロールバー（画面下部固定・スッキリ4行）
    ========================================================= */
 .test-mode-badge-floating {
   position: fixed;
@@ -539,7 +972,6 @@
   animation: pulseZoom 2s infinite alternate;
 }
 
-/* テストプレイ専用コントロールバー（画面下部固定・開閉式） */
 .test-controller-drawer {
   position: fixed;
   bottom: 0;
@@ -561,7 +993,6 @@
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* 格納時の状態（トグルボタン部分のみ露出） */
 .test-controller-drawer.is-collapsed {
   transform: translate(-50%, calc(100% - 32px));
 }
@@ -598,11 +1029,10 @@
   transition: transform 0.25s ease;
 }
 
-/* 内部スクロール領域 */
 .test-drawer-content {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
   max-height: 48vh;
   overflow-y: auto;
   padding-right: 4px;
@@ -612,7 +1042,7 @@
 .test-controller-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 6px;
   align-items: center;
   justify-content: center;
 }
@@ -621,10 +1051,10 @@
   background: rgba(255, 255, 255, 0.14);
   color: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: 6px;
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -641,7 +1071,25 @@
   transform: scale(0.96);
 }
 
-/* テストモード終了ボタン（危険色） */
+/* 透視トグルボタンの強調 */
+.btn-hint-toggle.is-active {
+  background: #2E9E82 !important;
+  color: #FFFFFF !important;
+  border-color: #5BE6C2 !important;
+  box-shadow: 0 0 10px rgba(46, 158, 130, 0.6) !important;
+}
+
+.btn-peek-point {
+  background: rgba(245, 166, 35, 0.25) !important;
+  border-color: var(--color-money) !important;
+  color: #FFE6A8 !important;
+}
+
+.btn-peek-point:hover {
+  background: var(--color-money) !important;
+  color: var(--color-navy) !important;
+}
+
 .test-ctrl-btn-exit {
   background: rgba(232, 92, 74, 0.25) !important;
   border-color: var(--color-danger) !important;
@@ -661,9 +1109,9 @@
   background: #0B1426;
   color: #FFFFFF;
   border: 1px solid var(--color-money);
-  padding: 3px 6px;
+  padding: 4px 8px;
   border-radius: 6px;
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 11.5px;
   outline: none;
 }

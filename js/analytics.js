@@ -2,7 +2,7 @@
    analytics.js
    製作者用「制作・分析」データ管理・自動集計・CSV出力・リセット
    【通常プレイのみ自動記録／テストプレイは完全遮断・Googleフォーム非依存】
-   （リストからの問題直接実演ジャンプ機能追加版）
+   （製作者ホーム復帰 ＆ リストからの問題直接実演対応版）
    ========================================================= */
 
 const ANALYTICS_STORAGE_KEY = "scam_hunter_analytics_v1";
@@ -126,10 +126,16 @@ function openAnalyticsModal() {
   modal.classList.remove("is-hidden");
 }
 
+// 分析画面を閉じた時：認証中であれば製作者ホームへ自動復帰
 function closeAnalyticsModal() {
   const modal = document.getElementById("analytics-modal");
   if (modal) {
     modal.classList.add("is-hidden");
+  }
+  if (typeof isDevAuthenticated !== "undefined" && isDevAuthenticated) {
+    if (typeof openDevHomeModal === "function") {
+      openDevHomeModal();
+    }
   }
 }
 
@@ -218,7 +224,6 @@ function renderQuestionStatsList(data, filterMode) {
     });
   });
 
-  // ワースト問題・ベスト問題のサマリー特定
   const validRanked = calculatedStats.filter(s => s.attempts >= 1);
   validRanked.sort((a, b) => (a.rate || 0) - (b.rate || 0));
 
@@ -243,7 +248,6 @@ function renderQuestionStatsList(data, filterMode) {
     }
   }
 
-  // 問題一覧の表示（クリックまたは実演ボタンで該当問題へ直接ジャンプ）
   calculatedStats.forEach(q => {
     const rateText = q.rate !== null ? `${q.rate}%` : "未プレイ";
     const attemptsText = `${q.corrects} / ${q.attempts}問 正解`;
@@ -270,7 +274,6 @@ function renderQuestionStatsList(data, filterMode) {
       </div>
     `;
 
-    // 行全体またはボタン押下で直接起動
     item.addEventListener("click", () => {
       launchDirectQuestion(q.id, q.modeKey);
     });
@@ -283,13 +286,11 @@ function renderQuestionStatsList(data, filterMode) {
    実演用：指定問題への直接ジャンプ実行処理
    ========================================================= */
 function launchDirectQuestion(questionId, modeKey) {
-  // 1. 分析画面を閉じる
-  closeAnalyticsModal();
+  const modal = document.getElementById("analytics-modal");
+  if (modal) modal.classList.add("is-hidden");
 
-  // 2. 実演プレイとしてテストモードフラグをON（分析データの汚染防止）
   state.isTestMode = true;
 
-  // テスト用UIを表示
   const badge = document.getElementById("test-mode-badge");
   const drawer = document.getElementById("test-controller-drawer");
   if (badge) badge.classList.remove("is-hidden");
@@ -299,7 +300,6 @@ function launchDirectQuestion(questionId, modeKey) {
     if (typeof updateDrawerArrow === "function") updateDrawerArrow(true);
   }
 
-  // 3. モードとUIの同期
   state.mode = modeKey;
   const shell = document.getElementById("app-shell");
   if (shell) {
@@ -320,7 +320,6 @@ function launchDirectQuestion(questionId, modeKey) {
     }
   }
 
-  // 4. 該当問題の抽出
   let pool = [];
   if (modeKey === "elementary" && typeof QUESTIONS_ELEMENTARY !== "undefined") pool = QUESTIONS_ELEMENTARY;
   else if (modeKey === "teen" && typeof QUESTIONS_TEEN !== "undefined") pool = QUESTIONS_TEEN;
@@ -343,7 +342,6 @@ function launchDirectQuestion(questionId, modeKey) {
     return;
   }
 
-  // 5. 単一問題としてスケジュールをセットアップ
   state.weeklyQuestions = [targetQuestion];
   state.daySchedule = [{
     weekdayIndex: 0,
@@ -356,7 +354,6 @@ function launchDirectQuestion(questionId, modeKey) {
   state.slotIndex = 0;
   state.dialogueIndex = 0;
 
-  // 6. 出題フローを開始（ナレーション・会話・通知から通常通り再生）
   updateStatusBar();
   continueEventFlow();
 }
@@ -365,35 +362,30 @@ function launchDirectQuestion(questionId, modeKey) {
    CSVエクスポート ＆ データリセット
    ========================================================= */
 
-// 分析データをCSVダウンロード
 function exportAnalyticsCSV() {
   const data = getAnalyticsData();
-  let csv = "\uFEFF"; // UTF-8 BOM
+  let csv = "\uFEFF";
   csv += "SCAM HUNTER - プレイ分析データエクスポート\n";
   csv += `エクスポート日時,${new Date().toLocaleString("ja-JP")}\n\n`;
 
-  // サマリー
   csv += "【基本サマリー】\n";
   csv += `総プレイ回数,${data.totalPlays}\n`;
   csv += `クリア回数,${data.completedPlays}\n`;
   csv += `クリア率,${data.totalPlays > 0 ? ((data.completedPlays / data.totalPlays) * 100).toFixed(1) : 0}%\n`;
   csv += `平均スコア,¥${data.completedPlays > 0 ? Math.round(data.totalScoreSum / data.completedPlays) : 0}\n\n`;
 
-  // モード別
   csv += "【モード別プレイ数】\n";
   csv += `小学生モード,${data.modePlays.elementary || 0}\n`;
   csv += `中高生モード,${data.modePlays.teen || 0}\n`;
   csv += `一般モード,${data.modePlays.adult || 0}\n`;
   csv += `高齢者モード,${data.modePlays.senior || 0}\n\n`;
 
-  // 曜日別離脱
   csv += "【曜日別離脱数】\n";
   Object.entries(data.dropoutsByDay).forEach(([day, count]) => {
     csv += `${day}曜日,${count}人\n`;
   });
   csv += "\n";
 
-  // 問題別詳細
   csv += "【問題別正答率】\n";
   csv += "モード,問題番号,問題ID,タイトル,回答数,正解数,正答率\n";
 
@@ -421,7 +413,6 @@ function exportAnalyticsCSV() {
   URL.revokeObjectURL(url);
 }
 
-// 蓄積データを安全にリセット
 function resetAnalyticsData() {
   if (confirm("【警告】蓄積されたプレイ分析データをすべてリセット（初期化）しますか？\n※この操作は取り消せません。")) {
     saveAnalyticsData(getDefaultAnalyticsData());

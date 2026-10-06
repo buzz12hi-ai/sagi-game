@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 
 <!-- 分割したCSSファイルの読み込み（styles.css/ フォルダ内） -->
 <link rel="stylesheet" href="styles.css/base.css?v=20260827_v4">
@@ -345,7 +345,7 @@
               <p class="bubble-text" id="event-desc"></p>
             </div>
 
-            <!-- ★ 問題を解く最中に直前の状況・会話・通知をすぐ確認できる見直しボタン ★ -->
+            <!-- 問題を解く最中に直前の状況・会話・通知をすぐ確認できる見直しボタン -->
             <button id="btn-open-log-event" class="btn-review-log btn-review-log-in-event" type="button">📜 直前の会話・通知を見直す</button>
 
             <p class="choice-prompt">あなたなら、どうする？</p>
@@ -488,7 +488,7 @@
       </div>
     </div>
 
-    <!-- ★ 製作者用 パスコード認証モーダル（A5158） ★ -->
+    <!-- ★ 製作者用 パスコード認証モーダル（A5158・シンプル認証型） ★ -->
     <div id="auth-modal" class="auth-modal-overlay is-hidden">
       <div class="auth-modal-window">
         <h3 class="auth-modal-title">🔐 製作者認証</h3>
@@ -496,14 +496,153 @@
         <input type="password" id="auth-passcode-input" class="auth-input-field" maxlength="10" placeholder="•••••">
         <p id="auth-error-msg" class="auth-error-msg is-hidden">⚠️ パスコードが正しくありません。</p>
         <div class="auth-btn-group">
-          <button id="btn-auth-analytics" class="btn btn-primary" type="button">📊 制作・分析画面</button>
-          <button id="btn-auth-testplay" class="btn btn-primary" type="button">🛠️ テストプレイ</button>
+          <button id="btn-auth-verify" class="btn btn-primary" type="button">認証して進む</button>
           <button id="btn-auth-cancel" class="btn btn-secondary" type="button">キャンセル</button>
         </div>
       </div>
     </div>
 
-    <!-- ★ 製作者用 制作・分析画面モーダル ★ -->
+    <!-- ★ 警察提示・防犯研究特化型 フルスクリーン管理コンソール ★ -->
+    <div id="dev-dashboard-screen" class="dev-dashboard-fullscreen is-hidden">
+      <div class="dev-dashboard-container">
+        
+        <!-- コンソールヘッダーバー -->
+        <header class="dev-dash-topbar">
+          <div class="dev-dash-branding">
+            <span class="dash-shield-icon">🛡️</span>
+            <div>
+              <h1 class="dash-system-title">SCAM HUNTER DEVELOPER CONSOLE</h1>
+              <p class="dash-system-sub">防犯教育・分析システム 管理コンソール（警察提示・研究実演特化）</p>
+            </div>
+          </div>
+          <div class="dev-dash-status-area">
+            <span class="dash-badge-auth">● 認証稼働中</span>
+            <button id="btn-dash-exit-game" class="btn-dash-action btn-dash-return" type="button">🎮 通常ゲーム画面へ戻る</button>
+            <button id="btn-dash-logout" class="btn-dash-action btn-dash-logout" type="button">🔒 ログアウト</button>
+          </div>
+        </header>
+
+        <!-- コンソールメインコンテンツ -->
+        <main class="dev-dash-content">
+          <div class="dev-dash-intro-box">
+            <h2 class="dash-sec-heading">■ 防犯教育研究・実演ポータル</h2>
+            <p class="dash-sec-desc">
+              警察庁・大分県警「話さない・騙されない・渡さない」3原則に準拠した全64問の防犯シミュレーション管理画面です。<br>
+              各機能を選択して実演・集計・データ確認を行ってください。終了時は自動でこの画面へ復帰します。
+            </p>
+          </div>
+
+          <!-- 3大大型タッチカードグリッド -->
+          <div class="dev-dash-cards-grid">
+            
+            <!-- ① 制作・分析画面カード -->
+            <div id="card-dash-analytics" class="dev-feature-card card-analytics">
+              <div class="feature-card-header">
+                <span class="feature-card-icon">📊</span>
+                <div class="feature-card-title-group">
+                  <h3 class="feature-card-title">制作・分析ダッシュボード</h3>
+                  <span class="feature-card-tag">正答率・離脱集計 & CSV出力</span>
+                </div>
+              </div>
+              <div class="feature-card-body">
+                <p class="feature-desc-lead">通常プレイで蓄積されたデータをグラフ・数値でリアルタイム分析</p>
+                <ul class="feature-checklist">
+                  <li><strong>年代別（4モード）の正答率・クリア率</strong>の自動算出</li>
+                  <li><strong>問題別正答率リスト</strong>からの【直接実演ジャンプ】対応</li>
+                  <li><strong>曜日別離脱傾向</strong>（どこで諦めたか）の可視化グラフ</li>
+                  <li>外部発表・警察提出用の<strong>完全集計CSVワンクリック出力</strong></li>
+                </ul>
+              </div>
+              <div class="feature-card-footer">
+                <button type="button" class="btn-card-launch">分析画面を開く ▶</button>
+              </div>
+            </div>
+
+            <!-- ② テストプレイ開始カード -->
+            <div id="card-dash-testplay" class="dev-feature-card card-testplay">
+              <div class="feature-card-header">
+                <span class="feature-card-icon">🛠️</span>
+                <div class="feature-card-title-group">
+                  <h3 class="feature-card-title">テストプレイ（実践検証）</h3>
+                  <span class="feature-card-tag">実演操作バー常設モード</span>
+                </div>
+              </div>
+              <div class="feature-card-body">
+                <p class="feature-desc-lead">審査員・警察官の前で任意のモードを即座に実機デモ実演</p>
+                <ul class="feature-checklist">
+                  <li>通常プレイ分析のデータ集計を<strong>完全遮断</strong>し汚染を防止</li>
+                  <li>画面下部バーから<strong>任意の曜日へワンタップ移動</strong></li>
+                  <li><strong>3原則タグ透視機能</strong>で選択肢の意図を画面上に浮き彫り化</li>
+                  <li><strong>防犯指導ポイント</strong>をワンタップでカンペ確認可能</li>
+                </ul>
+              </div>
+              <div class="feature-card-footer">
+                <button type="button" class="btn-card-launch">テストプレイ開始 ▶</button>
+              </div>
+            </div>
+
+            <!-- ③ 全問題プレビューカード -->
+            <div id="card-dash-preview" class="dev-feature-card card-preview">
+              <div class="feature-card-header">
+                <span class="feature-card-icon">🔍</span>
+                <div class="feature-card-title-group">
+                  <h3 class="feature-card-title">全問題プレビュー（64問）</h3>
+                  <span class="feature-card-tag">手口・画像・選択肢チェッカー</span>
+                </div>
+              </div>
+              <div class="feature-card-body">
+                <p class="feature-desc-lead">全4モード×16問＝全64問の手口・証拠画像・選択肢を一挙確認</p>
+                <ul class="feature-checklist">
+                  <li><strong>詐欺・本物・助ける</strong>の3区分による瞬時絞り込み</li>
+                  <li>警察防犯3原則（<strong>話さない・騙されない・渡さない</strong>）タグ確認</li>
+                  <li>指定証拠画像（スクリーンショット）の<strong>実寸目視チェック</strong></li>
+                  <li>手口キーワード検索（例:「屋根」「ロマンス」「警察」等）</li>
+                </ul>
+              </div>
+              <div class="feature-card-footer">
+                <button type="button" class="btn-card-launch">全問題一覧を見る ▶</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- システムステータスフッターバー -->
+          <footer class="dev-dash-system-footer">
+            <div class="sys-info-item">
+              <span class="sys-info-label">収録問題総数:</span>
+              <span class="sys-info-val">全64問（小学生 16問 / 中高生 16問 / 一般 16問 / 高齢者 16問）</span>
+            </div>
+            <div class="sys-info-item">
+              <span class="sys-info-label">防犯基準準拠:</span>
+              <span class="sys-info-val">大分県警・警察庁「話さない・騙されない・渡さない」3原則思考型設計</span>
+            </div>
+          </footer>
+        </main>
+
+      </div>
+    </div>
+
+    <!-- ★ 警察実演用：防犯ポイント（カンペ）確認モーダル ★ -->
+    <div id="peek-point-modal" class="auth-modal-overlay is-hidden">
+      <div class="peek-point-window">
+        <header class="peek-point-header">
+          <div class="peek-point-title-group">
+            <span class="peek-icon">💡</span>
+            <h3 id="peek-point-title">防犯指導ポイント（警察実演カンペ）</h3>
+          </div>
+          <button id="btn-close-peek-point" class="peek-close-btn" type="button">✕ 閉じる</button>
+        </header>
+        <div class="peek-point-body">
+          <p id="peek-point-qname" class="peek-qname"></p>
+          <div class="peek-content-box">
+            <h4 class="peek-box-label">🛡️ 警察の指導ポイント・手口の核心:</h4>
+            <p id="peek-point-text" class="peek-text"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ 制作・分析画面モーダル ★ -->
     <div id="analytics-modal" class="analytics-modal-overlay is-hidden">
       <div class="analytics-modal-window">
         <header class="analytics-header">
@@ -589,16 +728,16 @@
       </div>
     </div>
 
-    <!-- ★ テストプレイ用デバッグコントロールバー（開閉式・機能拡張版） ★ -->
+    <!-- ★ 警察発表・実演特化コントロールバー（曜日移動＋3原則透視＋カンペ版） ★ -->
     <div id="test-controller-drawer" class="test-controller-drawer is-hidden">
       <button id="btn-toggle-test-drawer" class="test-drawer-toggle" type="button">
-        <span id="test-drawer-arrow">▼</span> 🛠️ テストコントロール
+        <span id="test-drawer-arrow">▼</span> 🛠️ 実演・テストコントロール
       </button>
       
       <div class="test-drawer-content" id="test-drawer-content">
-        <!-- 曜日移動（決定ボタン方式） -->
+        <!-- 1行目: 曜日移動 ＆ スキップ -->
         <div class="test-controller-row">
-          <label style="font-size: 11px;">曜日移動:</label>
+          <label style="font-size: 11.5px; font-weight: 700; color: #BACADE;">曜日移動:</label>
           <select id="test-select-weekday" class="test-ctrl-select">
             <option value="0">月曜日</option>
             <option value="1">火曜日</option>
@@ -612,49 +751,30 @@
           <button id="btn-test-skip-q" class="test-ctrl-btn" type="button">⏭️ スキップ</button>
         </div>
 
-        <!-- 候補A: 判定シミュレーション -->
+        <!-- 2行目: 実演アシスト（3原則透視 ＆ 防犯ポイント確認） -->
         <div class="test-controller-row">
-          <label style="font-size: 11px;">回答判定:</label>
-          <button class="test-ctrl-btn" onclick="forceTestAnswer(true)" type="button">⭕ 強制正解</button>
-          <button class="test-ctrl-btn" onclick="forceTestAnswer(false)" type="button">❌ 強制不正解</button>
+          <label style="font-size: 11.5px; font-weight: 700; color: #BACADE;">実演アシスト:</label>
+          <button id="btn-test-toggle-hints" class="test-ctrl-btn btn-hint-toggle" type="button">👁️ 3原則タグ表示: OFF</button>
+          <button id="btn-test-peek-point" class="test-ctrl-btn btn-peek-point" type="button">💡 防犯ポイント確認</button>
         </div>
 
-        <!-- 所持金調整 -->
+        <!-- 3行目: 結果シミュレーション -->
         <div class="test-controller-row">
-          <label style="font-size: 11px;">所持金:</label>
-          <button class="test-ctrl-btn" onclick="setTestMoney(0)" type="button">0円</button>
-          <button class="test-ctrl-btn" onclick="setTestMoney(30000)" type="button">3万円</button>
-          <button class="test-ctrl-btn" onclick="setTestMoney(50000)" type="button">5万円</button>
-          <button class="test-ctrl-btn" onclick="setTestMoney(80000)" type="button">8万円</button>
+          <label style="font-size: 11.5px; font-weight: 700; color: #BACADE;">結果確認:</label>
+          <button class="test-ctrl-btn" onclick="testJumpEnding('rank_s')" type="button">🏆 Sランク（全問防衛）</button>
+          <button class="test-ctrl-btn" onclick="testJumpEnding('rank_d')" type="button">⚠️ Dランク（被害多発）</button>
         </div>
 
-        <!-- 候補B: 被害リスク付加 -->
+        <!-- 4行目: テストモード終了（製作者コンソールへ復帰） -->
         <div class="test-controller-row">
-          <label style="font-size: 11px;">被害付加:</label>
-          <button class="test-ctrl-btn" onclick="addTestDamage('personalInfo')" type="button">⚠️ 個人情報</button>
-          <button class="test-ctrl-btn" onclick="addTestDamage('account')" type="button">⚠️ アカウント</button>
-          <button class="test-ctrl-btn" onclick="addTestDamage('line')" type="button">⚠️ SNS乗取</button>
-        </div>
-
-        <!-- 候補C: 画面直行 ＆ EDテスト -->
-        <div class="test-controller-row">
-          <label style="font-size: 11px;">直行・ED:</label>
-          <button class="test-ctrl-btn" onclick="jumpToDirectScreen('shopping')" type="button">🛒 買い物</button>
-          <button class="test-ctrl-btn" onclick="jumpToDirectScreen('survey')" type="button">📋 アンケート</button>
-          <button class="test-ctrl-btn" onclick="testJumpEnding('rank_s')" type="button">🏆 Sランク</button>
-          <button class="test-ctrl-btn" onclick="testJumpEnding('rank_d')" type="button">⚠️ Dランク</button>
-        </div>
-
-        <!-- 候補D: テストモード終了 -->
-        <div class="test-controller-row">
-          <button id="btn-test-exit" class="test-ctrl-btn test-ctrl-btn-exit" onclick="exitTestMode()" type="button">⏹️ テストモード終了（通常へ戻る）</button>
+          <button id="btn-test-exit" class="test-ctrl-btn test-ctrl-btn-exit" onclick="exitTestMode()" type="button">⏹️ テストモード終了（製作者メニューへ）</button>
         </div>
       </div>
     </div>
 
   </div>
 
-  <!-- スクリプト群（分割JSを完全順序で読み込み・キャッシュ更新パラメータ付き） -->
+  <!-- スクリプト群 -->
   <script src="js/assets.js?v=20260827_v4"></script>
   <script src="js/data.js?v=20260827_v4"></script>
   <script src="js/state.js?v=20260827_v4"></script>

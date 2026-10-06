@@ -1,11 +1,10 @@
 /* =========================================================
    event.js
    問題出題・選択肢回答判定・ダメージ計算・結果表示・進行制御
-   （通常プレイ時分析データ自動記録・到達曜日再プレイ対応版）
+   （3原則透視ハイライト描画対応版）
    ========================================================= */
 
 function showEvent() {
-  // 全問題終了時は全モード共通で週末ふりかえり画面へ
   if (state.slotIndex >= state.weeklyQuestions.length) {
     showWeekRecap();
     return;
@@ -64,7 +63,16 @@ function showQuestion() {
   const thinkingOverlay = document.getElementById("thinking-overlay");
   if (thinkingOverlay) thinkingOverlay.classList.add("is-hidden");
 
+  // 選択肢の生成
+  renderChoices(question);
+
+  showScreen("screen-event");
+}
+
+// 選択肢描画（透視タグON/OFF対応）
+function renderChoices(question) {
   const choiceList = document.getElementById("choice-list");
+  if (!choiceList) return;
   choiceList.innerHTML = "";
 
   const dynamicChoices = getQuestionChoices(question);
@@ -73,12 +81,37 @@ function showQuestion() {
     const btn = document.createElement("button");
     btn.className = "choice-btn";
     btn.type = "button";
-    btn.innerHTML = choice.text;
+
+    // 3原則透視タグがONの場合のバッジとクラス付加
+    if (state.isTestMode && state.showPrincipleTags) {
+      let badgeHTML = "";
+      if (choice.type === "correct") {
+        btn.classList.add("hint-safe");
+        badgeHTML = `<span class="hint-badge-tag tag-safe">🟢【騙されない】</span>`;
+      } else if (choice.principleTag === "speak") {
+        btn.classList.add("hint-speak");
+        badgeHTML = `<span class="hint-badge-tag tag-speak">🔴【喋った】</span>`;
+      } else if (choice.principleTag === "pay") {
+        btn.classList.add("hint-pay");
+        badgeHTML = `<span class="hint-badge-tag tag-pay">🔴【払った】</span>`;
+      } else {
+        btn.classList.add("hint-fooled");
+        badgeHTML = `<span class="hint-badge-tag tag-fooled">🟡【騙された】</span>`;
+      }
+      btn.innerHTML = `${badgeHTML}${choice.text}`;
+    } else {
+      btn.innerHTML = choice.text;
+    }
+
     btn.addEventListener("click", () => handleChoiceWithDelay(choice));
     choiceList.appendChild(btn);
   });
+}
 
-  showScreen("screen-event");
+// 出題中の選択肢を透視タグ状態に合わせて再描画
+function refreshChoicesWithHints() {
+  const q = currentQuestion();
+  if (q) renderChoices(q);
 }
 
 function handleChoiceWithDelay(choice) {
@@ -150,7 +183,6 @@ function handleChoice(choice) {
     isCorrect: isCorrect
   });
 
-  // ★ 通常プレイ時のみ、問題ごとの正誤を分析データに記録 ★
   if (typeof recordAnalyticsAnswer === "function") {
     recordAnalyticsAnswer(question.id, isCorrect);
   }

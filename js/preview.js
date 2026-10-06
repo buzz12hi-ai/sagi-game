@@ -2,14 +2,11 @@
    preview.js
    開発用「全問題プレビュー・ビジュアルチェッカー」
    全64問の画像サムネイル・問題文・3原則タグ選択肢を一括目視確認
-   【制作・分析画面ツールバー連携版】
+   【製作者コンソール復帰連携版】
    ========================================================= */
 
 function initQuestionPreview() {
-  // 1. プレビュー用モーダルUIの作成
   createPreviewModalDOM();
-
-  // 2. 制作・分析画面内のプレビューボタンと連携
   bindAnalyticsPreviewButton();
 }
 
@@ -79,7 +76,6 @@ function createPreviewModalDOM() {
 
   document.body.appendChild(container);
 
-  // イベント登録
   document.getElementById("btn-close-preview").onclick = closePreviewModal;
   document.getElementById("preview-filter-mode").onchange = renderPreviewCards;
   document.getElementById("preview-filter-category").onchange = renderPreviewCards;
@@ -99,6 +95,12 @@ function closePreviewModal() {
   const container = document.getElementById("preview-modal-container");
   if (container) {
     container.classList.add("is-hidden");
+  }
+  // 認証稼働中であれば製作者管理コンソールへ自動復帰
+  if (typeof isDevAuthenticated !== "undefined" && isDevAuthenticated) {
+    if (typeof openDevDashboard === "function") {
+      openDevDashboard();
+    }
   }
 }
 
@@ -136,7 +138,6 @@ function renderPreviewCards() {
   let visibleCount = 0;
 
   allQuestions.forEach((q) => {
-    // フィルター判定
     if (modeFilter !== "all" && q.modeKey !== modeFilter) return;
     if (categoryFilter !== "all" && q.category !== categoryFilter) return;
 
@@ -147,7 +148,6 @@ function renderPreviewCards() {
       if (!matchId && !matchTitle && !matchDesc) return;
     }
 
-    // 画像状態の検査
     let hasImageError = false;
     let imageSourceText = "なし（立ち絵＋背景演出）";
     let imageTagHTML = "";
@@ -175,7 +175,6 @@ function renderPreviewCards() {
 
     visibleCount++;
 
-    // カテゴリバッジ
     let catBadgeClass = "badge-cat-scam";
     let catBadgeLabel = "🚨 詐欺";
     if (q.category === "real") {
@@ -186,7 +185,6 @@ function renderPreviewCards() {
       catBadgeLabel = "🤝 助ける";
     }
 
-    // 選択肢と3原則タグのHTML構築
     let choicesHTML = "";
     if (q.correctChoices && q.correctChoices.length > 0) {
       const c = q.correctChoices[0];
@@ -253,7 +251,6 @@ function renderPreviewCards() {
   if (countBadge) countBadge.textContent = `表示中: ${visibleCount} / 64問`;
 }
 
-// 読み込み完了時にプレビュー機能を初期化
 window.addEventListener("DOMContentLoaded", () => {
   initQuestionPreview();
 });

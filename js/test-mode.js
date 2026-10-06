@@ -1,17 +1,16 @@
 /* =========================================================
    test-mode.js
-   製作者用パスコード認証（A5158）＆ テストプレイ専用デバッグ制御
-   【開閉矢印・曜日決定・正誤シミュレーション・被害付加・画面直行対応版】
+   製作者用パスコード認証（A5158）＆ フルスクリーン管理コンソール ＆ 実演特化デバッグ制御
+   【曜日移動＋3原則透視＋防犯ポイント確認・自動復帰版】
    ========================================================= */
 
 const DEV_AUTH_PASSCODE = "A5158";
-let pendingAuthAction = null; // "analytics" | "testplay"
+let isDevAuthenticated = false;
 
 /* =========================================================
    1. パスコード正規化ロジック
    ========================================================= */
 
-// 全角英数字を半角に変換し、前後の空白を除去して大文字へ揃える
 function normalizePasscode(input) {
   if (!input) return "";
   return input
@@ -21,11 +20,20 @@ function normalizePasscode(input) {
 }
 
 /* =========================================================
-   2. パスコード認証モーダル制御
+   2. パスコード認証 ＆ フルスクリーン管理コンソール制御
    ========================================================= */
 
-function openAuthModal(targetAction) {
-  pendingAuthAction = targetAction;
+function handleOpenDevAuthEntry() {
+  if (isDevAuthenticated) {
+    closeAuthModal();
+    openDevDashboard();
+  } else {
+    closeDevDashboard();
+    openAuthModal();
+  }
+}
+
+function openAuthModal() {
   const modal = document.getElementById("auth-modal");
   const input = document.getElementById("auth-passcode-input");
   const errorEl = document.getElementById("auth-error-msg");
@@ -42,11 +50,9 @@ function openAuthModal(targetAction) {
 function closeAuthModal() {
   const modal = document.getElementById("auth-modal");
   if (modal) modal.classList.add("is-hidden");
-  pendingAuthAction = null;
 }
 
-// 共通パスコード判定処理
-function verifyPasscode() {
+function verifyAndProceed() {
   const input = document.getElementById("auth-passcode-input");
   const errorEl = document.getElementById("auth-error-msg");
   const rawValue = input ? input.value : "";
@@ -54,6 +60,9 @@ function verifyPasscode() {
 
   if (normalizedCode === DEV_AUTH_PASSCODE) {
     if (errorEl) errorEl.classList.add("is-hidden");
+    isDevAuthenticated = true;
+    closeAuthModal();
+    openDevDashboard();
     return true;
   }
 
@@ -68,32 +77,26 @@ function verifyPasscode() {
   return false;
 }
 
-// 「📊 制作・分析画面」実行ハンドラ
-function handleAuthAnalytics() {
-  if (verifyPasscode()) {
-    closeAuthModal();
-    openAnalyticsModal();
-  }
-}
-
-// 「🛠️ テストプレイ」実行ハンドラ
-function handleAuthTestPlay() {
-  if (verifyPasscode()) {
-    closeAuthModal();
-    startTestPlayMode();
-  }
-}
-
-// Enterキー用ハンドラ
-function handleAuthSubmit() {
-  if (!verifyPasscode()) return;
-  
+function openDevDashboard() {
   closeAuthModal();
-  if (pendingAuthAction === "testplay") {
-    startTestPlayMode();
-  } else {
-    openAnalyticsModal();
+  const screen = document.getElementById("dev-dashboard-screen");
+  if (screen) {
+    screen.classList.remove("is-hidden");
   }
+}
+
+function closeDevDashboard() {
+  const screen = document.getElementById("dev-dashboard-screen");
+  if (screen) {
+    screen.classList.add("is-hidden");
+  }
+}
+
+function devLogout() {
+  isDevAuthenticated = false;
+  closeDevDashboard();
+  closeAuthModal();
+  alert("製作者認証からログアウトしました。");
 }
 
 /* =========================================================
@@ -101,6 +104,8 @@ function handleAuthSubmit() {
    ========================================================= */
 
 function startTestPlayMode() {
+  closeDevDashboard();
+  closeAuthModal();
   state.isTestMode = true;
 
   const badge = document.getElementById("test-mode-badge");
@@ -112,15 +117,13 @@ function startTestPlayMode() {
     updateDrawerArrow(true);
   }
 
-  // 表示デザイン選択画面を経由させる
-  showScreen("screen-device-select");
+  showScreen("screen-mode-select");
 }
 
 /* =========================================================
-   4. テストプレイ専用コントロール機能
+   4. 警察発表・実演特化コントロール機能
    ========================================================= */
 
-// ドロワーの開閉トグルと矢印アイコン（▲/▼）の切り替え
 function toggleTestDrawer() {
   const drawer = document.getElementById("test-controller-drawer");
   if (!drawer) return;
@@ -137,7 +140,7 @@ function updateDrawerArrow(isOpen) {
   }
 }
 
-// 選択された曜日に決定ボタンで移動
+// 曜日選択決定ボタン
 function jumpToSelectedWeekday() {
   if (!state.isTestMode) return;
   const selectEl = document.getElementById("test-select-weekday");
@@ -145,7 +148,7 @@ function jumpToSelectedWeekday() {
   jumpToWeekday(selectEl.value);
 }
 
-// 曜日へ自由ジャンプ（月〜日）
+// 指定曜日へ移動（月〜日）
 function jumpToWeekday(weekdayIndex) {
   if (!state.isTestMode) return;
   const targetDay = Number(weekdayIndex);
@@ -165,91 +168,63 @@ function skipCurrentQuestion() {
   showEvent();
 }
 
-// 判定シミュレーション（強制正解 / 強制不正解）
-function forceTestAnswer(isCorrect) {
+// 👁️ 3原則タグ・正解の透視（ハイライト表示）ON/OFF
+function togglePrincipleTags() {
   if (!state.isTestMode) return;
+  state.showPrincipleTags = !state.showPrincipleTags;
 
-  const question = currentQuestion();
-  if (!question) return;
-
-  if (isCorrect) {
-    const choice = (question.correctChoices && question.correctChoices.length > 0)
-      ? { ...question.correctChoices[0], type: "correct" }
-      : { text: "[TEST] 強制正解", money: 0, principleTag: "safe", type: "correct", explain: "テスト機能による強制正解処理です。" };
-    handleChoice(choice);
-  } else {
-    const choice = (question.wrongChoices && question.wrongChoices.length > 0)
-      ? { ...question.wrongChoices[0], type: "wrong" }
-      : { text: "[TEST] 強制不正解", money: -15000, principleTag: "fooled", damageType: "money", type: "wrong", explain: "テスト機能による強制不正解処理です。" };
-    handleChoice(choice);
-  }
-}
-
-// 被害リスクの直接付加
-function addTestDamage(type) {
-  if (!state.isTestMode) return;
-
-  if (type === "personalInfo") {
-    state.damages.personalInfo += 1;
-  } else if (type === "account") {
-    state.damages.account += 1;
-  } else if (type === "line") {
-    state.damages.line += 1;
-  }
-  state.fooledCount += 1;
-
-  showMoneyDelta(-10000);
-  state.damages.money += 10000;
-  state.money = Math.max(0, state.money - 10000);
-  updateMoneyDisplay();
-}
-
-// 画面直行ショートカット（買い物 / アンケート）
-function jumpToDirectScreen(screenName) {
-  if (!state.isTestMode) return;
-
-  if (screenName === "shopping") {
-    if (!state.selectedItem && typeof ITEMS !== "undefined" && ITEMS.length > 0) {
-      state.selectedItem = ITEMS[0];
+  const btn = document.getElementById("btn-test-toggle-hints");
+  if (btn) {
+    if (state.showPrincipleTags) {
+      btn.textContent = "👁️ 3原則タグ表示: ON";
+      btn.classList.add("is-active");
+    } else {
+      btn.textContent = "👁️ 3原則タグ表示: OFF";
+      btn.classList.remove("is-active");
     }
-    showShoppingScreen();
-  } else if (screenName === "survey") {
-    showSurveyScreen();
+  }
+
+  const eventScreen = document.getElementById("screen-event");
+  if (eventScreen && eventScreen.classList.contains("active")) {
+    if (typeof refreshChoicesWithHints === "function") {
+      refreshChoicesWithHints();
+    }
   }
 }
 
-// テストモード終了（通常へ戻る）
-function exitTestMode() {
-  if (confirm("テストプレイモードを終了し、通常のタイトル画面へ戻りますか？")) {
-    state.isTestMode = false;
-    restartGame();
-  }
-}
-
-// 所持金の直接変更
-function setTestMoney(amount) {
+// 💡 防犯ポイント（カンペ）確認モーダルの開閉
+function peekCurrentPoint() {
   if (!state.isTestMode) return;
-  state.money = Number(amount);
-  updateMoneyDisplay();
+  const q = currentQuestion();
+  if (!q) {
+    alert("出題中の問題がありません。");
+    return;
+  }
+
+  const modal = document.getElementById("peek-point-modal");
+  const qnameEl = document.getElementById("peek-point-qname");
+  const pointEl = document.getElementById("peek-point-text");
+
+  if (qnameEl) {
+    qnameEl.innerHTML = `【${q.source || "状況"}】${q.title || ""}`;
+  }
+  if (pointEl) {
+    pointEl.innerHTML = q.point || "防犯ポイントが設定されていません。";
+  }
+
+  if (modal) modal.classList.remove("is-hidden");
 }
 
-// エンディングの直接シミュレーション
+function closePeekPointModal() {
+  const modal = document.getElementById("peek-point-modal");
+  if (modal) modal.classList.add("is-hidden");
+}
+
+// エンディング直接シミュレーション
 function testJumpEnding(type) {
   if (!state.isTestMode) return;
 
-  if (type === "shop_success") {
-    state.money = 60000;
-    if (!state.selectedItem && typeof ITEMS !== "undefined" && ITEMS.length > 0) {
-      state.selectedItem = ITEMS[ITEMS.length - 1];
-    }
-    showShoppingScreen();
-  } else if (type === "shop_fail") {
-    state.money = 0;
-    if (!state.selectedItem && typeof ITEMS !== "undefined" && ITEMS.length > 0) {
-      state.selectedItem = ITEMS[ITEMS.length - 1];
-    }
-    showShoppingScreen();
-  } else if (type === "rank_s") {
+  if (type === "rank_s") {
     state.correctCount = state.weeklyQuestions.length || 7;
     state.fooledCount = 0;
     state.money = 50000;
@@ -264,43 +239,109 @@ function testJumpEnding(type) {
   }
 }
 
+// テストモード終了時：自動で製作者管理コンソールへ復帰
+function exitTestMode() {
+  if (confirm("テストプレイモードを終了し、製作者管理コンソールへ戻りますか？")) {
+    state.isTestMode = false;
+    state.showPrincipleTags = false;
+    restartGame();
+    if (isDevAuthenticated) {
+      openDevDashboard();
+    }
+  }
+}
+
 /* =========================================================
-   5. イベントリスナー自動初期化
+   5. イベントリスナー初期化（直接バインド）
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-  const btnAnalytics = document.getElementById("btn-auth-analytics");
-  if (btnAnalytics) {
-    btnAnalytics.addEventListener("click", handleAuthAnalytics);
+  const btnOpenAuth = document.getElementById("btn-open-dev-auth");
+  if (btnOpenAuth) {
+    btnOpenAuth.onclick = handleOpenDevAuthEntry;
   }
 
-  const btnTestPlay = document.getElementById("btn-auth-testplay");
-  if (btnTestPlay) {
-    btnTestPlay.addEventListener("click", handleAuthTestPlay);
+  const btnVerify = document.getElementById("btn-auth-verify");
+  if (btnVerify) {
+    btnVerify.onclick = verifyAndProceed;
+  }
+
+  const btnCancelAuth = document.getElementById("btn-auth-cancel");
+  if (btnCancelAuth) {
+    btnCancelAuth.onclick = closeAuthModal;
   }
 
   const authInput = document.getElementById("auth-passcode-input");
   if (authInput) {
-    authInput.addEventListener("keydown", (e) => {
+    authInput.onkeydown = (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        handleAuthSubmit();
+        verifyAndProceed();
       }
-    });
+    };
   }
 
+  // 管理コンソール・ヘッダーアクション
+  const btnDashExit = document.getElementById("btn-dash-exit-game");
+  if (btnDashExit) {
+    btnDashExit.onclick = closeDevDashboard;
+  }
+
+  const btnDashLogout = document.getElementById("btn-dash-logout");
+  if (btnDashLogout) {
+    btnDashLogout.onclick = devLogout;
+  }
+
+  // 管理コンソール・3大カードクリック
+  const cardAnalytics = document.getElementById("card-dash-analytics");
+  if (cardAnalytics) {
+    cardAnalytics.onclick = () => {
+      closeDevDashboard();
+      if (typeof openAnalyticsModal === "function") openAnalyticsModal();
+    };
+  }
+
+  const cardTestplay = document.getElementById("card-dash-testplay");
+  if (cardTestplay) {
+    cardTestplay.onclick = startTestPlayMode;
+  }
+
+  const cardPreview = document.getElementById("card-dash-preview");
+  if (cardPreview) {
+    cardPreview.onclick = () => {
+      closeDevDashboard();
+      if (typeof openPreviewModal === "function") openPreviewModal();
+    };
+  }
+
+  // 実演コントロールバー操作
   const btnToggleDrawer = document.getElementById("btn-toggle-test-drawer");
   if (btnToggleDrawer) {
-    btnToggleDrawer.addEventListener("click", toggleTestDrawer);
+    btnToggleDrawer.onclick = toggleTestDrawer;
   }
 
   const btnJumpWeekday = document.getElementById("btn-test-jump-weekday");
   if (btnJumpWeekday) {
-    btnJumpWeekday.addEventListener("click", jumpToSelectedWeekday);
+    btnJumpWeekday.onclick = jumpToSelectedWeekday;
   }
 
   const btnSkipQ = document.getElementById("btn-test-skip-q");
   if (btnSkipQ) {
-    btnSkipQ.addEventListener("click", skipCurrentQuestion);
+    btnSkipQ.onclick = skipCurrentQuestion;
+  }
+
+  const btnToggleHints = document.getElementById("btn-test-toggle-hints");
+  if (btnToggleHints) {
+    btnToggleHints.onclick = togglePrincipleTags;
+  }
+
+  const btnPeekPoint = document.getElementById("btn-test-peek-point");
+  if (btnPeekPoint) {
+    btnPeekPoint.onclick = peekCurrentPoint;
+  }
+
+  const btnClosePeek = document.getElementById("btn-close-peek-point");
+  if (btnClosePeek) {
+    btnClosePeek.onclick = closePeekPointModal;
   }
 });
