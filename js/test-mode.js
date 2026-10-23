@@ -1,15 +1,11 @@
 /* =========================================================
    test-mode.js
    製作者用パスコード認証（A5158）＆ フルスクリーン管理コンソール ＆ 実演特化デバッグ制御
-   【曜日移動＋3原則透視＋防犯ポイント確認・自動復帰版】
+   【通常プレイ復帰時フラグリセット保証対応版】
    ========================================================= */
 
 const DEV_AUTH_PASSCODE = "A5158";
 let isDevAuthenticated = false;
-
-/* =========================================================
-   1. パスコード正規化ロジック
-   ========================================================= */
 
 function normalizePasscode(input) {
   if (!input) return "";
@@ -18,10 +14,6 @@ function normalizePasscode(input) {
     .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
     .toUpperCase();
 }
-
-/* =========================================================
-   2. パスコード認証 ＆ フルスクリーン管理コンソール制御
-   ========================================================= */
 
 function handleOpenDevAuthEntry() {
   if (isDevAuthenticated) {
@@ -99,10 +91,6 @@ function devLogout() {
   alert("製作者認証からログアウトしました。");
 }
 
-/* =========================================================
-   3. テストプレイモードの開始
-   ========================================================= */
-
 function startTestPlayMode() {
   closeDevDashboard();
   closeAuthModal();
@@ -120,10 +108,6 @@ function startTestPlayMode() {
   showScreen("screen-mode-select");
 }
 
-/* =========================================================
-   4. 警察発表・実演特化コントロール機能
-   ========================================================= */
-
 function toggleTestDrawer() {
   const drawer = document.getElementById("test-controller-drawer");
   if (!drawer) return;
@@ -140,7 +124,6 @@ function updateDrawerArrow(isOpen) {
   }
 }
 
-// 曜日選択決定ボタン
 function jumpToSelectedWeekday() {
   if (!state.isTestMode) return;
   const selectEl = document.getElementById("test-select-weekday");
@@ -148,7 +131,6 @@ function jumpToSelectedWeekday() {
   jumpToWeekday(selectEl.value);
 }
 
-// 指定曜日へ移動（月〜日）
 function jumpToWeekday(weekdayIndex) {
   if (!state.isTestMode) return;
   const targetDay = Number(weekdayIndex);
@@ -161,14 +143,12 @@ function jumpToWeekday(weekdayIndex) {
   }
 }
 
-// 現在の問題をスキップ
 function skipCurrentQuestion() {
   if (!state.isTestMode) return;
   state.slotIndex += 1;
   showEvent();
 }
 
-// 👁️ 3原則タグ・正解の透視（ハイライト表示）ON/OFF
 function togglePrincipleTags() {
   if (!state.isTestMode) return;
   state.showPrincipleTags = !state.showPrincipleTags;
@@ -192,7 +172,6 @@ function togglePrincipleTags() {
   }
 }
 
-// 💡 防犯ポイント（カンペ）確認モーダルの開閉
 function peekCurrentPoint() {
   if (!state.isTestMode) return;
   const q = currentQuestion();
@@ -220,7 +199,6 @@ function closePeekPointModal() {
   if (modal) modal.classList.add("is-hidden");
 }
 
-// エンディング直接シミュレーション
 function testJumpEnding(type) {
   if (!state.isTestMode) return;
 
@@ -239,7 +217,6 @@ function testJumpEnding(type) {
   }
 }
 
-// テストモード終了時：自動で製作者管理コンソールへ復帰
 function exitTestMode() {
   if (confirm("テストプレイモードを終了し、製作者管理コンソールへ戻りますか？")) {
     state.isTestMode = false;
@@ -250,10 +227,6 @@ function exitTestMode() {
     }
   }
 }
-
-/* =========================================================
-   5. イベントリスナー初期化（直接バインド）
-   ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
   const btnOpenAuth = document.getElementById("btn-open-dev-auth");
@@ -281,10 +254,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // 管理コンソール・ヘッダーアクション
+  // 管理コンソールから「通常ゲーム画面へ戻る」時：通常プレイ集計を確実に保証
   const btnDashExit = document.getElementById("btn-dash-exit-game");
   if (btnDashExit) {
-    btnDashExit.onclick = closeDevDashboard;
+    btnDashExit.onclick = () => {
+      closeDevDashboard();
+      state.isTestMode = false;
+    };
   }
 
   const btnDashLogout = document.getElementById("btn-dash-logout");
@@ -292,7 +268,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btnDashLogout.onclick = devLogout;
   }
 
-  // 管理コンソール・3大カードクリック
   const cardAnalytics = document.getElementById("card-dash-analytics");
   if (cardAnalytics) {
     cardAnalytics.onclick = () => {
@@ -314,7 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // 実演コントロールバー操作
   const btnToggleDrawer = document.getElementById("btn-toggle-test-drawer");
   if (btnToggleDrawer) {
     btnToggleDrawer.onclick = toggleTestDrawer;

@@ -1,10 +1,9 @@
 /* =========================================================
    ending.js
-   お買い物判定・エンディングランク計算・結果発表・アンケート・再起動制御
-   （クリア/離脱分析データ自動記録対応版）
+   お買い物判定・エンディングランク計算・結果発表・#9110案内・アンケートスキップ
+   （中高生モードのみアンケート強制・他モードは常時スキップ対応版）
    ========================================================= */
 
-// ⑩ 買い物イベント画面（小学生・中高生モードのみ）
 function showShoppingScreen() {
   updateStatusBar();
   const card = document.getElementById("shopping-card");
@@ -32,6 +31,11 @@ function showShoppingScreen() {
 
 // ランク計算ロジック
 function calculateRank(correctCount, total) {
+  if (!total || total <= 0) {
+    return (state.fooledCount === 0 && state.damages.money === 0)
+      ? { rank: "S", title: "詐欺対策マスター", class: "rank-s" }
+      : { rank: "D", title: "要注意レベル", class: "rank-d" };
+  }
   const rate = (correctCount / total) * 100;
   if (rate >= 100) return { rank: "S", title: "詐欺対策マスター", class: "rank-s" };
   if (rate >= 80) return { rank: "A", title: "防犯上級者", class: "rank-a" };
@@ -48,11 +52,12 @@ function showEnding() {
 
   const isNoShopMode = (state.mode === "senior" || state.mode === "adult");
   const item = state.selectedItem;
-  const canAfford = isNoShopMode ? (state.money === 50000) : (state.money >= (item ? item.price : 0));
+  
+  const isPerfect = (state.fooledCount === 0 && state.damages.money === 0);
+  const canAfford = isPerfect || (isNoShopMode ? (state.money === 50000) : (state.money >= (item ? item.price : 0)));
 
   const endingCharacter = getPlayerImage(canAfford ? "playerHappy" : "playerSad");
 
-  // ★ 通常プレイ時のみ、クリア実績と最終スコアを分析データに記録 ★
   if (typeof recordAnalyticsClear === "function") {
     recordAnalyticsClear(state.money);
   }
@@ -72,7 +77,6 @@ function showEnding() {
         ? `${getPlayerDisplayName()}、1<ruby>週間<rt>しゅうかん</rt></ruby><ruby>本当<rt>ほんとう</rt></ruby>によく<ruby>頑張<rt>がんば</rt></ruby>ったね！ すばらしい<ruby>防犯<rt>ぼうはん</rt></ruby>パワーだよ！`
         : `${getPlayerDisplayName()}、<ruby>今回<rt>こんかい</rt></ruby>は<ruby>残念<rt>ざんねん</rt></ruby>だったね。でも<ruby>学<rt>まな</rt></ruby>んだことは <ruby>次<rt>つぎ</rt></ruby>にかならず<ruby>役立<rt>やくだ</rt></ruby>つよ！`;
     } else {
-      // teen
       joeCommentEl.textContent = canAfford
         ? `${getPlayerDisplayName()}、1週間本当によく頑張ったね！素晴らしい防犯意識だよ！`
         : `${getPlayerDisplayName()}、今回は残念だったね。でも学んだ知識は必ず次につながるよ！`;
@@ -111,13 +115,23 @@ function showEnding() {
 
   const principlesHTML = `
     <div class="principles-panel">
-      <p class="principles-title">🛡️ 特殊詐欺対策3原則</p>
+      <p class="principles-title">🛡️ 大分県警 特殊詐欺対策3原則</p>
       ${THREE_PRINCIPLES.map(p => `
         <div class="principle-item">
           <span class="principle-head">${p.head}</span>
           <p class="principle-desc">${p.desc}</p>
         </div>
       `).join("")}
+    </div>
+  `;
+
+  const police9110HTML = `
+    <div class="police-9110-ending-banner">
+      <div class="banner-icon-badge">🚨 警察相談窓口のご案内</div>
+      <p class="banner-body-text">
+        日頃の生活で「これって詐欺かな？」と怪しい連絡や不安を感じたときは、<br>
+        全国共通の<strong>警察相談専用電話「#9110」</strong>または最寄りの警察署・交番へご相談ください。
+      </p>
     </div>
   `;
 
@@ -180,37 +194,64 @@ function showEnding() {
     ${damagesBreakdownHTML}
     ${skillsHTML}
     ${principlesHTML}
+    ${police9110HTML}
   `;
+
+  // ★ エンディング下部のアクションボタン制御（中高生モードのみアンケート強制・他モードは常時スキップ可能） ★
+  const btnGroup = document.getElementById("ending-btn-group");
+  if (btnGroup) {
+    btnGroup.innerHTML = "";
+
+    // 中高生モード（"teen"）以外、またはテストモード時は常にスキップボタンを表示
+    const showSkipButton = (state.mode !== "teen" || state.isTestMode);
+
+    if (showSkipButton) {
+      const skipBtn = document.createElement("button");
+      skipBtn.className = "btn btn-skip-to-title";
+      skipBtn.type = "button";
+      skipBtn.textContent = state.isTestMode ? "⏹️ 終了して製作者メニューへ" : "🚪 アンケートをスキップしてタイトルへ";
+      skipBtn.onclick = () => {
+        if (state.isTestMode) {
+          exitTestMode();
+        } else {
+          restartGame();
+        }
+      };
+      btnGroup.appendChild(skipBtn);
+    }
+
+    const surveyBtn = document.createElement("button");
+    surveyBtn.className = "btn btn-primary";
+    surveyBtn.type = "button";
+    surveyBtn.textContent = "📋 アンケートへ進む";
+    surveyBtn.onclick = showSurveyScreen;
+    btnGroup.appendChild(surveyBtn);
+  }
 
   showScreen("screen-ending");
 }
 
-// ⑫ 最終アンケート画面
 function showSurveyScreen() {
-  const bgImg = document.getElementById("survey-bg-image");
-  const guideImg = document.getElementById("survey-guide-image");
-  const surveyTextEl = document.getElementById("survey-text");
+  const form = document.getElementById("game-survey-form");
+  const thanksCard = document.getElementById("survey-thanks-card");
+  const alertMsg = document.getElementById("survey-validation-msg");
 
-  setImageSafely(bgImg, IMAGE_ASSETS.backgrounds.schoolRoute);
-  
-  setJoeExpression("cheer");
-  setImageSafely(guideImg, getJoeImage(state.joeExpression));
-  applyCharacterBlend(guideImg, getJoeImage(state.joeExpression));
-
-  if (surveyTextEl) {
-    surveyTextEl.innerHTML = `
-      最後にアンケートに協力してほしいジョー！<br>
-      ゲームをプレイして感じたことを教えてね！
-    `;
+  if (form) {
+    form.reset();
+    form.classList.remove("is-hidden");
+    form.querySelectorAll(".pill-btn").forEach(btn => btn.classList.remove("is-selected"));
+    form.querySelectorAll("input[type='hidden']").forEach(inp => inp.value = "");
+    form.querySelectorAll(".survey-q-item").forEach(item => item.classList.remove("is-invalid"));
   }
+
+  if (thanksCard) thanksCard.classList.add("is-hidden");
+  if (alertMsg) alertMsg.classList.add("is-hidden");
 
   showScreen("screen-survey");
 }
 
-// リタイア確認
 function handleRetire() {
   if (confirm("途中でリタイアして最初からやり直しますか？")) {
-    // リタイア時の離脱曜日を記録
     if (typeof recordAnalyticsDropout === "function") {
       recordAnalyticsDropout();
     }
@@ -218,7 +259,6 @@ function handleRetire() {
   }
 }
 
-// ゲームリスタート・状態リセット
 function restartGame() {
   state.playerName = "";
   state.money = 50000;
@@ -232,9 +272,8 @@ function restartGame() {
   state.preventedScamsCount = 0;
   state.damages = { money: 0, personalInfo: 0, account: 0, line: 0 };
   state.answeredQuestions = [];
-  state.isTestMode = false; // 通常状態へリセット
+  state.isTestMode = false;
 
-  // テストUIを非表示
   const badge = document.getElementById("test-mode-badge");
   const drawer = document.getElementById("test-controller-drawer");
   if (badge) badge.classList.add("is-hidden");

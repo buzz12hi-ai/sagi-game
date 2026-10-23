@@ -1,9 +1,9 @@
 /* =========================================================
    screens.css
    各画面レイアウト
-   （タイトル、デバイス選択、モード選択、名前入力、欲しい物選択、
-    ステージ、あらすじ、曜日イントロ、日常行動、スマホ通知（バイブ＆フラッシュ）、
-    買い物、エンディング、アンケート、週末ふりかえり最適化）
+   （タイトル、デバイス選択、2択経験確認［デザイン強化］、モード選択、名前入力、欲しい物選択、
+    ステージ、あらすじ、曜日イントロ、日常行動、スマホ通知［サイズ縮小・バイブ大型化］、
+    買い物、エンディング、#9110案内、全10問アンケート対応版）
    ========================================================= */
 
 /* =========================================================
@@ -88,6 +88,118 @@
   line-height: 1.6;
   color: var(--color-navy-soft);
   margin: 0;
+  font-weight: 500;
+}
+
+/* =========================================================
+   プレイ経験確認画面スタイル（中高生モード専用・デザイン強化）
+   ========================================================= */
+.experience-select-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 10px 4px;
+  flex: 1;
+  justify-content: center;
+}
+
+.exp-header-badge {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 13px;
+  color: #FFFFFF;
+  background: var(--color-navy);
+  border: 1.5px solid var(--color-money);
+  padding: 4px 14px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 3px 10px rgba(27, 42, 74, 0.2);
+}
+
+.experience-select-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 21px;
+  color: var(--color-navy);
+  margin: 0;
+  text-align: center;
+  line-height: 1.35;
+}
+
+@media (min-width: 480px) {
+  .experience-select-title { font-size: 24px; }
+}
+
+.experience-select-sub {
+  font-size: 14px;
+  color: var(--color-navy-soft);
+  margin: -2px 0 6px;
+  text-align: center;
+}
+
+.experience-select-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.experience-card {
+  background: var(--color-surface);
+  border: 2.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s var(--ease-gentle);
+  box-shadow: var(--shadow-card);
+}
+
+.experience-card:hover {
+  border-color: var(--color-money);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(245, 166, 35, 0.3);
+  background: #FFF9E6;
+}
+
+.exp-card-icon {
+  font-size: 32px;
+  background: var(--color-bg);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-border);
+}
+
+.exp-card-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.exp-card-title {
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 900;
+  color: var(--color-navy);
+}
+
+.exp-card-desc {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--color-navy-soft);
   font-weight: 500;
 }
 
@@ -476,7 +588,7 @@
 }
 
 /* =========================================================
-   あらすじ・自己紹介・ステージ
+   ステージ・会話・ナレーション
    ========================================================= */
 .story-stage {
   position: relative;
@@ -895,9 +1007,7 @@
 .item-group-section.group-advanced { border-color: #8E44AD; background: #F9F4FC; }
 .item-group-section.group-max      { border-color: #E85C4A; background: #FFF5F5; }
 
-.item-group-header {
-  margin-bottom: 10px;
-}
+.item-group-header { margin-bottom: 10px; }
 
 .item-group-title-row {
   display: flex;
@@ -978,7 +1088,7 @@
 }
 
 /* =========================================================
-   週末ふりかえり画面レイアウト（2人並列・絶対に重ならない配置）
+   週末ふりかえり画面レイアウト（2人並列）
    ========================================================= */
 #screen-week-recap {
   position: relative;
@@ -987,9 +1097,7 @@
   height: 100%;
 }
 
-#screen-week-recap.active {
-  display: flex;
-}
+#screen-week-recap.active { display: flex; }
 
 #screen-week-recap .story-stage {
   position: relative;
@@ -1000,7 +1108,6 @@
   overflow: hidden;
 }
 
-/* ★ 主人公を左側に配置 ★ */
 #screen-week-recap #week-recap-player-image,
 #screen-week-recap .story-player-image {
   position: absolute !important;
@@ -1016,7 +1123,6 @@
   z-index: 2 !important;
 }
 
-/* ★ ジョーくんを右側に並べて配置 ★ */
 #screen-week-recap #week-recap-guide-image {
   position: absolute !important;
   bottom: 0 !important;
@@ -1063,22 +1169,8 @@
   font-weight: 500;
 }
 
-@media (min-width: 768px) {
-  #screen-week-recap .story-stage {
-    max-height: 55%;
-  }
-  .week-recap-panel {
-    max-height: 260px;
-    padding: 16px 20px;
-  }
-  .week-recap-body-text {
-    font-size: 16.5px;
-    line-height: 1.75;
-  }
-}
-
 /* =========================================================
-   エンディング画面
+   エンディング画面 ＆ 警察相談窓口（#9110）バナー
    ========================================================= */
 .ending-card {
   background: var(--color-surface);
@@ -1090,7 +1182,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex: 1;
   overflow-y: auto;
 }
@@ -1166,7 +1258,6 @@
   color: #fff;
   border-radius: var(--radius-sm);
   padding: 12px 14px;
-  margin-top: 3px;
   text-align: left;
 }
 
@@ -1176,30 +1267,75 @@
 .principle-head { font-family: var(--font-display); font-weight: 700; font-size: 14px; color: #fff; }
 .principle-desc { font-size: 12.5px; color: #DCE3EE; margin: 0; }
 
-/* =========================================================
-   最終アンケート画面スタイル
-   ========================================================= */
-.survey-action-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.police-9110-result-banner,
+.police-9110-ending-banner {
   width: 100%;
+  background: linear-gradient(135deg, #FFF9EB 0%, #FFF2D6 100%);
+  border: 2px solid var(--color-money);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(245, 166, 35, 0.2);
   margin-top: 4px;
 }
 
+.banner-icon-badge {
+  display: inline-block;
+  background: #E85C4A;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 11.5px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+
+.banner-body-text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--color-navy);
+}
+
+.banner-body-text strong {
+  color: #D9381E;
+  font-size: 1.08em;
+}
+
+.ending-action-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
 @media (min-width: 600px) {
-  .survey-action-panel {
+  .ending-action-btn-group {
     flex-direction: row;
     justify-content: center;
   }
-  .survey-action-panel .btn {
+  .ending-action-btn-group .btn {
     flex: 1;
     max-width: 320px;
   }
 }
 
+.btn-skip-to-title {
+  background: var(--color-surface) !important;
+  color: var(--color-navy) !important;
+  border: 2px solid var(--color-navy-soft) !important;
+  font-weight: 700 !important;
+}
+
+.btn-skip-to-title:hover {
+  background: #E4E9F3 !important;
+  border-color: var(--color-money) !important;
+}
+
 /* =========================================================
-   スマホ通知画面（壁紙完全表示・バイブ・フラッシュ・タイピング）
+   スマホ通知画面（適度なサイズ縮小 ＆ 迫力のあるバイブアニメーション）
    ========================================================= */
 .phone-screen-container {
   flex: 1;
@@ -1211,12 +1347,12 @@
 
 .smartphone-frame.tall-phone {
   width: 100%;
-  max-width: 330px;
-  height: 520px;
-  max-height: 80vh;
+  max-width: 270px;
+  height: 420px;
+  max-height: 70vh;
   background: #0B1426;
-  border: 11px solid #1C2B4A;
-  border-radius: 40px;
+  border: 9px solid #1C2B4A;
+  border-radius: 32px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
   position: relative;
   overflow: hidden;
@@ -1225,16 +1361,17 @@
   justify-content: space-between;
 }
 
+/* バイブ揺れ幅をダイナミックに大きく復活調整 */
 .smartphone-frame.tall-phone.is-vibrating {
-  animation: vibrationShake 0.45s ease-in-out infinite alternate;
+  animation: vibrationShakeDynamic 0.3s ease-in-out infinite alternate;
 }
 
-@keyframes vibrationShake {
+@keyframes vibrationShakeDynamic {
   0% { transform: translateX(0px) rotate(0deg); }
-  20% { transform: translateX(-4px) rotate(-0.5deg); }
-  40% { transform: translateX(4px) rotate(0.5deg); }
-  60% { transform: translateX(-3px) rotate(-0.3deg); }
-  80% { transform: translateX(3px) rotate(0.3deg); }
+  20% { transform: translateX(-6px) rotate(-1deg); }
+  40% { transform: translateX(6px) rotate(1deg); }
+  60% { transform: translateX(-5px) rotate(-0.8deg); }
+  80% { transform: translateX(5px) rotate(0.8deg); }
   100% { transform: translateX(0px) rotate(0deg); }
 }
 
@@ -1242,24 +1379,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 14px 2px;
+  padding: 4px 12px 2px;
   color: #fff;
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   z-index: 10;
   background: rgba(11, 20, 38, 0.6);
 }
 
 .phone-notch {
-  width: 70px;
-  height: 14px;
+  width: 55px;
+  height: 11px;
   background: #1C2B4A;
-  border-radius: 0 0 10px 10px;
-  margin-top: -5px;
+  border-radius: 0 0 8px 8px;
+  margin-top: -4px;
 }
 
-/* 壁紙コンテナと画像要素の確実な描画（透過防止・最背面固定） */
 .phone-wallpaper {
   position: absolute;
   inset: 0;
@@ -1280,16 +1416,14 @@
   filter: brightness(0.85) contrast(1.05) !important;
   z-index: 1 !important;
   display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
 }
 
 .phone-player-img {
   position: absolute;
-  bottom: -8px;
+  bottom: -6px;
   left: 50%;
   transform: translateX(-50%);
-  height: 72%;
+  height: 65%;
   width: auto;
   object-fit: contain;
   z-index: 2;
@@ -1300,49 +1434,39 @@
   z-index: 8;
   text-align: center;
   color: #FFFFFF;
-  margin-top: 10px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+  margin-top: 6px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
 }
 
 .phone-big-time {
   font-family: var(--font-display);
-  font-size: 38px;
+  font-size: 30px;
   font-weight: 900;
   margin: 0;
   line-height: 1;
 }
 
-.phone-date-text { font-size: 12.5px; font-weight: 700; margin: 3px 0 0; opacity: 0.95; }
+.phone-date-text { font-size: 11px; font-weight: 700; margin: 2px 0 0; opacity: 0.95; }
 
 .phone-notification-card {
   position: relative;
   z-index: 10;
-  margin: 6px 10px 0;
+  margin: 4px 10px 0;
   background: linear-gradient(135deg, rgba(27, 42, 74, 0.96), rgba(15, 24, 48, 0.96));
   border: 2px solid var(--color-money);
-  border-radius: 16px;
-  padding: 12px 14px;
+  border-radius: 14px;
+  padding: 10px 12px;
   box-shadow: 0 6px 18px rgba(245, 166, 35, 0.4);
-}
-
-.phone-notification-card.is-flashing {
-  animation: notifFlashGlow 0.6s ease-out forwards;
-}
-
-@keyframes notifFlashGlow {
-  0% { transform: scale(0.85); box-shadow: 0 0 35px #FFD700, 0 0 15px #FFFFFF; filter: brightness(1.5); }
-  50% { transform: scale(1.05); box-shadow: 0 0 25px #F5A623; filter: brightness(1.2); }
-  100% { transform: scale(1); box-shadow: 0 6px 18px rgba(245, 166, 35, 0.4); filter: brightness(1); }
 }
 
 .phone-app-header {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 10.5px;
   color: #FFFFFF;
   font-family: var(--font-display);
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 2px;
 }
@@ -1350,40 +1474,278 @@
 .phone-app-header .app-name { font-weight: 900; color: var(--color-money); flex: 1; }
 
 .phone-card-body { display: flex; align-items: center; gap: 8px; }
-.notification-icon { font-size: 22px; flex-shrink: 0; }
-.notification-text { font-size: 14.5px; line-height: 1.55; font-weight: 700; color: #FFFFFF !important; margin: 0; }
-
-.typing-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-}
-
-.typing-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--color-money);
-  border-radius: 50%;
-  animation: typingWave 1.3s infinite ease-in-out;
-}
-
-.typing-dot:nth-child(1) { animation-delay: 0s; }
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes typingWave {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-5px); opacity: 1; }
-}
+.notification-icon { font-size: 20px; flex-shrink: 0; }
+.notification-text { font-size: 13px; line-height: 1.45; font-weight: 700; color: #FFFFFF !important; margin: 0; }
 
 .phone-bottom-bubble {
   position: relative;
   z-index: 10;
-  margin: 0 8px 12px;
+  margin: 0 8px 10px;
   background: var(--color-surface);
   border: 2px solid var(--color-money);
-  border-radius: 12px;
-  padding: 7px 10px;
+  border-radius: 10px;
+  padding: 6px 10px;
   text-align: center;
 }
+
+/* =========================================================
+   全10問 ゲーム内完結アンケート画面（デザイン強化版）
+   ========================================================= */
+.survey-screen-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding-bottom: 30px;
+}
+
+.survey-screen-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-money);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.survey-header-avatar img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.survey-header-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dialog-speaker {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--color-money);
+  background: var(--color-navy);
+  padding: 1px 8px;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+
+.dialog-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-navy);
+  font-weight: 700;
+}
+
+.survey-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.survey-section-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  padding: 16px 14px 18px;
+  box-shadow: 0 4px 14px rgba(27, 42, 74, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.section-card-badge {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 900;
+  color: #FFFFFF;
+  background: var(--color-navy-soft);
+  padding: 2px 8px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.section-card-title {
+  margin: -8px 0 0;
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 900;
+  color: var(--color-navy);
+  border-bottom: 2px solid var(--color-bg);
+  padding-bottom: 6px;
+}
+
+.survey-q-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.survey-q-item.is-invalid {
+  border-color: var(--color-danger);
+  background: #FFF5F5;
+  animation: shakeAnim 0.35s ease-in-out;
+}
+
+@keyframes shakeAnim {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.q-label-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.q-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 13px;
+  color: #FFFFFF;
+  background: var(--color-navy);
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.q-title {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: var(--color-navy);
+  flex: 1;
+}
+
+.req-badge {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 900;
+  color: #FFFFFF;
+  background: var(--color-danger);
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.opt-badge {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--color-navy-soft);
+  background: #E4E9F3;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.pill-options-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+
+@media (min-width: 540px) {
+  .pill-options-group {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.pill-btn {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--color-navy-soft);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.pill-btn:hover {
+  border-color: var(--color-money);
+  color: var(--color-navy);
+  background: #FFFDF8;
+}
+
+.pill-btn.is-selected {
+  background: var(--color-navy) !important;
+  color: #FFFFFF !important;
+  border-color: var(--color-navy) !important;
+  box-shadow: 0 3px 10px rgba(27, 42, 74, 0.25);
+}
+
+.survey-textarea {
+  width: 100%;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-navy);
+  background: #FFFFFF;
+  outline: none;
+  resize: vertical;
+}
+
+.survey-textarea:focus {
+  border-color: var(--color-money);
+  box-shadow: 0 0 8px rgba(245, 166, 35, 0.3);
+}
+
+.survey-validation-alert {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--color-danger);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.btn-submit-game-survey {
+  padding: 16px 28px !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  margin-top: 6px;
+}
+
+.survey-thanks-card {
+  background: #FFFFFF;
+  border: 3px solid var(--color-safe);
+  border-radius: var(--radius-md);
+  padding: 30px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-card);
+  animation: fadeIn 0.4s var(--ease-gentle);
+}
+
+.thanks-icon { font-size: 44px; }
+.thanks-title { margin: 0; font-family: var(--font-display); font-size: 18px; font-weight: 900; color: var(--color-navy); }
+.thanks-desc { margin: 0; font-size: 14px; color: var(--color-navy-soft); line-height: 1.6; }
+.btn-thanks-restart { margin-top: 10px; width: 100%; max-width: 300px; }

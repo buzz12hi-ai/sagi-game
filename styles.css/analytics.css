@@ -1,6 +1,6 @@
 /* =========================================================
    analytics.css
-   製作者用「制作・分析画面」・パスコード認証・フルスクリーン管理コンソール・実演バー・透視タグスタイル
+   製作者用「制作・分析画面」・パスコード認証・フルスクリーン管理コンソール・実演バー・3原則円グラフ・アンケート集計スタイル
    ========================================================= */
 
 /* =========================================================
@@ -564,6 +564,250 @@
 .hint-badge-tag.tag-fooled { background: #F5A623; color: var(--color-navy); }
 
 /* =========================================================
+   4.5 防犯3原則 違反要因の分析（円グラフコンテナ ＆ 凡例）
+   ========================================================= */
+.principle-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px;
+}
+
+@media (min-width: 600px) {
+  .principle-chart-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
+}
+
+.principle-chart-canvas-box {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.principle-chart-canvas-box canvas,
+.principle-chart-canvas-box svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.principle-legend-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.principle-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-bg);
+  border-radius: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  font-size: 13px;
+}
+
+.legend-tag-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-speak  { background: #E85C4A; }
+.dot-pay    { background: #D9534F; }
+.dot-fooled { background: #F5A623; }
+
+.legend-label {
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.legend-val {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 13px;
+  color: var(--color-navy);
+}
+
+.principle-empty-notice {
+  font-size: 13px;
+  color: var(--color-navy-soft);
+  text-align: center;
+  padding: 18px 10px;
+  font-weight: 500;
+}
+
+/* =========================================================
+   4.8 ★ 受講者アンケート集計ダッシュボード（スタイル） ★
+   ========================================================= */
+.survey-analytics-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.survey-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 700px) {
+  .survey-charts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.survey-stat-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.survey-stat-qtitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--color-navy);
+  border-bottom: 1.5px solid var(--color-border);
+  padding-bottom: 4px;
+}
+
+.survey-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.survey-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.survey-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  color: var(--color-navy);
+}
+
+.survey-bar-labels strong {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.survey-bar-track {
+  width: 100%;
+  height: 9px;
+  background: #FFFFFF;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.survey-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2E9E82, #F5A623);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* 自由感想（Q5, Q10）一覧スクロールコンテナ */
+.survey-text-reviews-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+@media (min-width: 700px) {
+  .survey-text-reviews-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.review-column {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.review-col-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--color-navy);
+  border-bottom: 1.5px solid var(--color-border);
+  padding-bottom: 4px;
+}
+
+.review-comments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.review-comment-item {
+  background: #FFFFFF;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-navy);
+  border: 1px solid var(--color-border);
+}
+
+.review-comment-item strong {
+  color: var(--color-money);
+  font-family: var(--font-display);
+  margin-right: 4px;
+}
+
+.no-comment {
+  font-size: 12px;
+  color: var(--color-navy-soft);
+  padding: 10px;
+  text-align: center;
+}
+
+/* =========================================================
    5. 制作・分析画面モーダル（SCAM HUNTER｜制作・分析）
    ========================================================= */
 .analytics-modal-overlay {
@@ -951,7 +1195,7 @@
 .q-item-bar-fill.is-mid { background: var(--color-money); }
 
 /* =========================================================
-   6. 実演コントロールバー（画面下部固定・スッキリ4行）
+   6. 実演コントロールバー（画面下部固定）
    ========================================================= */
 .test-mode-badge-floating {
   position: fixed;
@@ -1071,7 +1315,6 @@
   transform: scale(0.96);
 }
 
-/* 透視トグルボタンの強調 */
 .btn-hint-toggle.is-active {
   background: #2E9E82 !important;
   color: #FFFFFF !important;

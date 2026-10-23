@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 
+<!-- グラフ描画用ライブラリ（Chart.js CDN） -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <!-- 分割したCSSファイルの読み込み（styles.css/ フォルダ内） -->
 <link rel="stylesheet" href="styles.css/base.css?v=20260827_v4">
 <link rel="stylesheet" href="styles.css/screens.css?v=20260827_v4">
@@ -28,7 +31,6 @@
     <header id="status-bar" class="status-bar hidden">
       <div class="day-tracker" id="day-tracker"></div>
       <div class="status-right">
-        <!-- 目標商品の常時表示エリア（欲しい物選択時のみ表示） -->
         <div id="target-item-display" class="target-item-chip is-hidden">
           <span class="target-label">目標:</span>
           <span id="target-item-name" class="target-name"></span>
@@ -98,7 +100,6 @@
             </button>
           </div>
 
-          <!-- 製作者用パスコード認証ランチャーボタン -->
           <div class="dev-auth-launcher-area">
             <button id="btn-open-dev-auth" class="btn-dev-auth-trigger" type="button">🔐 製作者メニュー（パスコード認証）</button>
           </div>
@@ -112,25 +113,21 @@
           <p class="mode-select-sub">自分に合ったモードを選んでチャレンジしよう！</p>
           
           <div class="mode-select-grid">
-            <!-- 小学生モード -->
             <button id="btn-mode-elementary" class="mode-card" type="button">
               <div class="mode-badge badge-elementary">🎒 小学生モード</div>
               <p class="mode-card-desc">やさしい言葉とふりがな付きで安心チャレンジ！（全10問）</p>
             </button>
 
-            <!-- 中高生モード -->
             <button id="btn-mode-teen" class="mode-card" type="button">
               <div class="mode-badge badge-teen">🏫 中高生モード</div>
               <p class="mode-card-desc">SNS・ゲーム・バイト・友達トラブルを見抜こう！（全10問）</p>
             </button>
 
-            <!-- 一般（大人）モード -->
             <button id="btn-mode-adult" class="mode-card" type="button">
               <div class="mode-badge badge-adult">👔 一般（大人）モード</div>
               <p class="mode-card-desc">税金・投資・サブスク・ビジネスに潜む巧妙な手口を見抜く！（1日1問・全7問）</p>
             </button>
 
-            <!-- 高齢者モード -->
             <button id="btn-mode-senior" class="mode-card" type="button">
               <div class="mode-badge badge-senior">👵 高齢者モード</div>
               <p class="mode-card-desc">身近な電話・点検・SMS詐欺から資産を守る実践編！（1日1問・全7問）</p>
@@ -139,7 +136,34 @@
         </div>
       </section>
 
-      <!-- ①.2 プレイヤー名前入力画面（スキップボタン対応） -->
+      <!-- ①.15 【中高生モード専用】プレイ経験確認画面（デザイン強化版） -->
+      <section id="screen-experience-select" class="screen">
+        <div class="experience-select-container">
+          <div class="exp-header-badge">🏫 中高生モード・事前確認</div>
+          <h2 class="experience-select-title">このゲームで遊んだことはありますか？</h2>
+          <p class="experience-select-sub">これまでのプレイ経験を教えてね！</p>
+          
+          <div class="experience-select-grid">
+            <button id="btn-exp-first" class="experience-card card-first" type="button">
+              <div class="exp-card-icon">🏫</div>
+              <div class="exp-card-text-group">
+                <span class="exp-card-title">初めて遊ぶ（初回）</span>
+                <span class="exp-card-desc">中高生モードを初めてプレイする方（アンケートにご協力ください）</span>
+              </div>
+            </button>
+
+            <button id="btn-exp-repeated" class="experience-card card-repeated" type="button">
+              <div class="exp-card-icon">🔁</div>
+              <div class="exp-card-text-group">
+                <span class="exp-card-title">遊んだことがある（2回目以降）</span>
+                <span class="exp-card-desc">すでにプレイしたことがあり、エンディングのアンケートをスキップしたい方</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ①.2 プレイヤー名前入力画面 -->
       <section id="screen-name-input" class="screen">
         <div class="story-stage" id="name-input-stage">
           <img id="name-guide-image" class="story-player-image is-center" alt="ジョーくん">
@@ -171,7 +195,7 @@
         <button id="btn-intro-next" class="btn btn-primary">次へ進む</button>
       </section>
 
-      <!-- ② 欲しい物を選択する画面（難易度グループ別表示対応） -->
+      <!-- ② 欲しい物を選択する画面 -->
       <section id="screen-item" class="screen">
         <div class="item-intro">
           <h2 class="item-intro-title">1週間後、欲しいものを買えるかな？</h2>
@@ -321,7 +345,6 @@
         </div>
 
         <div class="event-layout">
-          <!-- ビジュアル枠（タップ・クリックで全画面拡大可能） -->
           <div class="event-visual" id="event-visual">
             <img id="event-bg-image" class="event-bg-image" alt="背景">
             <img id="event-character-image" class="event-character-image is-hidden" alt="人物">
@@ -345,7 +368,6 @@
               <p class="bubble-text" id="event-desc"></p>
             </div>
 
-            <!-- 問題を解く最中に直前の状況・会話・通知をすぐ確認できる見直しボタン -->
             <button id="btn-open-log-event" class="btn-review-log btn-review-log-in-event" type="button">📜 直前の会話・通知を見直す</button>
 
             <p class="choice-prompt">あなたなら、どうする？</p>
@@ -395,7 +417,14 @@
             <p class="result-point-text" id="result-point"></p>
           </div>
 
-          <!-- 結果画面での見直しボタン -->
+          <div class="police-9110-result-banner">
+            <div class="banner-icon-badge">🚨 警察相談窓口</div>
+            <p class="banner-body-text">
+              不審な電話やメール、お金の話で少しでも迷ったら<br>
+              <strong>警察相談専用電話「#9110」</strong>または最寄りの警察署へすぐ相談！
+            </p>
+          </div>
+
           <button id="btn-open-log" class="btn-review-log" type="button">📜 直前の会話・通知を見直す</button>
 
           <button id="btn-next" class="btn btn-primary">次の日へ</button>
@@ -431,37 +460,204 @@
         <div class="guide-strip">
           <img id="ending-guide-image" class="guide-strip-image is-hidden" alt="ジョーくん">
           <div class="guide-bubble guide-bubble-inline">
-            <p class="guide-bubble-line" id="ending-joe-comment">1週間、よく頑張ったね！</p>
+            <p class="guide-bubble-line" id="ending-joe-comment">1週間,よく頑張ったね！</p>
           </div>
         </div>
         <div class="ending-card" id="ending-card"></div>
-        <button id="btn-to-survey" class="btn btn-primary">アンケートへ進む</button>
+        <div class="ending-action-btn-group" id="ending-btn-group"></div>
       </section>
 
-      <!-- ⑫ 最終アンケート案内画面 -->
+      <!-- ⑫ ゲーム内完結アンケート画面 -->
       <section id="screen-survey" class="screen">
-        <div class="story-stage" id="survey-stage">
-          <img id="survey-bg-image" class="story-bg-image is-hidden" alt="">
-          <img id="survey-guide-image" class="story-player-image is-center is-hidden" alt="ジョーくん">
-          <div class="story-textbox">
-            <p class="story-textbox-speaker">ジョーくん</p>
-            <p class="story-textbox-text" id="survey-text">
-              最後にアンケートに協力してほしいジョー！<br>
-              ゲームをプレイして感じたことを教えてね！
-            </p>
+        <div class="survey-screen-wrapper">
+          
+          <header class="survey-screen-header">
+            <div class="survey-header-avatar">
+              <img id="survey-guide-image" src="resource/images/ジョー君喜.png" alt="ジョーくん">
+            </div>
+            <div class="survey-header-dialog">
+              <span class="dialog-speaker">ジョーくん</span>
+              <p class="dialog-text">
+                1週間本当にお疲れさまでした！<br>
+                学んだことや感じたことを教えてほしいジョー！（全10問・約1分）
+              </p>
+            </div>
+          </header>
+
+          <form id="game-survey-form" class="survey-form-container">
+            
+            <div class="survey-section-card">
+              <div class="section-card-badge">PART A</div>
+              <h3 class="section-card-title">🛡️ 防犯意識・行動の変化</h3>
+              
+              <div class="survey-q-item" data-qid="q1" data-required="true">
+                <div class="q-label-row">
+                  <span class="q-num">Q1</span>
+                  <p class="q-title">このゲームをプレイして、詐欺に騙されないようにしようという意識は高まりましたか？</p>
+                  <span class="req-badge">必須</span>
+                </div>
+                <div class="pill-options-group">
+                  <button type="button" class="pill-btn" data-val="1">大いに高まった</button>
+                  <button type="button" class="pill-btn" data-val="2">高まった</button>
+                  <button type="button" class="pill-btn" data-val="3">あまり変わらない</button>
+                  <button type="button" class="pill-btn" data-val="4">変わらない</button>
+                </div>
+                <input type="hidden" name="q1" value="">
+              </div>
+
+              <div class="survey-q-item" data-qid="q2" data-required="true">
+                <div class="q-label-row">
+                  <span class="q-num">Q2</span>
+                  <p class="q-title">警察の防犯3原則（話さない・騙されない・渡さない）は分かりやすかったですか？</p>
+                  <span class="req-badge">必須</span>
+                </div>
+                <div class="pill-options-group">
+                  <button type="button" class="pill-btn" data-val="1">とても分かりやすかった</button>
+                  <button type="button" class="pill-btn" data-val="2">分かりやすかった</button>
+                  <button type="button" class="pill-btn" data-val="3">少し難しかった</button>
+                  <button type="button" class="pill-btn" data-val="4">難しかった</button>
+                </div>
+                <input type="hidden" name="q2" value="">
+              </div>
+
+              <div class="survey-q-item" data-qid="q3" data-required="true">
+                <div class="q-label-row">
+                  <span class="q-num">Q3</span>
+                  <p class="q-title">今後、怪しい電話・メール・訪問があった場合、落ち着いて確認・相談できそうですか？</p>
+                  <span class="req-badge">必須</span>
+                </div>
+                <div class="pill-options-group">
+                  <button type="button" class="pill-btn" data-val="1">必ず確認・相談する</button>
+                  <button type="button" class="pill-btn" data-val="2">気をつけて行動する</button>
+                  <button type="button" class="pill-btn" data-val="3">少し不安がある</button>
+                </div>
+                <input type="hidden" name="q3" value="">
+              </div>
+            </div>
+
+            <div class="survey-section-card">
+              <div class="section-card-badge">PART B</div>
+              <h3 class="section-card-title">📖 ゲームの分かりやすさ・難易度・解説</h3>
+
+              <div class="survey-q-item" data-qid="q4" data-required="true">
+                <div class="q-label-row">
+                  <span class="q-num">Q4</span>
+                  <p class="q-title">ゲーム全体の分かりやすさや満足度はどうでしたか？</p>
+                  <span class="req-badge">必須</span>
+                </div>
+                <div class="pill-options-group">
+                  <button type="button" class="pill-btn" data-val="1">大変満足</button>
+                  <button type="button" class="pill-btn" data-val="2">満足</button>
+                  <button type="button" class="pill-btn" data-val="3">普通</button>
+                  <button type="button" class="pill-btn" data-val="4">不満</button>
+                </div>
+                <input type="hidden" name="q4" value="">
+              </div>
+
+              <div class="survey-q-item" data-qid="q6" data-required="true">
+                <div class="q-label-row">
+                  <span class="q-num">Q6</span>
+                  <p class="q-title">ゲームをプレイする前と比べて、詐欺かどうかを見分けるポイントが分かるようになりましたか？</p>
+                  <span class="req-badge">必須</span>
+                </div>
+                <div class="pill-options-group">
+                  <button type="button" class="pill-btn" data-val="1">とても分かるようになった</button>
+                  <button type="button" class="pill-btn" data-val="2">少し分かるようになった</button>
+                  <button type="button" class="pill-btn" data-val="3">あまり変わらない</button>
+                  <button type="button" class="pill-btn" data-val="4">まだ難しい</button>
+                </div>
+                <input type="hidden" name="q6" value="">
+              </div>
+
+              <div class="survey-q-item" data-qid="q7" data-required="true">
+                <div class="q-label-row">
+                  <span class="q-num">Q7</span>
+                  <p class="q-title">ゲームの中で、判断が難しいと感じた問題はありましたか？</p>
+                  <span class="req-badge">必須</span>
+                </div>
+                <div class="pill-options-group">
+                  <button type="button" class="pill-btn" data-val="1">たくさんあった</button>
+                  <button type="button" class="pill-btn" data-val="2">いくつかあった</button>
+                  <button type="button" class="pill-btn" data-val="3">あまりなかった</button>
+                  <button type="button" class="pill-btn" data-val="4">なかった</button>
+                </div>
+                <input type="hidden" name="q7" value="">
+              </div>
+
+              <div class="survey-q-item" data-qid="q8" data-required="true">
+                <div class="q-label-row">
+                  <span class="q-num">Q8</span>
+                  <p class="q-title">問題の答えや解説は、詐欺への対策を理解するのに役立ちましたか？</p>
+                  <span class="req-badge">必須</span>
+                </div>
+                <div class="pill-options-group">
+                  <button type="button" class="pill-btn" data-val="1">とても役立った</button>
+                  <button type="button" class="pill-btn" data-val="2">役立った</button>
+                  <button type="button" class="pill-btn" data-val="3">あまり役立たなかった</button>
+                  <button type="button" class="pill-btn" data-val="4">役立たなかった</button>
+                </div>
+                <input type="hidden" name="q8" value="">
+              </div>
+            </div>
+
+            <div class="survey-section-card">
+              <div class="section-card-badge">PART C</div>
+              <h3 class="section-card-title">💬 周囲への共有・感想・改善点</h3>
+
+              <div class="survey-q-item" data-qid="q9" data-required="true">
+                <div class="q-label-row">
+                  <span class="q-num">Q9</span>
+                  <p class="q-title">ゲームで学んだ詐欺対策を、家族や友人にも伝えたいと思いましたか？</p>
+                  <span class="req-badge">必須</span>
+                </div>
+                <div class="pill-options-group">
+                  <button type="button" class="pill-btn" data-val="1">ぜひ伝えたい</button>
+                  <button type="button" class="pill-btn" data-val="2">できれば伝えたい</button>
+                  <button type="button" class="pill-btn" data-val="3">あまり思わない</button>
+                  <button type="button" class="pill-btn" data-val="4">思わない</button>
+                </div>
+                <input type="hidden" name="q9" value="">
+              </div>
+
+              <div class="survey-q-item" data-qid="q5">
+                <div class="q-label-row">
+                  <span class="q-num">Q5</span>
+                  <p class="q-title">一番印象に残った詐欺の手口や、学んだ感想があれば教えてください。</p>
+                  <span class="opt-badge">任意</span>
+                </div>
+                <textarea name="q5" class="survey-textarea" rows="3" placeholder="例: 警察を騙るLINEの偽逮捕状がリアルで驚いた、など"></textarea>
+              </div>
+
+              <div class="survey-q-item" data-qid="q10">
+                <div class="q-label-row">
+                  <span class="q-num">Q10</span>
+                  <p class="q-title">ゲームをもっと分かりやすく、役立つものにするために、改善してほしい点があれば教えてください。</p>
+                  <span class="opt-badge">任意</span>
+                </div>
+                <textarea name="q10" class="survey-textarea" rows="3" placeholder="例: 選択肢の文字をもっと大きくしてほしい、もっと手口を増やしてほしい、など"></textarea>
+              </div>
+            </div>
+
+            <p id="survey-validation-msg" class="survey-validation-alert is-hidden">⚠️ 赤枠で囲まれた必須項目にお答えください。</p>
+
+            <button type="button" id="btn-submit-survey" class="btn btn-survey btn-submit-game-survey">
+              📋 アンケートを送信する
+            </button>
+          </form>
+
+          <div id="survey-thanks-card" class="survey-thanks-card is-hidden">
+            <span class="thanks-icon">🎉</span>
+            <h3 class="thanks-title">アンケートにご協力いただき、誠にありがとうございました！</h3>
+            <p class="thanks-desc">いただいた貴重なご意見は、今後の防犯教材・研究の改善に役立てさせていただきます。</p>
+            <button id="btn-restart" class="btn btn-primary btn-thanks-restart" type="button">🎮 もう一度遊ぶ</button>
           </div>
-        </div>
-        <div class="survey-action-panel">
-          <a id="btn-survey-link" class="btn btn-survey" href="https://forms.gle/HNpjkvkHrDYGNGbE7" target="_blank" rel="noopener noreferrer">
-            📋 アンケートに答える
-          </a>
-          <button id="btn-restart" class="btn btn-secondary">🎮 もう一度遊ぶ</button>
+
         </div>
       </section>
 
     </main>
 
-    <!-- ★ 特大画像ポップアップモーダル（ピンチズーム・パン対応版） ★ -->
+    <!-- 特大画像ポップアップモーダル -->
     <div id="image-modal" class="image-modal-overlay is-hidden">
       <div class="image-modal-dialog">
         <div class="image-modal-controls">
@@ -477,7 +673,7 @@
       </div>
     </div>
 
-    <!-- ★ 会話・通知ログ見直しポップアップモーダル ★ -->
+    <!-- 会話・通知ログ見直しポップアップモーダル -->
     <div id="log-modal" class="log-modal-overlay is-hidden">
       <div class="log-modal-dialog">
         <header class="log-modal-header">
@@ -488,7 +684,7 @@
       </div>
     </div>
 
-    <!-- ★ 製作者用 パスコード認証モーダル（A5158・シンプル認証型） ★ -->
+    <!-- 製作者用 パスコード認証モーダル（A5158） -->
     <div id="auth-modal" class="auth-modal-overlay is-hidden">
       <div class="auth-modal-window">
         <h3 class="auth-modal-title">🔐 製作者認証</h3>
@@ -502,11 +698,10 @@
       </div>
     </div>
 
-    <!-- ★ 警察提示・防犯研究特化型 フルスクリーン管理コンソール ★ -->
+    <!-- 警察提示・防犯研究特化型 フルスクリーン管理コンソール -->
     <div id="dev-dashboard-screen" class="dev-dashboard-fullscreen is-hidden">
       <div class="dev-dashboard-container">
         
-        <!-- コンソールヘッダーバー -->
         <header class="dev-dash-topbar">
           <div class="dev-dash-branding">
             <span class="dash-shield-icon">🛡️</span>
@@ -522,7 +717,6 @@
           </div>
         </header>
 
-        <!-- コンソールメインコンテンツ -->
         <main class="dev-dash-content">
           <div class="dev-dash-intro-box">
             <h2 class="dash-sec-heading">■ 防犯教育研究・実演ポータル</h2>
@@ -532,25 +726,23 @@
             </p>
           </div>
 
-          <!-- 3大大型タッチカードグリッド -->
           <div class="dev-dash-cards-grid">
             
-            <!-- ① 制作・分析画面カード -->
             <div id="card-dash-analytics" class="dev-feature-card card-analytics">
               <div class="feature-card-header">
                 <span class="feature-card-icon">📊</span>
                 <div class="feature-card-title-group">
                   <h3 class="feature-card-title">制作・分析ダッシュボード</h3>
-                  <span class="feature-card-tag">正答率・離脱集計 & CSV出力</span>
+                  <span class="feature-card-tag">正答率・3原則円グラフ & アンケート集計</span>
                 </div>
               </div>
               <div class="feature-card-body">
-                <p class="feature-desc-lead">通常プレイで蓄積されたデータをグラフ・数値でリアルタイム分析</p>
+                <p class="feature-desc-lead">通常プレイ統計と受講者アンケート全10問を自動グラフ・CSV集計</p>
                 <ul class="feature-checklist">
-                  <li><strong>年代別（4モード）の正答率・クリア率</strong>の自動算出</li>
+                  <li><strong>年代別正答率 ＆ 3原則違反要因円グラフ</strong>を自動生成</li>
+                  <li><strong>受講者アンケート全10問の定量グラフ ＆ 自由感想集計</strong></li>
                   <li><strong>問題別正答率リスト</strong>からの【直接実演ジャンプ】対応</li>
-                  <li><strong>曜日別離脱傾向</strong>（どこで諦めたか）の可視化グラフ</li>
-                  <li>外部発表・警察提出用の<strong>完全集計CSVワンクリック出力</strong></li>
+                  <li>警察提出・研究論文用の<strong>完全集計CSVワンクリック出力</strong></li>
                 </ul>
               </div>
               <div class="feature-card-footer">
@@ -558,7 +750,6 @@
               </div>
             </div>
 
-            <!-- ② テストプレイ開始カード -->
             <div id="card-dash-testplay" class="dev-feature-card card-testplay">
               <div class="feature-card-header">
                 <span class="feature-card-icon">🛠️</span>
@@ -581,7 +772,6 @@
               </div>
             </div>
 
-            <!-- ③ 全問題プレビューカード -->
             <div id="card-dash-preview" class="dev-feature-card card-preview">
               <div class="feature-card-header">
                 <span class="feature-card-icon">🔍</span>
@@ -606,7 +796,6 @@
 
           </div>
 
-          <!-- システムステータスフッターバー -->
           <footer class="dev-dash-system-footer">
             <div class="sys-info-item">
               <span class="sys-info-label">収録問題総数:</span>
@@ -622,7 +811,7 @@
       </div>
     </div>
 
-    <!-- ★ 警察実演用：防犯ポイント（カンペ）確認モーダル ★ -->
+    <!-- カンペ確認用モーダル -->
     <div id="peek-point-modal" class="auth-modal-overlay is-hidden">
       <div class="peek-point-window">
         <header class="peek-point-header">
@@ -642,19 +831,18 @@
       </div>
     </div>
 
-    <!-- ★ 制作・分析画面モーダル ★ -->
+    <!-- 制作・分析画面モーダル -->
     <div id="analytics-modal" class="analytics-modal-overlay is-hidden">
       <div class="analytics-modal-window">
         <header class="analytics-header">
           <div class="analytics-header-title">
             <h2>📊 SCAM HUNTER｜制作・分析</h2>
-            <span class="analytics-badge-label">通常プレイ分析</span>
+            <span class="analytics-badge-label">通常プレイ ＆ アンケート総合分析</span>
           </div>
           <button id="btn-close-analytics" class="analytics-btn-close" type="button">✕ 閉じる</button>
         </header>
 
         <div class="analytics-body">
-          <!-- ツールバー -->
           <div class="analytics-actions-bar">
             <select id="analytics-mode-filter" class="analytics-filter-select">
               <option value="all">すべてのモード</option>
@@ -670,7 +858,6 @@
             </div>
           </div>
 
-          <!-- サマリーカード -->
           <div class="analytics-summary-grid">
             <div class="analytics-summary-card">
               <span class="summary-card-label">総プレイ回数</span>
@@ -685,8 +872,8 @@
               <span id="stat-avg-score" class="summary-card-value">¥0</span>
             </div>
             <div class="analytics-summary-card">
-              <span class="summary-card-label">最も間違われた問題</span>
-              <span id="stat-worst-question" class="summary-card-value warning" style="font-size: 15px;">-</span>
+              <span class="summary-card-label">アンケート回答総数</span>
+              <span id="stat-survey-count" class="summary-card-value highlight">0 件</span>
             </div>
           </div>
 
@@ -719,6 +906,18 @@
             <div id="analytics-drop-chart" class="analytics-drop-chart"></div>
           </div>
 
+          <!-- 防犯3原則 違反要因の円グラフ -->
+          <div class="analytics-section-panel" id="analytics-principle-section">
+            <h3 class="analytics-section-title">🛡️ 防犯3原則 違反要因の分析（弱点分析）</h3>
+            <div id="principle-chart-container" class="principle-chart-container"></div>
+          </div>
+
+          <!-- 受講者アンケート集計セクション -->
+          <div class="analytics-section-panel" id="analytics-survey-section">
+            <h3 class="analytics-section-title">📋 受講者アンケート集計（全10問の評価・グラフ）</h3>
+            <div id="survey-analytics-dashboard" class="survey-analytics-dashboard"></div>
+          </div>
+
           <!-- 問題別正答率 -->
           <div class="analytics-section-panel">
             <h3 class="analytics-section-title">🎯 問題別正答率（Q1〜Q16）</h3>
@@ -728,14 +927,13 @@
       </div>
     </div>
 
-    <!-- ★ 警察発表・実演特化コントロールバー（曜日移動＋3原則透視＋カンペ版） ★ -->
+    <!-- 実演特化コントロールバー -->
     <div id="test-controller-drawer" class="test-controller-drawer is-hidden">
       <button id="btn-toggle-test-drawer" class="test-drawer-toggle" type="button">
         <span id="test-drawer-arrow">▼</span> 🛠️ 実演・テストコントロール
       </button>
       
-      <div class="test-drawer-content" id="test-drawer-content">
-        <!-- 1行目: 曜日移動 ＆ スキップ -->
+      <div class="test-controller-content" id="test-controller-content">
         <div class="test-controller-row">
           <label style="font-size: 11.5px; font-weight: 700; color: #BACADE;">曜日移動:</label>
           <select id="test-select-weekday" class="test-ctrl-select">
@@ -751,21 +949,18 @@
           <button id="btn-test-skip-q" class="test-ctrl-btn" type="button">⏭️ スキップ</button>
         </div>
 
-        <!-- 2行目: 実演アシスト（3原則透視 ＆ 防犯ポイント確認） -->
         <div class="test-controller-row">
           <label style="font-size: 11.5px; font-weight: 700; color: #BACADE;">実演アシスト:</label>
           <button id="btn-test-toggle-hints" class="test-ctrl-btn btn-hint-toggle" type="button">👁️ 3原則タグ表示: OFF</button>
           <button id="btn-test-peek-point" class="test-ctrl-btn btn-peek-point" type="button">💡 防犯ポイント確認</button>
         </div>
 
-        <!-- 3行目: 結果シミュレーション -->
         <div class="test-controller-row">
           <label style="font-size: 11.5px; font-weight: 700; color: #BACADE;">結果確認:</label>
           <button class="test-ctrl-btn" onclick="testJumpEnding('rank_s')" type="button">🏆 Sランク（全問防衛）</button>
           <button class="test-ctrl-btn" onclick="testJumpEnding('rank_d')" type="button">⚠️ Dランク（被害多発）</button>
         </div>
 
-        <!-- 4行目: テストモード終了（製作者コンソールへ復帰） -->
         <div class="test-controller-row">
           <button id="btn-test-exit" class="test-ctrl-btn test-ctrl-btn-exit" onclick="exitTestMode()" type="button">⏹️ テストモード終了（製作者メニューへ）</button>
         </div>

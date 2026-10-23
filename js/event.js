@@ -1,7 +1,7 @@
 /* =========================================================
    event.js
    問題出題・選択肢回答判定・ダメージ計算・結果表示・進行制御
-   （3原則透視ハイライト描画対応版）
+   （通常プレイ厳格集計・3原則違反タグ連携・透視描画版）
    ========================================================= */
 
 function showEvent() {
@@ -31,7 +31,6 @@ function showEvent() {
   }
 }
 
-// ⑧ イベント問題画面の描画
 function showQuestion() {
   const question = currentQuestion();
   const slot = currentScheduleSlot();
@@ -63,13 +62,11 @@ function showQuestion() {
   const thinkingOverlay = document.getElementById("thinking-overlay");
   if (thinkingOverlay) thinkingOverlay.classList.add("is-hidden");
 
-  // 選択肢の生成
   renderChoices(question);
 
   showScreen("screen-event");
 }
 
-// 選択肢描画（透視タグON/OFF対応）
 function renderChoices(question) {
   const choiceList = document.getElementById("choice-list");
   if (!choiceList) return;
@@ -82,7 +79,7 @@ function renderChoices(question) {
     btn.className = "choice-btn";
     btn.type = "button";
 
-    // 3原則透視タグがONの場合のバッジとクラス付加
+    // 3原則透視タグがONの場合のバッジと枠線クラス付与
     if (state.isTestMode && state.showPrincipleTags) {
       let badgeHTML = "";
       if (choice.type === "correct") {
@@ -108,7 +105,6 @@ function renderChoices(question) {
   });
 }
 
-// 出題中の選択肢を透視タグ状態に合わせて再描画
 function refreshChoicesWithHints() {
   const q = currentQuestion();
   if (q) renderChoices(q);
@@ -152,7 +148,7 @@ function getReactionComment(choiceType) {
   return shuffleArray(options)[0];
 }
 
-// ⑨ 選択後の解説・所持金増減・ダメージ処理
+// ⑨ 選択後の解説・所持金増減・ダメージ処理（通常時のみ分析集計へ厳格連携）
 function handleChoice(choice) {
   const question = currentQuestion();
 
@@ -183,8 +179,9 @@ function handleChoice(choice) {
     isCorrect: isCorrect
   });
 
+  // 通常プレイ時のみ記録関数へ引き渡す（3原則違反要因タグも渡す）
   if (typeof recordAnalyticsAnswer === "function") {
-    recordAnalyticsAnswer(question.id, isCorrect);
+    recordAnalyticsAnswer(question.id, isCorrect, choice.principleTag);
   }
 
   const popOverlay = document.getElementById("instant-pop-overlay");

@@ -1,12 +1,12 @@
 /* =========================================================
    setup.js
    ゲーム準備・モード選択・名前入力・欲しい物選択・状態初期化・あらすじ
-   （分析データ自動記録・テストプレイ連携対応版）
+   （中高生モード選択時のみ初回確認画面を挟む分岐対応版）
    ========================================================= */
 
 // ① 「はじめる」クリックで「表示デザイン選択画面」へ
 function handleStartClick() {
-  state.isTestMode = false; // 通常プレイとして開始
+  state.isTestMode = false;
   const badge = document.getElementById("test-mode-badge");
   const drawer = document.getElementById("test-controller-drawer");
   if (badge) badge.classList.add("is-hidden");
@@ -15,7 +15,7 @@ function handleStartClick() {
   showScreen("screen-device-select");
 }
 
-// ①.05 表示デザイン（デバイスレイアウト）選択処理
+// ①.05 表示デザイン選択処理 ➜ 「モード選択画面」へ進む
 function handleSelectDevice(selectedDevice) {
   state.deviceLayout = selectedDevice;
   const shell = document.getElementById("app-shell");
@@ -34,6 +34,7 @@ function handleSelectDevice(selectedDevice) {
 }
 
 // ①.1 モード選択処理（4モード）
+// ※中高生モード（"teen"）選択時のみ、初回か確認する画面（screen-experience-select）へ分岐
 function handleSelectMode(selectedMode) {
   state.mode = selectedMode;
 
@@ -46,6 +47,23 @@ function handleSelectMode(selectedMode) {
     }
   }
 
+  if (selectedMode === "teen") {
+    // 中高生モードのみ初回確認画面へ
+    showScreen("screen-experience-select");
+  } else {
+    // 小学生・一般大人・高齢者は直接進行
+    proceedAfterModeSelection(selectedMode);
+  }
+}
+
+// ①.15 【中高生モード専用】プレイ経験選択処理
+function handleSelectExperience(hasPlayed) {
+  state.hasPlayedBefore = Boolean(hasPlayed);
+  proceedAfterModeSelection(state.mode);
+}
+
+// モード選択完了後の共通進行分岐
+function proceedAfterModeSelection(selectedMode) {
   if (selectedMode === "senior") {
     state.playerName = "あなた";
     state.selectedItem = null;
@@ -74,7 +92,6 @@ function openNameInput() {
   showScreen("screen-name-input");
 }
 
-// 名前決定時の処理
 function handleNameSubmit() {
   const inputEl = document.getElementById("input-player-name");
   const errorEl = document.getElementById("name-input-error");
@@ -92,7 +109,6 @@ function handleNameSubmit() {
   showJoeIntro(goToItemSelect);
 }
 
-// 名前入力スキップ処理（名前を「あなた」として進行）
 function handleNameSkip() {
   const errorEl = document.getElementById("name-input-error");
   if (errorEl) errorEl.classList.add("is-hidden");
@@ -101,7 +117,6 @@ function handleNameSkip() {
   showJoeIntro(goToItemSelect);
 }
 
-// 難易度グループ定義テーブル
 const ITEM_DIFFICULTY_GROUPS = [
   { key: "初級", icon: "🟢", label: "初級", desc: "比較的達成しやすい目標", class: "group-beginner" },
   { key: "普通", icon: "🔵", label: "普通", desc: "少し頑張れば狙える目標", class: "group-normal" },
@@ -109,7 +124,6 @@ const ITEM_DIFFICULTY_GROUPS = [
   { key: "MAX",  icon: "🔴", label: "MAX",  desc: "最高難易度", class: "group-max" }
 ];
 
-// ② 欲しい物選択画面（4段階グループ別表示）
 function goToItemSelect() {
   document.getElementById("status-bar").classList.add("hidden");
   const container = document.getElementById("item-list");
@@ -176,7 +190,6 @@ function startSeniorWeek() {
   showSynopsis();
 }
 
-// ゲーム状態の初期化
 function initGameState() {
   state.money = 50000;
   state.slotIndex = 0;
@@ -190,13 +203,11 @@ function initGameState() {
   state.weeklyQuestions = pickWeeklyQuestions(state.mode);
   state.daySchedule = buildDaySchedule(state.mode);
 
-  // ★ 通常プレイ時のみ、プレイ開始を分析ストレージに自動記録 ★
   if (typeof recordAnalyticsGameStart === "function") {
     recordAnalyticsGameStart(state.mode);
   }
 }
 
-// ③ あらすじ画面
 function showSynopsis() {
   const card = document.getElementById("synopsis-card");
 
@@ -217,11 +228,10 @@ function showSynopsis() {
     card.innerHTML = `
       キミの <ruby>名<rt>な</rt></ruby><ruby>前<rt>まえ</rt></ruby>は「${getPlayerRawName()}」。<br><br>
       ずっと <ruby>欲<rt>ほ</rt></ruby>しかった「${item.name}（¥${item.price.toLocaleString("ja-JP")}）」を、お<ruby>小遣<rt>こづか</rt></ruby>いで <ruby>買<rt>か</rt></ruby>うと <ruby>決<rt>き</rt></ruby>めたよ！<br>
-      50,000<ruby>円<rt>えん</rt></ruby>を しっかり <ruby>守<rt>まも</rt></ruby>りながら、1<ruby>週間<rt>しゅうかん</rt></ruby>をすごそう。<br><br>
+      50,000<ruby>円<rt>えん</rt></ruby>を しっかり <ruby>守<rt>mamo</rt></ruby>りながら、1<ruby>週間<rt>しゅうかん</rt></ruby>をすごそう。<br><br>
       ネットや まちの<ruby>中<rt>なか</rt></ruby>の いろんな<ruby>出来事<rt>できごと</rt></ruby>に おちついて チャレンジしよう！
     `;
   } else {
-    // teen
     const item = state.selectedItem;
     card.innerHTML = `
       キミの名前は「${getPlayerRawName()}」。<br><br>
