@@ -1,7 +1,7 @@
 /* =========================================================
    assets.js
    画像アセット・ファイルパス定義
-   【スマホ壁紙1・2追加・金銀銅ジョー君・いらすとや規約準拠確定版】
+   【実ファイル完全照合・実在画像バインド版】
    ========================================================= */
 
 const IMG_BASE = "resource/images/";
@@ -26,9 +26,9 @@ const IMAGE_ASSETS = {
     convenienceStoreFallback: IMG_BASE + "ショッピングモール.jpg",
     secretBase:               IMG_BASE + "秘密基地（使わないかも）.jpg",
     
-    // スマホ通知画面用ランダム壁紙
-    phoneWallpaper1:          IMG_BASE + "スマホ背景１ .png",
-    phoneWallpaper2:          IMG_BASE + "スマホ背景２ .png"
+    // スマホ通知画面用壁紙
+    phoneWallpaper1:          IMG_BASE + "スマホ背景1.png",
+    phoneWallpaper2:          IMG_BASE + "スマホ背景2.png"
   },
 
   // キャラクター立ち絵
@@ -49,7 +49,7 @@ const IMAGE_ASSETS = {
     joeSilver:         IMG_BASE + "銀ジョー君.png",
     joeBronze:         IMG_BASE + "銅ジョー君.png",
 
-    // ── 【学生主人公】（小学生・中高生モード用：厳選4点に統合） ──
+    // ── 【学生主人公】（小学生・中高生モード用） ──
     studentNeutral:    IMG_BASE + "普通主人公.png",
     studentHappy:      IMG_BASE + "主人公喜び.png",
     studentSad:        IMG_BASE + "主人公困り.png",
@@ -58,7 +58,7 @@ const IMAGE_ASSETS = {
     studentWalking:    IMG_BASE + "普通主人公.png",
     studentSmartphone: IMG_BASE + "携帯みる主人公.png",
 
-    // ── 【一般（大人）主人公】（大人モード用：厳選4点に統合） ──
+    // ── 【一般（大人）主人公】（実在する画像に正確にバインド） ──
     adultNeutral:      IMG_BASE + "一般主人公.png",
     adultHappy:        IMG_BASE + "一般主人公喜.png",
     adultSad:          IMG_BASE + "一般主人公哀.png",
@@ -66,10 +66,10 @@ const IMAGE_ASSETS = {
     adultThinking:     IMG_BASE + "一般主人公.png",
     adultWorry:        IMG_BASE + "一般主人公哀.png",
     adultWalking:      IMG_BASE + "一般主人公.png",
-    adultSmartphone:   IMG_BASE + "一般主人公仕事中.png",
-    adultAngry:        IMG_BASE + "一般主人公哀.png",
+    adultSmartphone:   IMG_BASE + "一般主人公.png", // 実在する一般主人公.pngを指定
+    adultAngry:        IMG_BASE + "一般主人公怒.png",
 
-    // ── 【高齢者主人公】（高齢者モード用：厳選3点に統合） ──
+    // ── 【高齢者主人公】 ──
     seniorNeutral:     IMG_BASE + "高齢者.png",
     seniorHappy:       IMG_BASE + "高齢者笑顔.png",
     seniorSad:         IMG_BASE + "困っている高齢者.png",
@@ -78,23 +78,22 @@ const IMAGE_ASSETS = {
     seniorWalking:     IMG_BASE + "高齢者.png",
     seniorSmartphone:  IMG_BASE + "高齢者笑顔.png",
 
-    // ── 【NPC・家族・同僚・作業員・店員】（厳選5点に統合） ──
+    // ── 【NPC・作業員・店員】 ──
     colleagueTroubled: IMG_BASE + "困ってる同僚.png",
     workerLabor:       IMG_BASE + "作業員.png",
-    fireTruck:         IMG_BASE + "作業員.png",
+    fireTruck:         IMG_BASE + "消防士.png",
     suspiciousVisitor: IMG_BASE + "作業員.png",
     workerGas:         IMG_BASE + "コンビニ店員.png",
     elderlyWomanCane:  IMG_BASE + "困っている高齢者.png",
     elderlyWoman:      IMG_BASE + "高齢者.png",
     elderlyManGlasses: IMG_BASE + "高齢者笑顔.png",
     motherWorried:     IMG_BASE + "親困り.png",
-    motherSmile:       IMG_BASE + "親困り.png",
+    motherSmile:       IMG_BASE + "親笑顔.png",
     silhouette:        IMG_BASE + "シルエット.png"
   },
 
-  // 証拠スクリーンショット・資料画像（4モード直結）
+  // 証拠スクリーンショット・資料画像
   screenshots: {
-    // ── 【小学生モード用（13枚）】 ──
     elementaryPoliceMailScam:         IMG_BASE + "小学生_偽警察メール詐欺.jpg",
     elementaryGamePrizeScam:          IMG_BASE + "小学生_ゲーム機当選詐欺.jpg",
     elementaryFriendImpersonationScam: IMG_BASE + "小学生_友達なりすまし詐欺.jpg",
@@ -109,7 +108,6 @@ const IMAGE_ASSETS = {
     elementaryDeliveryNoticeReal:     IMG_BASE + "小学生_宅配不在通知本物.jpg",
     elementarySummerCouponReal:       IMG_BASE + "小学生_夏休みクーポン本物.jpg",
 
-    // ── 【中高生モード用（13枚）】 ──
     teenPoliceFreezeScam:             IMG_BASE + "中高生_偽警察口座凍結詐欺.jpg",
     teenFakeGiftScam:                 IMG_BASE + "中高生_偽プレゼントDM詐欺.jpg",
     teenDataNoticeReal:               IMG_BASE + "中高生_通信量通知本物.jpg",
@@ -124,7 +122,6 @@ const IMAGE_ASSETS = {
     teenCopyrightScam:                IMG_BASE + "中高生_著作権警告詐欺.jpg",
     teenAiFakeAdScam:                 IMG_BASE + "中高生_AI有名人偽広告.jpg",
 
-    // ── 【一般（大人）モード用（15枚）】 ──
     subscriptionScam:                 IMG_BASE + "一般_サブスク自動更新詐欺.jpg",
     taxRefundScam:                    IMG_BASE + "一般_eTax還付金詐欺.jpg",
     bankOtpScam:                      IMG_BASE + "銀行ワンタイム詐欺.jpg",
@@ -141,7 +138,6 @@ const IMAGE_ASSETS = {
     hotelBookingScam:                 IMG_BASE + "一般_ホテル予約詐欺.jpg",
     cardFraudPhishing:                IMG_BASE + "一般_カード不正利用詐欺.jpg",
 
-    // ── 【高齢者モード用（12枚）】 ──
     fakePoliceLineScam:               IMG_BASE + "高齢者_警察官騙り逮捕状詐欺.jpg",
     benefitScam:                      IMG_BASE + "高齢者_市役所還付金詐欺.jpg",
     electricityPlanScam:              IMG_BASE + "高齢者_電力プラン契約詐欺.jpg",

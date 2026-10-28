@@ -1,13 +1,46 @@
 /* =========================================================
    story.js
    会話・あらすじ・自己紹介・通知・週末ふりかえりストーリー演出
-   （2人並列・スマホ背景多段階バインド対応版）
+   【主人公のみ3文会話 ＆ 通知画面1.5秒自動進行版】
    ========================================================= */
 
 const FALLBACK_SCENE_BG = IMAGE_ASSETS.backgrounds.livingRoom;
 
+let isDialogueTransitioning = false;
+let notificationAutoTimer = null;
+
 function getDisplaySpeakerName(speaker) {
   return (speaker === "主人公" || speaker === "あなた") ? getPlayerRawName() : speaker;
+}
+
+// 会話を相手と主人公のみの3文構成にする
+function getFullDialogueList(question) {
+  const baseList = (question && question.dialogue) ? [...question.dialogue] : [];
+  if (baseList.length >= 3) return baseList;
+
+  const playerSpeaker = (state.mode === "senior" || state.mode === "adult") ? "あなた" : "主人公";
+
+  let extraThought = "";
+  if (question.category === "scam") {
+    extraThought = (state.mode === "senior" || state.mode === "adult")
+      ? "（急かされているが、本当に信用していいのだろうか…？ 落ち着いて慎重に確認すべきか…？）"
+      : "「なんだか怪しい気もするぞ…言われた通りにして本当に大丈夫かな…？」";
+  } else if (question.category === "real") {
+    extraThought = (state.mode === "senior" || state.mode === "adult")
+      ? "（本物の連絡に見えるが、念のため正規の公式ルートで確認したほうが安全だろうか…？）"
+      : "「いつもと少し違う気もするけど、どうやって確かめたらいいんだろう…？」";
+  } else {
+    extraThought = (state.mode === "senior" || state.mode === "adult")
+      ? "（困っている様子だが、どう対応するのが一番安全で確実だろうか…？）"
+      : "「困っているみたいだな…自分にできる正しい対応は何だろう…？」";
+  }
+
+  baseList.push({
+    speaker: playerSpeaker,
+    line: extraThought
+  });
+
+  return baseList;
 }
 
 function showJoeIntro(onNext) {
@@ -54,6 +87,7 @@ function showJoeIntro(onNext) {
 
 function startEventFlow() {
   state.dialogueIndex = 0;
+  isDialogueTransitioning = false;
   
   const slot = currentScheduleSlot();
   const weekdayName = slot.weekdayName;
@@ -130,8 +164,13 @@ function showNarration() {
 }
 
 function handleNarrationNext() {
+  if (isDialogueTransitioning) return;
+  isDialogueTransitioning = true;
+  setTimeout(() => { isDialogueTransitioning = false; }, 300);
+
   const question = currentQuestion();
-  if (question && question.dialogue && question.dialogue.length > 0) {
+  const dialogues = getFullDialogueList(question);
+  if (dialogues.length > 0) {
     showDialogueLine();
   } else {
     goToAfterDialogue();
@@ -140,36 +179,27 @@ function handleNarrationNext() {
 
 function showDialogueLine() {
   const question = currentQuestion();
-  const line = question.dialogue[state.dialogueIndex];
-  const isPlayerSpeaking = line.speaker === "主人公" || line.speaker === "あなた";
+  const dialogues = getFullDialogueList(question);
+  const line = dialogues[state.dialogueIndex];
 
   document.getElementById("dialogue-speaker").innerHTML = getDisplaySpeakerName(line.speaker);
   const textEl = document.getElementById("dialogue-line");
-
-  if (!isPlayerSpeaking) {
-    textEl.innerHTML = `
-      <span class="typing-indicator">
-        <span class="typing-dot"></span>
-        <span class="typing-dot"></span>
-        <span class="typing-dot"></span>
-      </span>
-    `;
-    setTimeout(() => {
-      textEl.innerHTML = line.line;
-    }, 380);
-  } else {
-    textEl.innerHTML = line.line;
-  }
+  textEl.innerHTML = line.line;
 
   renderDialogueStage(question, line);
   showScreen("screen-dialogue");
 }
 
 function goToDialogueNext() {
+  if (isDialogueTransitioning) return;
+  isDialogueTransitioning = true;
+  setTimeout(() => { isDialogueTransitioning = false; }, 300);
+
   const question = currentQuestion();
+  const dialogues = getFullDialogueList(question);
   state.dialogueIndex += 1;
 
-  if (question && state.dialogueIndex < question.dialogue.length) {
+  if (state.dialogueIndex < dialogues.length) {
     showDialogueLine();
   } else {
     goToAfterDialogue();
@@ -204,7 +234,7 @@ function goToAfterDialogue() {
   }
 }
 
-// スマホ通知画面（壁紙1・2の完全ランダム切替・バイブ・フラッシュ）
+// スマホ通知画面（1.5秒後に自動で進む ＆ タップでも即座に進める）
 function showPikonNotification() {
   const question = currentQuestion();
   const notifTextEl = document.getElementById("notification-text");
@@ -216,7 +246,6 @@ function showPikonNotification() {
   const playerImg = document.getElementById("notification-player-image");
   const phonePlayerImg = getPlayerImage("playerSmartphone");
   
-  // スマホ壁紙1とスマホ壁紙2を50%の確率でランダム選出
   const isWallpaperOne = Math.random() < 0.5;
   const chosenWallpaper = isWallpaperOne
     ? IMAGE_ASSETS.backgrounds.phoneWallpaper1
@@ -224,7 +253,6 @@ function showPikonNotification() {
 
   setImageSafely(bgImg, chosenWallpaper);
 
-  // 主人公画像のセット
   if (playerImg) {
     setImageSafely(playerImg, phonePlayerImg);
     applyCharacterBlend(playerImg, phonePlayerImg);
@@ -233,6 +261,7 @@ function showPikonNotification() {
   const phoneFrame = document.querySelector(".smartphone-frame.tall-phone");
   const notifCard = document.getElementById("notification-toast");
 
+  // バイブレーション開始
   if (phoneFrame) {
     phoneFrame.classList.remove("is-vibrating");
     void phoneFrame.offsetWidth;
@@ -253,13 +282,47 @@ function showPikonNotification() {
 
   showScreen("screen-notification");
 
-  setTimeout(() => {
+  const bottomGuide = document.querySelector("#screen-notification .guide-bubble-line");
+  if (bottomGuide) {
+    bottomGuide.innerHTML = "あ、スマホが鳴った！通知をチェックしよう。";
+  }
+
+  const screenEl = document.getElementById("screen-notification");
+
+  // タイマーの初期化
+  if (notificationAutoTimer) {
+    clearTimeout(notificationAutoTimer);
+    notificationAutoTimer = null;
+  }
+
+  // 問題へ進むハンドラー
+  const proceedToQuestion = (e) => {
+    if (e) e.stopPropagation();
+    if (notificationAutoTimer) {
+      clearTimeout(notificationAutoTimer);
+      notificationAutoTimer = null;
+    }
+    if (screenEl) screenEl.onclick = null;
+    const nextBtn = document.getElementById("btn-notification-next");
+    if (nextBtn) nextBtn.onclick = null;
+
     if (phoneFrame) phoneFrame.classList.remove("is-vibrating");
     showQuestion();
-  }, 2200);
+  };
+
+  // タップでも即座に進める（0.25秒後から受付）
+  if (screenEl) screenEl.onclick = null;
+  setTimeout(() => {
+    if (screenEl) screenEl.onclick = proceedToQuestion;
+    const nextBtn = document.getElementById("btn-notification-next");
+    if (nextBtn) nextBtn.onclick = proceedToQuestion;
+  }, 250);
+
+  // ★ 1.5秒（1500ms）経過後に自動で問題画面へ進む ★
+  notificationAutoTimer = setTimeout(proceedToQuestion, 1500);
 }
 
-// 週末ふりかえり画面（主人公＝左、ジョーくん＝右の2人並び）
+// 週末ふりかえり画面（2人並列）
 function showWeekRecap() {
   const bgImg = document.getElementById("week-recap-bg-image");
   const playerImg = document.getElementById("week-recap-player-image");
@@ -268,12 +331,10 @@ function showWeekRecap() {
 
   setImageSafely(bgImg, IMAGE_ASSETS.backgrounds.livingRoom);
 
-  // 主人公画像（左側）
   const playerImage = getPlayerImage("playerHappy");
   setImageSafely(playerImg, playerImage);
   applyCharacterBlend(playerImg, playerImage);
 
-  // ジョーくん画像（右側）
   setJoeExpression("cheer");
   if (guideImg) {
     const joeImgSrc = getJoeImage("cheer");
