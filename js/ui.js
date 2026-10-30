@@ -1,7 +1,7 @@
 /* =========================================================
    ui.js
-   UI描画・4モード表示制御・ピンチズーム・会話ログ・Mac文字コード自動修復
-   （多段階フォールバック対応版）
+   UI描画・4モード表示制御・ピンチズーム・会話ログ・スクロール位置リセット
+   （高齢者モード対応 scrollTop = 0 実装版）
    ========================================================= */
 
 window.DEBUG_MODE = true;
@@ -10,6 +10,12 @@ function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach((el) => {
     el.classList.toggle("active", el.id === screenId);
   });
+
+  // 要望B対応：画面切り替え時にスクロールエリア（#screen-areaなど）を最上部にリセット
+  const screenArea = document.getElementById("screen-area");
+  if (screenArea) {
+    screenArea.scrollTop = 0;
+  }
 }
 
 /* ★ 多段階自動フォールバック画像ローダー（スペース・全角半角・大文字小文字・エンコード対応） ★ */

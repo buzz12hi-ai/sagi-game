@@ -1,7 +1,7 @@
 /* =========================================================
    story.js
    会話・あらすじ・自己紹介・通知・週末ふりかえりストーリー演出
-   【自動追加セリフ全廃・元データ完全順守版】
+   【自動追加セリフ全廃・元データ完全順守・通知画面主人公非表示対応版】
    ========================================================= */
 
 const FALLBACK_SCENE_BG = IMAGE_ASSETS.backgrounds.livingRoom;
@@ -205,7 +205,7 @@ function goToAfterDialogue() {
   }
 }
 
-// スマホ通知画面（1.5秒自動進行 ＆ タップ即時進行）
+// スマホ通知画面（要望A：主人公画像を非表示にし壁紙のみにする）
 function showPikonNotification() {
   const question = currentQuestion();
   const notifTextEl = document.getElementById("notification-text");
@@ -215,7 +215,6 @@ function showPikonNotification() {
   
   const bgImg = document.getElementById("notification-bg-image");
   const playerImg = document.getElementById("notification-player-image");
-  const phonePlayerImg = getPlayerImage("playerSmartphone");
   
   const isWallpaperOne = Math.random() < 0.5;
   const chosenWallpaper = isWallpaperOne
@@ -224,9 +223,10 @@ function showPikonNotification() {
 
   setImageSafely(bgImg, chosenWallpaper);
 
+  // 要望A対応：通知画面では主人公画像を完全に非表示（クリア＆is-hidden付与）にする
   if (playerImg) {
-    setImageSafely(playerImg, phonePlayerImg);
-    applyCharacterBlend(playerImg, phonePlayerImg);
+    playerImg.removeAttribute("src");
+    playerImg.classList.add("is-hidden");
   }
 
   const phoneFrame = document.querySelector(".smartphone-frame.tall-phone");
