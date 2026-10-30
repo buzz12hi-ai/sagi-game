@@ -1,7 +1,7 @@
 /* =========================================================
    analytics.js
    製作者用「制作・分析」データ管理・自動集計・CSV出力・リセット
-   【Step 3: Firestoreクラウド集計・変換アダプター・隔離救済UI対応版】
+   【Step 3: Firestore直接新規作成（上書き絶対阻止）対応版】
    ========================================================= */
 
 const ANALYTICS_STORAGE_KEY = "scam_hunter_analytics_v1";
@@ -11,7 +11,7 @@ const QUARANTINE_QUEUE_KEY = "scam_hunter_quarantine_queue_v1";
 const SUBMITTED_IDS_KEY = "scam_hunter_submitted_ids_v1";
 
 let principleChartInstance = null;
-let cloudAnalyticsData = null; // クラウドから取得した集計済みデータを保持
+let cloudAnalyticsData = null;
 
 // =========================================================
 // 1. セッション管理 & ストレージヘルパー
@@ -121,7 +121,7 @@ function buildSessionPayload(options = {}) {
 }
 
 // =========================================================
-// 3. 非破壊アトミック送信 & オフライン分離
+// 3. 非破壊直接新規作成 & オフライン分離
 // =========================================================
 
 async function sendSessionToFirestore(payload) {
@@ -147,13 +147,10 @@ async function sendSessionToFirestore(payload) {
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    await db.runTransaction(async (transaction) => {
-      const snap = await transaction.get(docRef);
-      if (snap.exists) {
-        throw new Error("ALREADY_EXISTS");
-      }
-      transaction.set(docRef, finalData);
-    });
+    // ★ 403の原因だった事前のgetチェックを外して直接setを実行 ★
+    // Firestoreルール側で allow update: if false; になっているため、
+    // 既存ドキュメントがあればサーバーが自動でブロックし、絶対に上書きされません。
+    await docRef.set(finalData);
 
     markSessionAsSubmitted(payload.sessionId);
     removeSessionFromOfflineQueue(payload.sessionId);
@@ -166,12 +163,6 @@ async function sendSessionToFirestore(payload) {
 async function handleSessionSendError(error, payload) {
   console.warn("[Firebase] セッション送信エラーを検知:", error);
 
-  if (error.message === "ALREADY_EXISTS") {
-    markSessionAsSubmitted(payload.sessionId);
-    removeSessionFromOfflineQueue(payload.sessionId);
-    return;
-  }
-
   const code = error.code || "";
   const isNetworkIssue = !navigator.onLine || code === "unavailable" || code === "deadline-exceeded";
 
@@ -180,32 +171,11 @@ async function handleSessionSendError(error, payload) {
     return;
   }
 
-  if (code === "permission-denied") {
-    const db = typeof getFirestoreDb === "function" ? getFirestoreDb() : null;
-    if (db) {
-      try {
-        const snap = await db.collection("game_sessions").doc(payload.sessionId).get();
-        if (snap.exists) {
-          markSessionAsSubmitted(payload.sessionId);
-          removeSessionFromOfflineQueue(payload.sessionId);
-          return;
-        }
-      } catch (e) {}
-    }
-
-    pushToQuarantineQueue({
-      sessionId: payload.sessionId,
-      payload: payload,
-      error: code
-    });
-    removeSessionFromOfflineQueue(payload.sessionId);
-    return;
-  }
-
+  // ルール拒否やその他のエラーは隔離キューへ保護
   pushToQuarantineQueue({
     sessionId: payload.sessionId,
     payload: payload,
-    error: error.message || "UNKNOWN"
+    error: code || error.message || "UNKNOWN"
   });
   removeSessionFromOfflineQueue(payload.sessionId);
 }
@@ -438,7 +408,6 @@ function buildAnalyticsFromFirestoreDocs(snapshot) {
   const docs = [];
   const seenIds = new Set();
 
-  // テストデータの混入と二重計上を除外
   snapshot.forEach(doc => {
     const d = doc.data();
     if (!seenIds.has(d.sessionId) && d.isTestMode === false) {
@@ -516,7 +485,6 @@ async function openAnalyticsModal() {
     return;
   }
 
-  // 簡易ローディング表示
   const summaryGrid = document.querySelector(".analytics-summary-grid");
   if (summaryGrid) {
     document.getElementById("stat-total-plays").textContent = "読込中...";
@@ -585,16 +553,9 @@ function checkAndRenderQuarantineQueue() {
     for (const item of qQueue) {
       try {
         const docRef = db.collection("game_sessions").doc(item.sessionId);
-        const snap = await docRef.get();
-        if (snap.exists) {
-          // すでに存在するので上書きせずキューから安全に削除
-          rescuedCount++;
-        } else {
-          // 存在しないので、サーバー時刻を再注入して新規作成（管理者権限で実行）
-          const finalData = { ...item.payload, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
-          await docRef.set(finalData);
-          rescuedCount++;
-        }
+        const finalData = { ...item.payload, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+        await docRef.set(finalData);
+        rescuedCount++;
       } catch (e) {
         console.error("[Firebase] 救済処理中にエラー:", e);
         remaining.push(item);
@@ -604,13 +565,15 @@ function checkAndRenderQuarantineQueue() {
     saveQuarantineQueue(remaining);
     alert(`${rescuedCount}件の隔離データの処理が完了しました。`);
     
-    // UIを更新
     if (remaining.length === 0) {
       const b = document.getElementById("quarantine-rescue-banner");
       if (b) b.remove();
     } else {
       checkAndRenderQuarantineQueue();
     }
+
+    // 最新のクラウドデータを再取得してダッシュボードを更新
+    openAnalyticsModal();
   };
 
   document.getElementById("btn-discard-quarantine").onclick = () => {
@@ -631,7 +594,6 @@ function closeAnalyticsModal() {
 }
 
 function renderAnalyticsDashboard() {
-  // クラウドデータが存在すればそれを使用、なければローカルデータを代替使用
   const data = cloudAnalyticsData || getAnalyticsData();
   const filterMode = document.getElementById("analytics-mode-filter") ? document.getElementById("analytics-mode-filter").value : "all";
 
