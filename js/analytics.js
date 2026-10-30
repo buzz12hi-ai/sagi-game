@@ -1,46 +1,336 @@
 /* =========================================================
    analytics.js
    製作者用「制作・分析」データ管理・自動集計・CSV出力・リセット
-   【通常プレイのみ自動記録／テストプレイは完全遮断・Googleフォーム非依存】
-   （3原則違反要因円グラフ ＆ 全10問アンケート集計・バリデーション対応版）
+   【Step 3: Firestoreクラウド集計・変換アダプター・隔離救済UI対応版】
    ========================================================= */
 
 const ANALYTICS_STORAGE_KEY = "scam_hunter_analytics_v1";
-let principleChartInstance = null;
+const OFFLINE_QUEUE_KEY = "scam_hunter_offline_queue_v1";
+const PENDING_SURVEY_KEY = "scam_hunter_pending_survey_v1";
+const QUARANTINE_QUEUE_KEY = "scam_hunter_quarantine_queue_v1";
+const SUBMITTED_IDS_KEY = "scam_hunter_submitted_ids_v1";
 
-// 分析データの初期構造（アンケート回答配列含む）
+let principleChartInstance = null;
+let cloudAnalyticsData = null; // クラウドから取得した集計済みデータを保持
+
+// =========================================================
+// 1. セッション管理 & ストレージヘルパー
+// =========================================================
+
+function generateSessionId() {
+  const ts = Date.now().toString(36);
+  const rand = Math.random().toString(36).substring(2, 10);
+  return `sess_${ts}_${rand}`;
+}
+
+function getSubmittedIds() {
+  try {
+    const raw = localStorage.getItem(SUBMITTED_IDS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function markSessionAsSubmitted(sessionId) {
+  if (!sessionId) return;
+  try {
+    const ids = getSubmittedIds();
+    if (!ids.includes(sessionId)) {
+      ids.push(sessionId);
+      localStorage.setItem(SUBMITTED_IDS_KEY, JSON.stringify(ids));
+    }
+  } catch (e) {}
+}
+
+function getOfflineQueue() {
+  try {
+    const raw = localStorage.getItem(OFFLINE_QUEUE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveOfflineQueue(queue) {
+  try {
+    localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue));
+  } catch (e) {}
+}
+
+function getQuarantineQueue() {
+  try {
+    const raw = localStorage.getItem(QUARANTINE_QUEUE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveQuarantineQueue(queue) {
+  try {
+    localStorage.setItem(QUARANTINE_QUEUE_KEY, JSON.stringify(queue));
+  } catch (e) {}
+}
+
+function pushToQuarantineQueue(item) {
+  if (!item || !item.sessionId) return;
+  const q = getQuarantineQueue();
+  if (!q.some(x => x.sessionId === item.sessionId)) {
+    q.push({
+      ...item,
+      quarantinedAt: new Date().toISOString()
+    });
+    saveQuarantineQueue(q);
+  }
+}
+
+// =========================================================
+// 2. クラウド用セッションペイロード構築
+// =========================================================
+
+function buildSessionPayload(options = {}) {
+  const auth = typeof getFirebaseAuth === "function" ? getFirebaseAuth() : null;
+  const ownerUid = (auth && auth.currentUser) ? auth.currentUser.uid : "ANONYMOUS_LOCAL";
+  const sid = state.sessionId || generateSessionId();
+  state.sessionId = sid;
+
+  return {
+    sessionId: sid,
+    ownerUid: ownerUid,
+    createdAt: new Date().toISOString(),
+    mode: state.mode || "adult",
+    playerName: (typeof getPlayerRawName === "function" ? getPlayerRawName() : (state.playerName || "あなた")).slice(0, 20),
+    deviceLayout: state.deviceLayout === "desktop" ? "desktop" : "mobile",
+    hasPlayedBefore: Boolean(state.hasPlayedBefore),
+    isCompleted: options.isCompleted !== undefined ? options.isCompleted : true,
+    dropoutDay: options.dropoutDay || null,
+    finalMoney: Math.max(-500000, Math.min(100000, Number(state.money) || 0)),
+    correctCount: Math.min(10, Math.max(0, Number(state.correctCount) || 0)),
+    fooledCount: Math.min(10, Math.max(0, Number(state.fooledCount) || 0)),
+    damages: {
+      money: Math.max(0, Number(state.damages.money) || 0),
+      personalInfo: Math.min(10, Math.max(0, Number(state.damages.personalInfo) || 0)),
+      account: Math.min(10, Math.max(0, Number(state.damages.account) || 0)),
+      line: Math.min(10, Math.max(0, Number(state.damages.line) || 0))
+    },
+    answers: Array.isArray(state.answeredQuestions) ? state.answeredQuestions.slice(0, 10) : [],
+    survey: options.survey || null,
+    isTestMode: false
+  };
+}
+
+// =========================================================
+// 3. 非破壊アトミック送信 & オフライン分離
+// =========================================================
+
+async function sendSessionToFirestore(payload) {
+  if (state.isTestMode || payload.isTestMode) return;
+
+  const db = typeof getFirestoreDb === "function" ? getFirestoreDb() : null;
+  const isOnline = navigator.onLine && (typeof isFirebaseCloudReady === "function" ? isFirebaseCloudReady() : false);
+
+  if (!db || !isOnline) {
+    enqueueOfflineSession(payload);
+    return;
+  }
+
+  const submittedIds = getSubmittedIds();
+  if (submittedIds.includes(payload.sessionId)) {
+    return;
+  }
+
+  try {
+    const docRef = db.collection("game_sessions").doc(payload.sessionId);
+    const finalData = {
+      ...payload,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    await db.runTransaction(async (transaction) => {
+      const snap = await transaction.get(docRef);
+      if (snap.exists) {
+        throw new Error("ALREADY_EXISTS");
+      }
+      transaction.set(docRef, finalData);
+    });
+
+    markSessionAsSubmitted(payload.sessionId);
+    removeSessionFromOfflineQueue(payload.sessionId);
+    console.log("[Firebase] セッションの新規保存に成功しました:", payload.sessionId);
+  } catch (error) {
+    handleSessionSendError(error, payload);
+  }
+}
+
+async function handleSessionSendError(error, payload) {
+  console.warn("[Firebase] セッション送信エラーを検知:", error);
+
+  if (error.message === "ALREADY_EXISTS") {
+    markSessionAsSubmitted(payload.sessionId);
+    removeSessionFromOfflineQueue(payload.sessionId);
+    return;
+  }
+
+  const code = error.code || "";
+  const isNetworkIssue = !navigator.onLine || code === "unavailable" || code === "deadline-exceeded";
+
+  if (isNetworkIssue) {
+    enqueueOfflineSession(payload);
+    return;
+  }
+
+  if (code === "permission-denied") {
+    const db = typeof getFirestoreDb === "function" ? getFirestoreDb() : null;
+    if (db) {
+      try {
+        const snap = await db.collection("game_sessions").doc(payload.sessionId).get();
+        if (snap.exists) {
+          markSessionAsSubmitted(payload.sessionId);
+          removeSessionFromOfflineQueue(payload.sessionId);
+          return;
+        }
+      } catch (e) {}
+    }
+
+    pushToQuarantineQueue({
+      sessionId: payload.sessionId,
+      payload: payload,
+      error: code
+    });
+    removeSessionFromOfflineQueue(payload.sessionId);
+    return;
+  }
+
+  pushToQuarantineQueue({
+    sessionId: payload.sessionId,
+    payload: payload,
+    error: error.message || "UNKNOWN"
+  });
+  removeSessionFromOfflineQueue(payload.sessionId);
+}
+
+function enqueueOfflineSession(payload) {
+  if (state.isTestMode || payload.isTestMode) return;
+  const queue = getOfflineQueue();
+  if (!queue.some(item => item.sessionId === payload.sessionId)) {
+    queue.push({
+      sessionId: payload.sessionId,
+      payload: payload,
+      queuedAt: new Date().toISOString()
+    });
+    saveOfflineQueue(queue);
+    console.log("[Firebase] オフラインキューにセッションを退避しました:", payload.sessionId);
+  }
+}
+
+function removeSessionFromOfflineQueue(sessionId) {
+  const queue = getOfflineQueue().filter(item => item.sessionId !== sessionId);
+  saveOfflineQueue(queue);
+}
+
+async function flushOfflineQueue() {
+  if (state.isTestMode) return;
+  if (!navigator.onLine || (typeof isFirebaseCloudReady === "function" && !isFirebaseCloudReady())) return;
+
+  const queue = getOfflineQueue();
+  if (queue.length === 0) return;
+
+  console.log(`[Firebase] オフラインキュー (${queue.length}件) の再送を試行します...`);
+  for (const item of queue) {
+    if (!item.payload.isTestMode) {
+      await sendSessionToFirestore(item.payload);
+    } else {
+      removeSessionFromOfflineQueue(item.sessionId);
+    }
+  }
+}
+
+// =========================================================
+// 4. アンケート前離脱保護（ステージングバッファ）
+// =========================================================
+
+function stagePendingSession() {
+  if (state.isTestMode) return;
+  const payload = buildSessionPayload({ isCompleted: true, survey: null });
+  try {
+    localStorage.setItem(PENDING_SURVEY_KEY, JSON.stringify(payload));
+  } catch (e) {}
+}
+
+function commitFinalSession(surveyAnswers = null) {
+  if (state.isTestMode) return;
+
+  let payload = null;
+  try {
+    const raw = localStorage.getItem(PENDING_SURVEY_KEY);
+    if (raw) payload = JSON.parse(raw);
+  } catch (e) {}
+
+  if (!payload) {
+    payload = buildSessionPayload({ isCompleted: true, survey: surveyAnswers });
+  } else {
+    payload.survey = surveyAnswers;
+  }
+
+  try {
+    localStorage.removeItem(PENDING_SURVEY_KEY);
+  } catch (e) {}
+
+  sendSessionToFirestore(payload);
+}
+
+function commitDropoutSession(dropoutDay) {
+  if (state.isTestMode) return;
+
+  try {
+    localStorage.removeItem(PENDING_SURVEY_KEY);
+  } catch (e) {}
+
+  const payload = buildSessionPayload({
+    isCompleted: false,
+    dropoutDay: dropoutDay || "月",
+    survey: null
+  });
+
+  sendSessionToFirestore(payload);
+}
+
+function reclaimPendingSurveySession() {
+  if (state.isTestMode) return;
+
+  try {
+    const raw = localStorage.getItem(PENDING_SURVEY_KEY);
+    if (raw) {
+      const payload = JSON.parse(raw);
+      localStorage.removeItem(PENDING_SURVEY_KEY);
+      if (!payload.isTestMode) {
+        console.log("[Firebase] 前回のアンケート未回答セッションを回収・確定送信します:", payload.sessionId);
+        sendSessionToFirestore(payload);
+      }
+    }
+  } catch (e) {}
+}
+
+// =========================================================
+// 5. 既存ローカル分析データ管理（代替描画用に維持）
+// =========================================================
+
 function getDefaultAnalyticsData() {
   return {
     totalPlays: 0,
     completedPlays: 0,
     totalScoreSum: 0,
-    modePlays: {
-      elementary: 0,
-      teen: 0,
-      adult: 0,
-      senior: 0
-    },
-    modeClears: {
-      elementary: 0,
-      teen: 0,
-      adult: 0,
-      senior: 0
-    },
-    questionStats: {}, // { [qId]: { attempts: 0, corrects: 0 } }
-    dropoutsByDay: {
-      "月": 0, "火": 0, "水": 0, "木": 0, "金": 0, "土": 0, "日": 0
-    },
-    principleFailures: {
-      speak: 0,
-      pay: 0,
-      fooled: 0
-    },
-    surveys: [], // 受講者アンケート全回答履歴
+    modePlays: { elementary: 0, teen: 0, adult: 0, senior: 0 },
+    modeClears: { elementary: 0, teen: 0, adult: 0, senior: 0 },
+    questionStats: {},
+    dropoutsByDay: { "月": 0, "火": 0, "水": 0, "木": 0, "金": 0, "土": 0, "日": 0 },
+    principleFailures: { speak: 0, pay: 0, fooled: 0 },
+    surveys: [],
     lastUpdated: new Date().toISOString()
   };
 }
 
-// データ取得
 function getAnalyticsData() {
   try {
     const raw = localStorage.getItem(ANALYTICS_STORAGE_KEY);
@@ -56,27 +346,24 @@ function getAnalyticsData() {
       surveys: Array.isArray(parsed.surveys) ? parsed.surveys : []
     };
   } catch (e) {
-    console.warn("[Analytics] データの読み込みに失敗しました:", e);
     return getDefaultAnalyticsData();
   }
 }
 
-// データ保存
 function saveAnalyticsData(data) {
   try {
     data.lastUpdated = new Date().toISOString();
     localStorage.setItem(ANALYTICS_STORAGE_KEY, JSON.stringify(data));
-  } catch (e) {
-    console.warn("[Analytics] データの保存に失敗しました:", e);
-  }
+  } catch (e) {}
 }
-
-/* =========================================================
-   データ記録用フック（※通常プレイ時のみ実行・テスト時は完全遮断）
-   ========================================================= */
 
 function recordAnalyticsGameStart(mode) {
   if (state.isTestMode) return;
+
+  reclaimPendingSurveySession();
+
+  state.sessionId = generateSessionId();
+  state.isSessionSubmitted = false;
 
   const data = getAnalyticsData();
   data.totalPlays += 1;
@@ -86,9 +373,8 @@ function recordAnalyticsGameStart(mode) {
   saveAnalyticsData(data);
 }
 
-function recordAnalyticsAnswer(questionId, isCorrect, principleTag) {
-  if (state.isTestMode) return;
-  if (!questionId) return;
+function recordAnalyticsAnswer(questionId, isCorrect, principleTag, answerDetail) {
+  if (state.isTestMode || !questionId) return;
 
   const data = getAnalyticsData();
   if (!data.questionStats[questionId]) {
@@ -128,7 +414,6 @@ function recordAnalyticsClear(finalMoney) {
   saveAnalyticsData(data);
 }
 
-// アンケート回答の保存（通常プレイ時のみ保存）
 function recordSurveySubmission(answers) {
   if (state.isTestMode) return;
 
@@ -140,37 +425,216 @@ function recordSurveySubmission(answers) {
     ...answers
   });
   saveAnalyticsData(data);
+
+  commitFinalSession(answers);
 }
 
-/* =========================================================
-   制作・分析画面の集計 ＆ UI描画
-   ========================================================= */
+// =========================================================
+// 6. クラウドデータ変換アダプター (Firestore -> 既存集計構造)
+// =========================================================
 
-function openAnalyticsModal() {
+function buildAnalyticsFromFirestoreDocs(snapshot) {
+  const data = getDefaultAnalyticsData();
+  const docs = [];
+  const seenIds = new Set();
+
+  // テストデータの混入と二重計上を除外
+  snapshot.forEach(doc => {
+    const d = doc.data();
+    if (!seenIds.has(d.sessionId) && d.isTestMode === false) {
+      seenIds.add(d.sessionId);
+      docs.push(d);
+    }
+  });
+
+  data.totalPlays = docs.length;
+
+  docs.forEach(doc => {
+    if (data.modePlays[doc.mode] !== undefined) {
+      data.modePlays[doc.mode] += 1;
+    }
+
+    if (doc.isCompleted) {
+      data.completedPlays += 1;
+      data.totalScoreSum += (Number(doc.finalMoney) || 0);
+      if (data.modeClears[doc.mode] !== undefined) {
+        data.modeClears[doc.mode] += 1;
+      }
+    } else {
+      if (doc.dropoutDay && data.dropoutsByDay[doc.dropoutDay] !== undefined) {
+        data.dropoutsByDay[doc.dropoutDay] += 1;
+      }
+    }
+
+    if (Array.isArray(doc.answers)) {
+      doc.answers.forEach(ans => {
+        const qId = ans.questionId;
+        if (!data.questionStats[qId]) {
+          data.questionStats[qId] = { attempts: 0, corrects: 0 };
+        }
+        data.questionStats[qId].attempts += 1;
+        if (ans.isCorrect) {
+          data.questionStats[qId].corrects += 1;
+        } else {
+          const pTag = ans.principleTag;
+          if (pTag && data.principleFailures[pTag] !== undefined) {
+            data.principleFailures[pTag] += 1;
+          }
+        }
+      });
+    }
+
+    if (doc.survey) {
+      data.surveys.push({
+        submittedAt: doc.survey.submittedAt || (doc.createdAt ? new Date(doc.createdAt.seconds * 1000).toLocaleString("ja-JP") : ""),
+        playerName: doc.playerName,
+        mode: doc.mode,
+        ...doc.survey
+      });
+    }
+  });
+
+  return data;
+}
+
+// =========================================================
+// 7. UI描画・ダッシュボード・CSV・隔離データ救済
+// =========================================================
+
+async function openAnalyticsModal() {
   const modal = document.getElementById("analytics-modal");
   if (!modal) return;
 
-  renderAnalyticsDashboard();
+  const db = typeof getFirestoreDb === "function" ? getFirestoreDb() : null;
+  const isOnline = navigator.onLine;
+
+  if (!db || !isOnline) {
+    alert("オフラインのため、クラウドデータの取得に失敗しました。ローカルデータを表示します。");
+    cloudAnalyticsData = null;
+    renderAnalyticsDashboard();
+    modal.classList.remove("is-hidden");
+    return;
+  }
+
+  // 簡易ローディング表示
+  const summaryGrid = document.querySelector(".analytics-summary-grid");
+  if (summaryGrid) {
+    document.getElementById("stat-total-plays").textContent = "読込中...";
+    document.getElementById("stat-clear-rate").textContent = "読込中...";
+    document.getElementById("stat-avg-score").textContent = "読込中...";
+    document.getElementById("stat-survey-count").textContent = "読込中...";
+  }
+  
   modal.classList.remove("is-hidden");
+
+  try {
+    const snapshot = await db.collection("game_sessions").get();
+    cloudAnalyticsData = buildAnalyticsFromFirestoreDocs(snapshot);
+    renderAnalyticsDashboard();
+    checkAndRenderQuarantineQueue();
+  } catch (error) {
+    console.error("[Firebase] データ取得エラー:", error);
+    alert("クラウドデータの取得に失敗しました。権限がないか通信エラーです。ローカルデータを表示します。");
+    cloudAnalyticsData = null;
+    renderAnalyticsDashboard();
+  }
+}
+
+function checkAndRenderQuarantineQueue() {
+  let banner = document.getElementById("quarantine-rescue-banner");
+  if (banner) banner.remove();
+
+  const qQueue = getQuarantineQueue();
+  if (qQueue.length === 0) return;
+
+  const container = document.querySelector(".analytics-body");
+  const actionBar = document.querySelector(".analytics-actions-bar");
+  
+  banner = document.createElement("div");
+  banner.id = "quarantine-rescue-banner";
+  banner.style.cssText = "background: #FFF5F5; border: 2px solid #E85C4A; padding: 12px; border-radius: 8px; margin-bottom: 16px;";
+  
+  banner.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <strong style="color: #E85C4A;">⚠️ 未反映の隔離データが ${qQueue.length} 件あります</strong>
+        <p style="margin: 4px 0 0; font-size: 13px; color: #4A5A7C;">ルール違反や通信エラーで弾かれたデータです。確認してクラウドへ反映できます。</p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="btn-rescue-quarantine" style="background: #E85C4A; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer;">クラウドに反映</button>
+        <button id="btn-discard-quarantine" style="background: #FFFFFF; color: #E85C4A; border: 1px solid #E85C4A; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer;">破棄する</button>
+      </div>
+    </div>
+  `;
+  
+  container.insertBefore(banner, actionBar.nextSibling);
+
+  document.getElementById("btn-rescue-quarantine").onclick = async () => {
+    const db = typeof getFirestoreDb === "function" ? getFirestoreDb() : null;
+    if (!db) {
+      alert("データベースに接続できません。");
+      return;
+    }
+    const btn = document.getElementById("btn-rescue-quarantine");
+    btn.textContent = "処理中...";
+    btn.disabled = true;
+
+    const remaining = [];
+    let rescuedCount = 0;
+    
+    for (const item of qQueue) {
+      try {
+        const docRef = db.collection("game_sessions").doc(item.sessionId);
+        const snap = await docRef.get();
+        if (snap.exists) {
+          // すでに存在するので上書きせずキューから安全に削除
+          rescuedCount++;
+        } else {
+          // 存在しないので、サーバー時刻を再注入して新規作成（管理者権限で実行）
+          const finalData = { ...item.payload, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+          await docRef.set(finalData);
+          rescuedCount++;
+        }
+      } catch (e) {
+        console.error("[Firebase] 救済処理中にエラー:", e);
+        remaining.push(item);
+      }
+    }
+    
+    saveQuarantineQueue(remaining);
+    alert(`${rescuedCount}件の隔離データの処理が完了しました。`);
+    
+    // UIを更新
+    if (remaining.length === 0) {
+      const b = document.getElementById("quarantine-rescue-banner");
+      if (b) b.remove();
+    } else {
+      checkAndRenderQuarantineQueue();
+    }
+  };
+
+  document.getElementById("btn-discard-quarantine").onclick = () => {
+    if (confirm("テスト時のゴミデータなどを破棄しますか？この操作は取り消せません。")) {
+      saveQuarantineQueue([]);
+      const b = document.getElementById("quarantine-rescue-banner");
+      if (b) b.remove();
+    }
+  };
 }
 
 function closeAnalyticsModal() {
   const modal = document.getElementById("analytics-modal");
-  if (modal) {
-    modal.classList.add("is-hidden");
-  }
+  if (modal) modal.classList.add("is-hidden");
   if (typeof isDevAuthenticated !== "undefined" && isDevAuthenticated) {
-    if (typeof openDevDashboard === "function") {
-      openDevDashboard();
-    }
+    if (typeof openDevDashboard === "function") openDevDashboard();
   }
 }
 
 function renderAnalyticsDashboard() {
-  const data = getAnalyticsData();
+  // クラウドデータが存在すればそれを使用、なければローカルデータを代替使用
+  const data = cloudAnalyticsData || getAnalyticsData();
   const filterMode = document.getElementById("analytics-mode-filter") ? document.getElementById("analytics-mode-filter").value : "all";
 
-  // 1. サマリー計算
   const totalPlays = data.totalPlays;
   const completedPlays = data.completedPlays;
   const clearRate = totalPlays > 0 ? ((completedPlays / totalPlays) * 100).toFixed(1) : 0;
@@ -182,13 +646,11 @@ function renderAnalyticsDashboard() {
   document.getElementById("stat-avg-score").textContent = `¥${avgScore.toLocaleString()}`;
   document.getElementById("stat-survey-count").textContent = `${surveyCount.toLocaleString()} 件`;
 
-  // 2. モード別プレイ数
   document.getElementById("stat-mode-elementary").textContent = `${data.modePlays.elementary || 0} 回`;
   document.getElementById("stat-mode-teen").textContent = `${data.modePlays.teen || 0} 回`;
   document.getElementById("stat-mode-adult").textContent = `${data.modePlays.adult || 0} 回`;
   document.getElementById("stat-mode-senior").textContent = `${data.modePlays.senior || 0} 回`;
 
-  // 3. 曜日別離脱率
   const dropContainer = document.getElementById("analytics-drop-chart");
   if (dropContainer) {
     dropContainer.innerHTML = "";
@@ -198,7 +660,6 @@ function renderAnalyticsDashboard() {
     days.forEach(day => {
       const dropCount = data.dropoutsByDay[day] || 0;
       const rate = totalDrops > 0 ? ((dropCount / totalDrops) * 100).toFixed(1) : 0;
-
       const row = document.createElement("div");
       row.className = "drop-chart-row";
       row.innerHTML = `
@@ -212,17 +673,11 @@ function renderAnalyticsDashboard() {
     });
   }
 
-  // 4. 防犯3原則 違反要因の円グラフ描画
   renderPrincipleChart(data);
-
-  // 5. アンケート全10問の集計ダッシュボード描画
   renderSurveyDashboard(data);
-
-  // 6. 問題別正答率の計算＆リスト生成
   renderQuestionStatsList(data, filterMode);
 }
 
-/* 防犯3原則 違反要因円グラフのハイブリッド描画 */
 function renderPrincipleChart(data) {
   const container = document.getElementById("principle-chart-container");
   if (!container) return;
@@ -236,8 +691,8 @@ function renderPrincipleChart(data) {
   if (total === 0) {
     container.innerHTML = `
       <p class="principle-empty-notice">
-        ※ まだ通常プレイでの不正解（被害データ）が記録されていません。<br>
-        通常プレイで被害が発生すると、3原則の弱点内訳が自動で円グラフ化されます。
+        ※ まだプレイでの不正解（被害データ）が記録されていません。<br>
+        プレイで被害が発生すると、3原則の弱点内訳が自動で円グラフ化されます。
       </p>
     `;
     return;
@@ -276,7 +731,6 @@ function renderPrincipleChart(data) {
     </div>
   `;
 
-  // 方式2: Chart.js が利用可能な場合
   if (typeof window.Chart !== "undefined") {
     const canvas = document.createElement("canvas");
     canvas.id = "analytics-principle-canvas";
@@ -284,9 +738,7 @@ function renderPrincipleChart(data) {
     container.appendChild(canvasBox);
     container.appendChild(legendBox);
 
-    if (principleChartInstance) {
-      principleChartInstance.destroy();
-    }
+    if (principleChartInstance) principleChartInstance.destroy();
 
     try {
       principleChartInstance = new Chart(canvas, {
@@ -305,22 +757,15 @@ function renderPrincipleChart(data) {
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => ` ${ctx.label}: ${ctx.raw}件`
-              }
-            }
+            tooltip: { callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.raw}件` } }
           },
           cutout: "55%"
         }
       });
       return;
-    } catch (e) {
-      console.warn("[Analytics] Chart.js描画に失敗、自作SVGにフォールバックします:", e);
-    }
+    } catch (e) {}
   }
 
-  // 方式1: オフライン等でChart.jsがない場合の自作SVGフォールバック描画
   canvasBox.innerHTML = createSvgDonutChart([
     { value: speak, color: "#E85C4A" },
     { value: pay, color: "#D9534F" },
@@ -331,10 +776,8 @@ function renderPrincipleChart(data) {
   container.appendChild(legendBox);
 }
 
-// 自作SVGドーナツ円グラフ生成
 function createSvgDonutChart(slices, total) {
   let cumulativePercent = 0;
-
   function getCoordinatesForPercent(percent) {
     const x = Math.cos(2 * Math.PI * percent);
     const y = Math.sin(2 * Math.PI * percent);
@@ -368,7 +811,6 @@ function createSvgDonutChart(slices, total) {
   `;
 }
 
-// アンケート全10問の集計レンダラー
 function renderSurveyDashboard(data) {
   const container = document.getElementById("survey-analytics-dashboard");
   if (!container) return;
@@ -436,7 +878,6 @@ function renderSurveyDashboard(data) {
 
   container.appendChild(grid);
 
-  // 自由記述（Q5, Q10）の一覧表示
   const textReviewsBox = document.createElement("div");
   textReviewsBox.className = "survey-text-reviews-container";
   
@@ -503,19 +944,6 @@ function renderQuestionStatsList(data, filterMode) {
     });
   });
 
-  const validRanked = calculatedStats.filter(s => s.attempts >= 1);
-  validRanked.sort((a, b) => (a.rate || 0) - (b.rate || 0));
-
-  const worstEl = document.getElementById("stat-worst-question");
-  if (worstEl) {
-    if (validRanked.length > 0) {
-      const worst = validRanked[0];
-      worstEl.textContent = `${worst.modeLabel} Q${worst.qNum} (${worst.rate}%)`;
-    } else {
-      worstEl.textContent = "データなし";
-    }
-  }
-
   calculatedStats.forEach(q => {
     const rateText = q.rate !== null ? `${q.rate}%` : "未プレイ";
     const attemptsText = `${q.corrects} / ${q.attempts}問 正解`;
@@ -568,11 +996,8 @@ function launchDirectQuestion(questionId, modeKey) {
   state.mode = modeKey;
   const shell = document.getElementById("app-shell");
   if (shell) {
-    if (modeKey === "senior") {
-      shell.classList.add("is-senior-mode");
-    } else {
-      shell.classList.remove("is-senior-mode");
-    }
+    if (modeKey === "senior") shell.classList.add("is-senior-mode");
+    else shell.classList.remove("is-senior-mode");
   }
 
   if (modeKey === "senior" || modeKey === "adult") {
@@ -623,14 +1048,12 @@ function launchDirectQuestion(questionId, modeKey) {
   continueEventFlow();
 }
 
-/* CSVエクスポート（プレイ統計 ＋ 受講者アンケート全回答出力） */
 function exportAnalyticsCSV() {
-  const data = getAnalyticsData();
+  const data = cloudAnalyticsData || getAnalyticsData();
   let csv = "\uFEFF";
   csv += "SCAM HUNTER - プレイ分析・受講者アンケート総合データエクスポート\n";
   csv += `エクスポート日時,${new Date().toLocaleString("ja-JP")}\n\n`;
 
-  // 基本サマリー
   csv += "【基本サマリー】\n";
   csv += `総プレイ回数,${data.totalPlays}\n`;
   csv += `クリア回数,${data.completedPlays}\n`;
@@ -638,27 +1061,23 @@ function exportAnalyticsCSV() {
   csv += `平均スコア,¥${data.completedPlays > 0 ? Math.round(data.totalScoreSum / data.completedPlays) : 0}\n`;
   csv += `アンケート回答数,${data.surveys.length}\n\n`;
 
-  // モード別
   csv += "【モード別プレイ数】\n";
   csv += `小学生モード,${data.modePlays.elementary || 0}\n`;
   csv += `中高生モード,${data.modePlays.teen || 0}\n`;
   csv += `一般モード,${data.modePlays.adult || 0}\n`;
   csv += `高齢者モード,${data.modePlays.senior || 0}\n\n`;
 
-  // 防犯3原則 違反要因
   csv += "【防犯3原則 違反要因内訳】\n";
   csv += `「話さない」違反（情報流出）,${data.principleFailures.speak || 0}件\n`;
   csv += `「渡さない」違反（金銭振込・電子マネー）,${data.principleFailures.pay || 0}件\n`;
   csv += `「騙されない」違反（虚偽説明を信じた）,${data.principleFailures.fooled || 0}件\n\n`;
 
-  // 曜日別離脱
   csv += "【曜日別離脱数】\n";
   Object.entries(data.dropoutsByDay).forEach(([day, count]) => {
     csv += `${day}曜日,${count}人\n`;
   });
   csv += "\n";
 
-  // 問題別詳細
   csv += "【問題別正答率】\n";
   csv += "モード,問題番号,問題ID,タイトル,回答数,正解数,正答率\n";
 
@@ -676,7 +1095,6 @@ function exportAnalyticsCSV() {
   });
   csv += "\n";
 
-  // 受講者アンケート全回答シート
   csv += "【受講者アンケート全回答データ（全10問）】\n";
   csv += "回答日時,受講者名,プレイモード,Q1(意識変化),Q2(3原則理解),Q3(実践意欲),Q4(満足度),Q5(印象・感想),Q6(見分け理解),Q7(難問把握),Q8(解説有用性),Q9(共有意欲),Q10(改善要望)\n";
 
@@ -716,21 +1134,18 @@ function exportAnalyticsCSV() {
 }
 
 function resetAnalyticsData() {
-  if (confirm("【警告】蓄積されたプレイ分析およびアンケート回答データをすべてリセット（初期化）しますか？\n※この操作は取り消せません。")) {
+  if (confirm("【警告】ローカルの蓄積データをリセットしますか？\n※クラウドのデータは削除されません。")) {
     saveAnalyticsData(getDefaultAnalyticsData());
+    cloudAnalyticsData = null;
     renderAnalyticsDashboard();
-    alert("すべての分析データを初期化しました。");
+    alert("ローカルの分析データを初期化しました。");
   }
 }
 
-/* =========================================================
-   アンケートUI制御 ＆ バリデーション初期化
-   ========================================================= */
 function initSurveyFormEvents() {
   const form = document.getElementById("game-survey-form");
   if (!form) return;
 
-  // ピル型ボタンの選択状態トグル
   form.querySelectorAll(".pill-options-group").forEach(group => {
     const hiddenInp = group.parentElement.querySelector("input[type='hidden']");
     group.querySelectorAll(".pill-btn").forEach(btn => {
@@ -743,7 +1158,6 @@ function initSurveyFormEvents() {
     });
   });
 
-  // 送信ボタンクリック時の必須バリデーションと保存
   const submitBtn = document.getElementById("btn-submit-survey");
   if (submitBtn) {
     submitBtn.addEventListener("click", () => {
@@ -771,7 +1185,6 @@ function initSurveyFormEvents() {
 
       if (alertMsg) alertMsg.classList.add("is-hidden");
 
-      // 回答オブジェクトの構築
       const answers = {
         q1: form.querySelector("input[name='q1']").value,
         q2: form.querySelector("input[name='q2']").value,
@@ -782,12 +1195,12 @@ function initSurveyFormEvents() {
         q7: form.querySelector("input[name='q7']").value,
         q8: form.querySelector("input[name='q8']").value,
         q9: form.querySelector("input[name='q9']").value,
-        q10: form.querySelector("textarea[name='q10']").value.trim()
+        q10: form.querySelector("textarea[name='q10']").value.trim(),
+        submittedAt: new Date().toISOString()
       };
 
       recordSurveySubmission(answers);
 
-      // サンクスカードへ切り替え
       form.classList.add("is-hidden");
       const thanksCard = document.getElementById("survey-thanks-card");
       if (thanksCard) {
@@ -798,6 +1211,14 @@ function initSurveyFormEvents() {
   }
 }
 
+window.addEventListener("online", () => {
+  flushOfflineQueue();
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   initSurveyFormEvents();
+  setTimeout(() => {
+    reclaimPendingSurveySession();
+    flushOfflineQueue();
+  }, 1000);
 });

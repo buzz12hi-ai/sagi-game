@@ -1,7 +1,7 @@
 /* =========================================================
    ending.js
    お買い物判定・エンディングランク計算・結果発表・#9110案内・アンケートスキップ
-   （中高生モードのみアンケート強制・他モードは常時スキップ対応版）
+   【Step 2: 保留ステージング・スキップ/リタイア確定送信フック対応版】
    ========================================================= */
 
 function showShoppingScreen() {
@@ -44,7 +44,7 @@ function calculateRank(correctCount, total) {
   return { rank: "D", title: "要注意レベル", class: "rank-d" };
 }
 
-// ⑪ エンディング画面の描画
+// エンディング画面の描画および保留ステージング
 function showEnding() {
   const card = document.getElementById("ending-card");
   const totalQuestions = state.weeklyQuestions.length;
@@ -56,10 +56,26 @@ function showEnding() {
   const isPerfect = (state.fooledCount === 0 && state.damages.money === 0);
   const canAfford = isPerfect || (isNoShopMode ? (state.money === 50000) : (state.money >= (item ? item.price : 0)));
 
-  const endingCharacter = getPlayerImage(canAfford ? "playerHappy" : "playerSad");
+  // 結果とランクに応じてジョー君の表情を切り替える
+  let endingCharacterSrc = "";
+  if (rankInfo.rank === "S") {
+    endingCharacterSrc = getJoeImage("happy");
+  } else if (rankInfo.rank === "A" || rankInfo.rank === "B") {
+    endingCharacterSrc = getJoeImage("cheer");
+  } else if (rankInfo.rank === "C") {
+    endingCharacterSrc = getJoeImage("worry");
+  } else {
+    endingCharacterSrc = getJoeImage("sad");
+  }
 
+  // 1. 既存ローカル集計用クリア記録
   if (typeof recordAnalyticsClear === "function") {
     recordAnalyticsClear(state.money);
+  }
+
+  // 2. クラウド用: アンケート未回答離脱防止のステージング保存（analytics.js側の関数）
+  if (typeof stagePendingSession === "function") {
+    stagePendingSession();
   }
 
   const joeCommentEl = document.getElementById("ending-joe-comment");
@@ -75,7 +91,7 @@ function showEnding() {
     } else if (state.mode === "elementary") {
       joeCommentEl.innerHTML = canAfford
         ? `${getPlayerDisplayName()}、1<ruby>週間<rt>しゅうかん</rt></ruby><ruby>本当<rt>ほんとう</rt></ruby>によく<ruby>頑張<rt>がんば</rt></ruby>ったね！ すばらしい<ruby>防犯<rt>ぼうはん</rt></ruby>パワーだよ！`
-        : `${getPlayerDisplayName()}、<ruby>今回<rt>こんかい</rt></ruby>は<ruby>残念<rt>ざんねん</rt></ruby>だったね。でも<ruby>学<rt>まな</rt></ruby>んだことは <ruby>次<rt>つぎ</rt></ruby>にかならず<ruby>役立<rt>やくだ</rt></ruby>つよ！`;
+        : `${getPlayerDisplayName()}、<ruby>今回<rt>こんかい</rt></ruby>は<ruby>残念<rt>ざんねん</rt></ruby>だったね。でも<ruby>学<rt>まな</rt></ruby>んだことは <ruby>次<rt>つぎ</rt></ruby>にかならず<ruby>役立<rt>yaku</rt></ruby>つよ！`;
     } else {
       joeCommentEl.textContent = canAfford
         ? `${getPlayerDisplayName()}、1週間本当によく頑張ったね！素晴らしい防犯意識だよ！`
@@ -127,7 +143,7 @@ function showEnding() {
 
   const police9110HTML = `
     <div class="police-9110-ending-banner">
-      <div class="banner-icon-badge">🚨 警察相談窓口のご案内</div>
+      <div class="banner-icon-badge">🚨 警察相談窓口</div>
       <p class="banner-body-text">
         日頃の生活で「これって詐欺かな？」と怪しい連絡や不安を感じたときは、<br>
         全国共通の<strong>警察相談専用電話「#9110」</strong>または最寄りの警察署・交番へご相談ください。
@@ -141,7 +157,7 @@ function showEnding() {
   if (isNoShopMode) {
     visualHTML = `
       <div class="ending-visual">
-        <img class="ending-character-image" src="${endingCharacter}" alt="結果">
+        <img class="ending-character-image" src="${endingCharacterSrc}" alt="結果">
       </div>
     `;
     titleHTML = `
@@ -152,7 +168,7 @@ function showEnding() {
   } else {
     visualHTML = `
       <div class="ending-visual">
-        <img class="ending-character-image" src="${endingCharacter}" alt="結果">
+        <img class="ending-character-image" src="${endingCharacterSrc}" alt="結果">
         ${itemVisualHTML(item, "ending-item-photo")}
       </div>
     `;
@@ -197,12 +213,10 @@ function showEnding() {
     ${police9110HTML}
   `;
 
-  // ★ エンディング下部のアクションボタン制御（中高生モードのみアンケート強制・他モードは常時スキップ可能） ★
   const btnGroup = document.getElementById("ending-btn-group");
   if (btnGroup) {
     btnGroup.innerHTML = "";
 
-    // 中高生モード（"teen"）以外、またはテストモード時は常にスキップボタンを表示
     const showSkipButton = (state.mode !== "teen" || state.isTestMode);
 
     if (showSkipButton) {
@@ -214,6 +228,10 @@ function showEnding() {
         if (state.isTestMode) {
           exitTestMode();
         } else {
+          // アンケートスキップ時：survey: null として確定送信
+          if (typeof commitFinalSession === "function") {
+            commitFinalSession(null);
+          }
           restartGame();
         }
       };
@@ -252,8 +270,16 @@ function showSurveyScreen() {
 
 function handleRetire() {
   if (confirm("途中でリタイアして最初からやり直しますか？")) {
+    const slot = currentScheduleSlot();
+    const dropoutDay = slot ? slot.weekdayName : "月";
+
+    // 1. 既存ローカル離脱記録
     if (typeof recordAnalyticsDropout === "function") {
       recordAnalyticsDropout();
+    }
+    // 2. クラウド用: リタイア確定送信（analytics.js側の関数）
+    if (typeof commitDropoutSession === "function") {
+      commitDropoutSession(dropoutDay);
     }
     restartGame();
   }
@@ -273,6 +299,8 @@ function restartGame() {
   state.damages = { money: 0, personalInfo: 0, account: 0, line: 0 };
   state.answeredQuestions = [];
   state.isTestMode = false;
+  state.sessionId = null;
+  state.isSessionSubmitted = false;
 
   const badge = document.getElementById("test-mode-badge");
   const drawer = document.getElementById("test-controller-drawer");

@@ -1,7 +1,7 @@
 /* =========================================================
    event.js
    問題出題・選択肢回答判定・ダメージ計算・結果表示・進行制御
-   （通常プレイ厳格集計・3原則違反タグ連携・透視描画版）
+   （詳細回答ログ保持・非同期連携対応版）
    ========================================================= */
 
 function showEvent() {
@@ -79,7 +79,7 @@ function renderChoices(question) {
     btn.className = "choice-btn";
     btn.type = "button";
 
-    // 3原則透視タグがONの場合のバッジと枠線クラス付与
+    // 3原則透視タグ表示
     if (state.isTestMode && state.showPrincipleTags) {
       let badgeHTML = "";
       if (choice.type === "correct") {
@@ -148,7 +148,7 @@ function getReactionComment(choiceType) {
   return shuffleArray(options)[0];
 }
 
-// ⑨ 選択後の解説・所持金増減・ダメージ処理（通常時のみ分析集計へ厳格連携）
+// 選択後の判定・集計・被害計算
 function handleChoice(choice) {
   const question = currentQuestion();
 
@@ -174,14 +174,20 @@ function handleChoice(choice) {
     }
   }
 
-  state.answeredQuestions.push({
+  // Firestoreルールのホワイトリスト検証を満たす詳細回答オブジェクトの構造化
+  const answerDetail = {
     questionId: question.id,
-    isCorrect: isCorrect
-  });
+    isCorrect: isCorrect,
+    principleTag: choice.principleTag || "safe",
+    damageType: choice.damageType || null,
+    money: Number(choice.money) || 0
+  };
 
-  // 通常プレイ時のみ記録関数へ引き渡す（3原則違反要因タグも渡す）
+  state.answeredQuestions.push(answerDetail);
+
+  // 分析モジュールへ記録
   if (typeof recordAnalyticsAnswer === "function") {
-    recordAnalyticsAnswer(question.id, isCorrect, choice.principleTag);
+    recordAnalyticsAnswer(question.id, isCorrect, choice.principleTag, answerDetail);
   }
 
   const popOverlay = document.getElementById("instant-pop-overlay");

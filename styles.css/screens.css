@@ -1,8 +1,8 @@
 /* =========================================================
    screens.css
    各画面レイアウト
-   （タイトル、デバイス選択、2択経験確認［デザイン強化］、モード選択、名前入力、欲しい物選択、
-    ステージ、あらすじ、曜日イントロ、日常行動、スマホ通知［サイズ縮小・バイブ大型化］、
+   （タイトル、デバイス選択、2択経験確認、モード選択、名前入力、欲しい物選択、
+    ステージ、あらすじ、曜日イントロ、日常行動、スマホ通知［サイズ拡大・バイブ大型化］、
     買い物、エンディング、#9110案内、全10問アンケート対応版）
    ========================================================= */
 
@@ -1335,25 +1335,25 @@
 }
 
 /* =========================================================
-   スマホ通知画面（適度なサイズ縮小 ＆ 迫力のあるバイブアニメーション）
+   スマホ通知画面（サイズを拡大・迫力のあるバイブアニメーション）
    ========================================================= */
 .phone-screen-container {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 0;
+  padding: 10px 0;
 }
 
 .smartphone-frame.tall-phone {
   width: 100%;
-  max-width: 270px;
-  height: 420px;
-  max-height: 70vh;
+  max-width: 320px;
+  height: 520px;
+  max-height: 80vh;
   background: #0B1426;
-  border: 9px solid #1C2B4A;
-  border-radius: 32px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  border: 10px solid #1C2B4A;
+  border-radius: 36px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
   position: relative;
   overflow: hidden;
   display: flex;

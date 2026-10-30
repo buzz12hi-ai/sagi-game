@@ -1,7 +1,7 @@
 /* =========================================================
    story.js
    会話・あらすじ・自己紹介・通知・週末ふりかえりストーリー演出
-   【主人公のみ3文会話 ＆ 通知画面1.5秒自動進行版】
+   【自動追加セリフ全廃・元データ完全順守版】
    ========================================================= */
 
 const FALLBACK_SCENE_BG = IMAGE_ASSETS.backgrounds.livingRoom;
@@ -11,36 +11,6 @@ let notificationAutoTimer = null;
 
 function getDisplaySpeakerName(speaker) {
   return (speaker === "主人公" || speaker === "あなた") ? getPlayerRawName() : speaker;
-}
-
-// 会話を相手と主人公のみの3文構成にする
-function getFullDialogueList(question) {
-  const baseList = (question && question.dialogue) ? [...question.dialogue] : [];
-  if (baseList.length >= 3) return baseList;
-
-  const playerSpeaker = (state.mode === "senior" || state.mode === "adult") ? "あなた" : "主人公";
-
-  let extraThought = "";
-  if (question.category === "scam") {
-    extraThought = (state.mode === "senior" || state.mode === "adult")
-      ? "（急かされているが、本当に信用していいのだろうか…？ 落ち着いて慎重に確認すべきか…？）"
-      : "「なんだか怪しい気もするぞ…言われた通りにして本当に大丈夫かな…？」";
-  } else if (question.category === "real") {
-    extraThought = (state.mode === "senior" || state.mode === "adult")
-      ? "（本物の連絡に見えるが、念のため正規の公式ルートで確認したほうが安全だろうか…？）"
-      : "「いつもと少し違う気もするけど、どうやって確かめたらいいんだろう…？」";
-  } else {
-    extraThought = (state.mode === "senior" || state.mode === "adult")
-      ? "（困っている様子だが、どう対応するのが一番安全で確実だろうか…？）"
-      : "「困っているみたいだな…自分にできる正しい対応は何だろう…？」";
-  }
-
-  baseList.push({
-    speaker: playerSpeaker,
-    line: extraThought
-  });
-
-  return baseList;
 }
 
 function showJoeIntro(onNext) {
@@ -69,7 +39,7 @@ function showJoeIntro(onNext) {
     } else if (state.mode === "elementary") {
       introTextEl.innerHTML = `
         はじめまして！ ぼくは ジョーくんだよ！<br><br>
-        この1<ruby>週間<rt>しゅうかん</rt></ruby>、${getPlayerDisplayName()}を しっかりサポートするよ！<br>
+        This 1<ruby>週間<rt>しゅうかん</rt></ruby>、${getPlayerDisplayName()}を しっかりサポートするよ！<br>
         あやしい<ruby>詐欺<rt>さぎ</rt></ruby>（うそ）を<ruby>見<rt>み</rt></ruby>ぬく<ruby>力<rt>ちから</rt></ruby>を いっしょに <ruby>身<rt>み</rt></ruby>につけよう！
       `;
     } else {
@@ -169,7 +139,7 @@ function handleNarrationNext() {
   setTimeout(() => { isDialogueTransitioning = false; }, 300);
 
   const question = currentQuestion();
-  const dialogues = getFullDialogueList(question);
+  const dialogues = (question && question.dialogue) ? question.dialogue : [];
   if (dialogues.length > 0) {
     showDialogueLine();
   } else {
@@ -177,9 +147,10 @@ function handleNarrationNext() {
   }
 }
 
+// 会話表示（元データのセリフのみを正確に表示・ヒント追加なし）
 function showDialogueLine() {
   const question = currentQuestion();
-  const dialogues = getFullDialogueList(question);
+  const dialogues = (question && question.dialogue) ? question.dialogue : [];
   const line = dialogues[state.dialogueIndex];
 
   document.getElementById("dialogue-speaker").innerHTML = getDisplaySpeakerName(line.speaker);
@@ -196,7 +167,7 @@ function goToDialogueNext() {
   setTimeout(() => { isDialogueTransitioning = false; }, 300);
 
   const question = currentQuestion();
-  const dialogues = getFullDialogueList(question);
+  const dialogues = (question && question.dialogue) ? question.dialogue : [];
   state.dialogueIndex += 1;
 
   if (state.dialogueIndex < dialogues.length) {
@@ -234,7 +205,7 @@ function goToAfterDialogue() {
   }
 }
 
-// スマホ通知画面（1.5秒後に自動で進む ＆ タップでも即座に進める）
+// スマホ通知画面（1.5秒自動進行 ＆ タップ即時進行）
 function showPikonNotification() {
   const question = currentQuestion();
   const notifTextEl = document.getElementById("notification-text");
@@ -261,7 +232,6 @@ function showPikonNotification() {
   const phoneFrame = document.querySelector(".smartphone-frame.tall-phone");
   const notifCard = document.getElementById("notification-toast");
 
-  // バイブレーション開始
   if (phoneFrame) {
     phoneFrame.classList.remove("is-vibrating");
     void phoneFrame.offsetWidth;
@@ -289,13 +259,11 @@ function showPikonNotification() {
 
   const screenEl = document.getElementById("screen-notification");
 
-  // タイマーの初期化
   if (notificationAutoTimer) {
     clearTimeout(notificationAutoTimer);
     notificationAutoTimer = null;
   }
 
-  // 問題へ進むハンドラー
   const proceedToQuestion = (e) => {
     if (e) e.stopPropagation();
     if (notificationAutoTimer) {
@@ -310,7 +278,6 @@ function showPikonNotification() {
     showQuestion();
   };
 
-  // タップでも即座に進める（0.25秒後から受付）
   if (screenEl) screenEl.onclick = null;
   setTimeout(() => {
     if (screenEl) screenEl.onclick = proceedToQuestion;
@@ -318,7 +285,6 @@ function showPikonNotification() {
     if (nextBtn) nextBtn.onclick = proceedToQuestion;
   }, 250);
 
-  // ★ 1.5秒（1500ms）経過後に自動で問題画面へ進む ★
   notificationAutoTimer = setTimeout(proceedToQuestion, 1500);
 }
 
@@ -355,7 +321,7 @@ function showWeekRecap() {
         1週間の防犯チャレンジ、お疲れさまでした！<br><br>
         巧妙な税務・行政通知、サブスク架空請求、職場のサポート詐欺、投資勧誘など……<br>
         日常やビジネスに潜む数々の落とし穴に、冷静に向き合うことができましたね。<br><br>
-        それでは、1週間の防犯診断結果を確認しましょう！
+        それでは、1週間の防診断結果を確認しましょう！
       `;
     } else if (state.mode === "elementary") {
       recapTextEl.innerHTML = `

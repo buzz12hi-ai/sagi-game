@@ -1,19 +1,14 @@
 /* =========================================================
    test-mode.js
-   製作者用パスコード認証（A5158）＆ フルスクリーン管理コンソール ＆ 実演特化デバッグ制御
-   【通常プレイ復帰時フラグリセット保証対応版】
+   製作者用パスコード認証 ＆ フルスクリーン管理コンソール ＆ 実演特化デバッグ制御
+   【AA5158パスコード完全対応 ＆ Firebase Auth 連携版】
    ========================================================= */
 
-const DEV_AUTH_PASSCODE = "A5158";
-let isDevAuthenticated = false;
+// 管理者アカウント情報（固定）
+const ADMIN_EMAIL = "maikerumuxia8@gmail.com";
+const ADMIN_FIREBASE_PASSWORD = "AA5158"; // 6文字パスワード
 
-function normalizePasscode(input) {
-  if (!input) return "";
-  return input
-    .trim()
-    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-    .toUpperCase();
-}
+let isDevAuthenticated = false;
 
 function handleOpenDevAuthEntry() {
   if (isDevAuthenticated) {
@@ -29,8 +24,14 @@ function openAuthModal() {
   const modal = document.getElementById("auth-modal");
   const input = document.getElementById("auth-passcode-input");
   const errorEl = document.getElementById("auth-error-msg");
+  const descEl = document.querySelector(".auth-modal-desc");
+  
+  if (descEl) descEl.textContent = "製作者用パスコード（AA5158）を入力してください";
 
-  if (input) input.value = "";
+  if (input) {
+    input.value = "";
+    input.type = "password";
+  }
   if (errorEl) errorEl.classList.add("is-hidden");
   if (modal) modal.classList.remove("is-hidden");
 
@@ -44,29 +45,64 @@ function closeAuthModal() {
   if (modal) modal.classList.add("is-hidden");
 }
 
-function verifyAndProceed() {
+async function verifyAndProceed() {
   const input = document.getElementById("auth-passcode-input");
   const errorEl = document.getElementById("auth-error-msg");
-  const rawValue = input ? input.value : "";
-  const normalizedCode = normalizePasscode(rawValue);
+  const btn = document.getElementById("btn-auth-verify");
+  const enteredPasscode = input ? input.value.trim().toUpperCase() : "";
 
-  if (normalizedCode === DEV_AUTH_PASSCODE) {
-    if (errorEl) errorEl.classList.add("is-hidden");
+  // パスコード「AA5158」チェック
+  if (enteredPasscode !== "AA5158") {
+    if (errorEl) {
+      errorEl.textContent = "⚠️ パスコードが正しくありません。";
+      errorEl.classList.remove("is-hidden");
+    }
+    if (input) {
+      input.value = "";
+      input.focus();
+    }
+    return false;
+  }
+
+  const auth = typeof getFirebaseAuth === "function" ? getFirebaseAuth() : null;
+  if (!auth) {
+    if (errorEl) {
+      errorEl.textContent = "⚠️ クラウド通信が初期化されていません。";
+      errorEl.classList.remove("is-hidden");
+    }
+    return false;
+  }
+
+  if (btn) {
+    btn.textContent = "認証中...";
+    btn.disabled = true;
+  }
+
+  try {
+    // AA5158 で Firebase Auth ログインを実行
+    await auth.signInWithEmailAndPassword(ADMIN_EMAIL, ADMIN_FIREBASE_PASSWORD);
     isDevAuthenticated = true;
+    if (errorEl) errorEl.classList.add("is-hidden");
     closeAuthModal();
     openDevDashboard();
-    return true;
+  } catch (error) {
+    console.warn("[Firebase Auth] 管理者ログイン失敗:", error);
+    if (errorEl) {
+      errorEl.textContent = "⚠️ クラウド認証に失敗しました。パスワード設定をご確認ください。";
+      errorEl.classList.remove("is-hidden");
+    }
+    if (input) {
+      input.value = "";
+      input.focus();
+    }
+  } finally {
+    if (btn) {
+      btn.textContent = "認証して進む";
+      btn.disabled = false;
+    }
   }
-
-  if (errorEl) {
-    errorEl.textContent = "⚠️ パスコードが正しくありません。";
-    errorEl.classList.remove("is-hidden");
-  }
-  if (input) {
-    input.value = "";
-    input.focus();
-  }
-  return false;
+  
+  return isDevAuthenticated;
 }
 
 function openDevDashboard() {
@@ -84,7 +120,18 @@ function closeDevDashboard() {
   }
 }
 
-function devLogout() {
+async function devLogout() {
+  const auth = typeof getFirebaseAuth === "function" ? getFirebaseAuth() : null;
+  if (auth) {
+    try {
+      await auth.signOut();
+      if (typeof autoSignInAnonymously === "function") {
+        await autoSignInAnonymously();
+      }
+    } catch (e) {
+      console.warn("[Firebase Auth] ログアウト処理エラー:", e);
+    }
+  }
   isDevAuthenticated = false;
   closeDevDashboard();
   closeAuthModal();
@@ -230,19 +277,13 @@ function exitTestMode() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const btnOpenAuth = document.getElementById("btn-open-dev-auth");
-  if (btnOpenAuth) {
-    btnOpenAuth.onclick = handleOpenDevAuthEntry;
-  }
+  if (btnOpenAuth) btnOpenAuth.onclick = handleOpenDevAuthEntry;
 
   const btnVerify = document.getElementById("btn-auth-verify");
-  if (btnVerify) {
-    btnVerify.onclick = verifyAndProceed;
-  }
+  if (btnVerify) btnVerify.onclick = verifyAndProceed;
 
   const btnCancelAuth = document.getElementById("btn-auth-cancel");
-  if (btnCancelAuth) {
-    btnCancelAuth.onclick = closeAuthModal;
-  }
+  if (btnCancelAuth) btnCancelAuth.onclick = closeAuthModal;
 
   const authInput = document.getElementById("auth-passcode-input");
   if (authInput) {
@@ -254,7 +295,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // 管理コンソールから「通常ゲーム画面へ戻る」時：通常プレイ集計を確実に保証
   const btnDashExit = document.getElementById("btn-dash-exit-game");
   if (btnDashExit) {
     btnDashExit.onclick = () => {
@@ -264,9 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const btnDashLogout = document.getElementById("btn-dash-logout");
-  if (btnDashLogout) {
-    btnDashLogout.onclick = devLogout;
-  }
+  if (btnDashLogout) btnDashLogout.onclick = devLogout;
 
   const cardAnalytics = document.getElementById("card-dash-analytics");
   if (cardAnalytics) {
@@ -277,9 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const cardTestplay = document.getElementById("card-dash-testplay");
-  if (cardTestplay) {
-    cardTestplay.onclick = startTestPlayMode;
-  }
+  if (cardTestplay) cardTestplay.onclick = startTestPlayMode;
 
   const cardPreview = document.getElementById("card-dash-preview");
   if (cardPreview) {
@@ -290,32 +326,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const btnToggleDrawer = document.getElementById("btn-toggle-test-drawer");
-  if (btnToggleDrawer) {
-    btnToggleDrawer.onclick = toggleTestDrawer;
-  }
+  if (btnToggleDrawer) btnToggleDrawer.onclick = toggleTestDrawer;
 
   const btnJumpWeekday = document.getElementById("btn-test-jump-weekday");
-  if (btnJumpWeekday) {
-    btnJumpWeekday.onclick = jumpToSelectedWeekday;
-  }
+  if (btnJumpWeekday) btnJumpWeekday.onclick = jumpToSelectedWeekday;
 
   const btnSkipQ = document.getElementById("btn-test-skip-q");
-  if (btnSkipQ) {
-    btnSkipQ.onclick = skipCurrentQuestion;
-  }
+  if (btnSkipQ) btnSkipQ.onclick = skipCurrentQuestion;
 
   const btnToggleHints = document.getElementById("btn-test-toggle-hints");
-  if (btnToggleHints) {
-    btnToggleHints.onclick = togglePrincipleTags;
-  }
+  if (btnToggleHints) btnToggleHints.onclick = togglePrincipleTags;
 
   const btnPeekPoint = document.getElementById("btn-test-peek-point");
-  if (btnPeekPoint) {
-    btnPeekPoint.onclick = peekCurrentPoint;
-  }
+  if (btnPeekPoint) btnPeekPoint.onclick = peekCurrentPoint;
 
   const btnClosePeek = document.getElementById("btn-close-peek-point");
-  if (btnClosePeek) {
-    btnClosePeek.onclick = closePeekPointModal;
-  }
+  if (btnClosePeek) btnClosePeek.onclick = closePeekPointModal;
 });
