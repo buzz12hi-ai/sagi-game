@@ -1,0 +1,254 @@
+/* =========================================================
+   stats.css
+   大分県・全国特殊詐欺被害データ専用ページ（#screen-oita-stats）
+   （若年層・闇バイト統計、HTML/CSS棒グラフ、数値カード）
+   ========================================================= */
+
+.stats-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  padding-bottom: 16px;
+}
+
+.stats-page-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.oita-stats-panel {
+  width: 100%;
+  background: #F4F7FC;
+  border: 2.5px solid var(--color-navy);
+  border-radius: var(--radius-md);
+  padding: 16px 14px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.oita-stats-header {
+  text-align: center;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 10px;
+}
+
+.oita-stats-badge {
+  display: inline-block;
+  background: var(--color-navy);
+  color: var(--color-money);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 12.5px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+}
+
+.oita-stats-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--color-navy);
+  line-height: 1.4;
+}
+
+.oita-summary-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 560px) {
+  .oita-summary-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.oita-summary-card {
+  background: #FFFFFF;
+  border: 2px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.oita-summary-card.is-navy {
+  border-color: var(--color-navy);
+}
+
+.oita-summary-card.is-purple {
+  border-color: #7B2CBF;
+  background: #FAF5FF;
+}
+
+.oita-summary-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--color-navy-soft);
+}
+
+.oita-summary-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 900;
+  color: #C92A2A;
+}
+
+.oita-summary-card.is-navy .oita-summary-val {
+  color: var(--color-navy);
+}
+
+.oita-summary-card.is-purple .oita-summary-val {
+  color: #5A189A;
+}
+
+.oita-summary-note {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--color-navy);
+}
+
+.oita-chart-block {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.oita-chart-block.is-youth-block {
+  border: 2px solid #7B2CBF;
+  background: #FCF9FF;
+}
+
+.oita-chart-subtitle {
+  margin: 0 0 2px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--color-navy);
+  border-left: 4.5px solid var(--color-money);
+  padding-left: 8px;
+}
+
+.oita-chart-block.is-youth-block .oita-chart-subtitle {
+  border-left-color: #7B2CBF;
+  color: #3C096C;
+}
+
+.oita-chart-caption {
+  margin: 0 0 4px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--color-navy-soft);
+  font-weight: 500;
+}
+
+.oita-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.oita-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.oita-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.oita-bar-year {
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: var(--color-navy);
+}
+
+.oita-bar-numbers {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: #C92A2A;
+}
+
+.oita-bar-track {
+  width: 100%;
+  height: 14px;
+  background: #E8EEF7;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.oita-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #F5A623 0%, #D9381E 100%);
+  border-radius: 999px;
+}
+
+.oita-bar-fill.is-age {
+  background: linear-gradient(90deg, #2E9E82 0%, #1B2A4A 100%);
+}
+
+.oita-bar-fill.is-age-highlight {
+  background: linear-gradient(90deg, #E85C4A 0%, #B81D13 100%);
+}
+
+.oita-bar-fill.is-youth-highlight {
+  background: linear-gradient(90deg, #9D4EDD 0%, #5A189A 100%);
+}
+
+.oita-bar-fill.is-dark-byte {
+  background: linear-gradient(90deg, #E85C4A 0%, #9B2226 100%);
+}
+
+.oita-sub-note {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--color-navy);
+  background: #FFF9EB;
+  border: 1.5px solid rgba(245, 166, 35, 0.6);
+  padding: 9px 11px;
+  border-radius: 6px;
+}
+
+.oita-sub-note.is-purple-note {
+  background: #F3E8FF;
+  border-color: #9D4EDD;
+  color: #240046;
+}
+
+.oita-block-source {
+  margin: 2px 0 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--color-navy-soft);
+  font-weight: 700;
+}
+
+.oita-source-footer {
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--color-navy-soft);
+  border-top: 1.5px dashed var(--color-border);
+  padding-top: 10px;
+  margin: 0;
+}

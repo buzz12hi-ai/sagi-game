@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>見抜け！詐欺防犯チャレンジ</title>
 
 <!-- ★ ファビコン設定（favicon.icoの404エラーを防止） ★ -->
@@ -16,12 +16,14 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- 分割したCSSファイルの読み込み（styles.css/ フォルダ内） -->
-<link rel="stylesheet" href="styles.css/base.css?v=20260827_v4">
-<link rel="stylesheet" href="styles.css/screens.css?v=20260827_v4">
-<link rel="stylesheet" href="styles.css/event.css?v=20260827_v4">
-<link rel="stylesheet" href="styles.css/senior.css?v=20260827_v4">
-<link rel="stylesheet" href="styles.css/preview.css?v=20260827_v4">
-<link rel="stylesheet" href="styles.css/analytics.css?v=20260827_v4">
+<link rel="stylesheet" href="styles.css/base.css?v=20261119_v3">
+<link rel="stylesheet" href="styles.css/screens.css?v=20261119_v3">
+<link rel="stylesheet" href="styles.css/stats.css?v=20261119_v3">
+<link rel="stylesheet" href="styles.css/survey.css?v=20261119_v3">
+<link rel="stylesheet" href="styles.css/event.css?v=20261119_v3">
+<link rel="stylesheet" href="styles.css/senior.css?v=20261119_v3">
+<link rel="stylesheet" href="styles.css/preview.css?v=20261119_v3">
+<link rel="stylesheet" href="styles.css/analytics.css?v=20261119_v3">
 </head>
 <body>
 
@@ -35,14 +37,15 @@
       <div class="day-tracker" id="day-tracker"></div>
       <div class="status-right">
         <div id="target-item-display" class="target-item-chip is-hidden">
-          <span class="target-label">目標:</span>
+          <span class="target-label" id="target-item-label">目標:</span>
           <span id="target-item-name" class="target-name"></span>
         </div>
         <div class="wallet-chip" id="wallet-chip-box">
           <span class="wallet-icon">💰</span>
-          <span id="money-display">50,000</span><span class="yen">円</span>
+          <span id="money-display">50,000</span><span class="yen" id="money-yen-label">円</span>
           <span id="money-pop" class="money-pop is-hidden"></span>
         </div>
+        <button id="btn-status-motion-toggle" class="motion-mini-btn" type="button" title="画面の揺れ・点滅を切り替える">✨ 揺れ:ON</button>
         <button id="btn-retire" class="retire-btn" type="button">リタイア</button>
       </div>
     </header>
@@ -109,6 +112,33 @@
         </div>
       </section>
 
+      <!-- ①.08 画面の動き・点滅に関する事前設定画面 -->
+      <section id="screen-motion-setting" class="screen">
+        <div class="motion-setting-container">
+          <div class="motion-notice-badge">⚠️ 大切なお知らせ</div>
+          <h2 class="motion-setting-title">画面の揺れ・点滅について</h2>
+          <div class="motion-notice-box">
+            <p class="motion-notice-text">
+              このゲームでは、臨場感を伝えるために<strong>画面が揺れる演出</strong>や、被害発生時に<strong>画面が赤く点滅する演出</strong>が含まれています。<br><br>
+              画面の動きや光の変化が苦手な方は、下のスイッチから<strong>「控えめ（揺れ・点滅なし）」</strong>に切り替えて遊ぶことができます。
+            </p>
+          </div>
+
+          <div class="motion-switch-card">
+            <div class="motion-switch-info">
+              <span class="motion-switch-label" id="motion-switch-status-label">現在の設定：通常の演出（揺れ・点滅あり）</span>
+              <p class="motion-switch-sub">※ゲーム開始後も画面上のボタンでいつでも変更できます</p>
+            </div>
+            <button id="btn-toggle-motion" class="btn-motion-toggle" type="button" aria-pressed="false">
+              <span class="toggle-knob"></span>
+              <span class="toggle-text" id="motion-toggle-text">揺れ・点滅：ON</span>
+            </button>
+          </div>
+
+          <button id="btn-motion-next" class="btn btn-primary" type="button">モード選択へ進む ▶</button>
+        </div>
+      </section>
+
       <!-- ①.1 対象者モード選択画面（4モード対応） -->
       <section id="screen-mode-select" class="screen">
         <div class="mode-select-container">
@@ -139,7 +169,7 @@
         </div>
       </section>
 
-      <!-- ①.15 【中高生モード専用】プレイ経験確認画面（デザイン強化版） -->
+      <!-- ①.15 【中高生モード専用】プレイ経験確認画面 -->
       <section id="screen-experience-select" class="screen">
         <div class="experience-select-container">
           <div class="exp-header-badge">🏫 中高生モード・事前確認</div>
@@ -172,7 +202,7 @@
           <img id="name-guide-image" class="story-player-image is-center" alt="ジョーくん">
           <div class="story-textbox">
             <p class="story-textbox-speaker">ジョーくん</p>
-            <p class="story-textbox-text">こんにちは！<br>君の名前を教えて！</p>
+            <p class="story-textbox-text" id="name-input-prompt">こんにちは！<br>君の名前を教えて！</p>
           </div>
         </div>
         <div class="name-input-panel">
@@ -198,16 +228,31 @@
         <button id="btn-intro-next" class="btn btn-primary">次へ進む</button>
       </section>
 
+      <!-- ①.8 ルール説明画面（小学生・中高生モード専用） -->
+      <section id="screen-rules" class="screen">
+        <div class="rules-container">
+          <div class="rules-header-strip">
+            <img id="rules-guide-image" class="guide-strip-image is-hidden" alt="ジョーくん">
+            <div class="guide-bubble guide-bubble-inline">
+              <p class="story-textbox-speaker">ジョーくん</p>
+              <p class="guide-bubble-line" id="rules-joe-lead">チャレンジを始める前に、ルールを確認しよう！</p>
+            </div>
+          </div>
+          <div class="rules-card" id="rules-card-body"></div>
+          <button id="btn-rules-next" class="btn btn-primary" type="button">目標を選びに行く ▶</button>
+        </div>
+      </section>
+
       <!-- ② 欲しい物を選択する画面 -->
       <section id="screen-item" class="screen">
         <div class="item-intro">
-          <h2 class="item-intro-title">1週間後、欲しいものを買えるかな？</h2>
-          <p class="item-intro-sub">今週のおこづかい50,000円を守って、買い物に挑戦しよう！</p>
+          <h2 class="item-intro-title" id="item-intro-title">1週間後、欲しいものを買えるかな？</h2>
+          <p class="item-intro-sub" id="item-intro-sub">今週のおこづかい50,000円を守って、買い物に挑戦しよう！</p>
         </div>
         <div class="guide-strip">
           <img id="item-guide-image" class="guide-strip-image is-hidden" alt="ジョーくん">
           <div class="guide-bubble guide-bubble-inline">
-            <p class="guide-bubble-line">何を買いたい？目標を選ぼう！</p>
+            <p class="guide-bubble-line" id="item-guide-line">何を買いたい？目標を選ぼう！</p>
           </div>
         </div>
         <div id="item-list" class="item-list-container"></div>
@@ -219,7 +264,7 @@
           <img id="synopsis-bg-image" class="story-bg-image is-hidden" alt="">
 
           <div class="story-panel synopsis-full-scroll-panel">
-            <p class="story-panel-title">これまでのあらすじ</p>
+            <p class="story-panel-title" id="synopsis-panel-title">これまでのあらすじ</p>
             <div class="story-panel-scroll synopsis-scroll-box">
               <p class="story-panel-text synopsis-large-text" id="synopsis-card"></p>
             </div>
@@ -255,7 +300,7 @@
           <img id="action-guide-image" class="story-player-image is-bottom-left is-hidden" alt="ジョーくん">
 
           <div class="action-choice-overlay" id="action-choice-overlay">
-            <p class="choice-prompt">今日の行動を選ぼう！（正解・不正解はありません）</p>
+            <p class="choice-prompt" id="action-choice-prompt">今日の行動を選ぼう！（正解・不正解はありません）</p>
             <div class="action-choice-grid" id="action-choice-list"></div>
           </div>
 
@@ -282,7 +327,7 @@
         <button id="btn-narration-next" class="btn btn-primary">次へ</button>
       </section>
 
-      <!-- ⑥ キャラクター会話画面（主人公＝左側固定） -->
+      <!-- ⑥ キャラクター会話画面（主人公＝左側固定・前へ/次へ並列ボタン） -->
       <section id="screen-dialogue" class="screen">
         <div class="story-stage" id="dialogue-stage">
           <img id="dialogue-bg-image" class="story-bg-image is-hidden" alt="">
@@ -293,7 +338,10 @@
             <p class="story-textbox-text" id="dialogue-line"></p>
           </div>
         </div>
-        <button id="btn-dialogue-next" class="btn btn-primary">次へ</button>
+        <div class="dialogue-btn-group">
+          <button id="btn-dialogue-prev" class="btn btn-secondary btn-dialogue-prev" type="button">◀ 前へ</button>
+          <button id="btn-dialogue-next" class="btn btn-primary btn-dialogue-next" type="button">次へ ▶</button>
+        </div>
       </section>
 
       <!-- ⑦ スマホ通知画面 -->
@@ -316,14 +364,14 @@
 
             <div class="phone-lock-clock">
               <p class="phone-big-time">12:34</p>
-              <p class="phone-date-text">10月15日(月)</p>
+              <p class="phone-date-text" id="phone-date-text">10月15日(月)</p>
             </div>
 
             <div class="phone-notification-card pikon-anim-super" id="notification-toast">
               <div class="phone-app-header">
                 <span class="app-icon">💬</span>
-                <span class="app-name">メッセージ</span>
-                <span class="app-time">たった今</span>
+                <span class="app-name" id="phone-app-name">メッセージ</span>
+                <span class="app-time" id="phone-app-time">たった今</span>
               </div>
               <div class="phone-card-body">
                 <span class="notification-icon" id="notification-icon">🔔</span>
@@ -332,7 +380,7 @@
             </div>
 
             <div class="phone-bottom-bubble">
-              <p class="guide-bubble-line">あ、スマホが鳴った！通知をチェックしよう。</p>
+              <p class="guide-bubble-line" id="phone-bottom-guide-line">あ、スマホが鳴った！通知をチェックしよう。</p>
             </div>
           </div>
         </div>
@@ -354,7 +402,7 @@
             <img id="event-screenshot-image" class="event-screenshot-image is-hidden" alt="画面">
             
             <div class="zoom-hint-badge is-hidden" id="zoom-hint-badge">
-              <span>🔍 ピンチ・タップで拡大</span>
+              <span id="zoom-hint-text">🔍 ピンチ・タップで拡大</span>
             </div>
 
             <div class="joe-support-bubble" id="joe-support-bubble">
@@ -373,7 +421,7 @@
 
             <button id="btn-open-log-event" class="btn-review-log btn-review-log-in-event" type="button">📜 直前の会話・通知を見直す</button>
 
-            <p class="choice-prompt">あなたなら、どうする？</p>
+            <p class="choice-prompt" id="event-choice-prompt">あなたなら、どうする？</p>
             <div id="choice-list" class="choice-list choice-center-list"></div>
           </div>
         </div>
@@ -381,7 +429,7 @@
         <div class="thinking-overlay is-hidden" id="thinking-overlay">
           <div class="thinking-card">
             <div class="spinner"></div>
-            <p class="thinking-text">判断中...</p>
+            <p class="thinking-text" id="thinking-text">判断中...</p>
           </div>
         </div>
 
@@ -420,9 +468,9 @@
             <p class="result-point-text" id="result-point"></p>
           </div>
 
-          <div class="police-9110-result-banner">
-            <div class="banner-icon-badge">🚨 警察相談窓口</div>
-            <p class="banner-body-text">
+          <div class="police-9110-result-banner" id="police-9110-result-banner">
+            <div class="banner-icon-badge" id="result-9110-badge">🚨 警察相談窓口</div>
+            <p class="banner-body-text" id="result-9110-text">
               不審な電話やメール、お金の話で少しでも迷ったら<br>
               <strong>警察相談専用電話「#9110」</strong>または最寄りの警察署へすぐ相談！
             </p>
@@ -440,8 +488,10 @@
           <img id="week-recap-bg-image" class="story-bg-image is-hidden" alt="">
           <img id="week-recap-player-image" class="story-player-image is-center is-hidden" alt="">
           <img id="week-recap-guide-image" class="story-player-image is-bottom-left is-hidden" alt="ジョーくん">
-          <div class="story-textbox">
-            <p class="narration-text" id="week-recap-text"></p>
+        </div>
+        <div class="week-recap-panel">
+          <div class="week-recap-text-scroll">
+            <p class="week-recap-body-text" id="week-recap-text"></p>
           </div>
         </div>
         <button id="btn-week-recap-next" class="btn btn-primary">次へ進む</button>
@@ -449,7 +499,7 @@
 
       <!-- ⑩ 買い物イベント（小学生・中高生モードのみ） -->
       <section id="screen-shopping" class="screen">
-        <h2 class="screen-heading">日曜日：お買い物タイム</h2>
+        <h2 class="screen-heading" id="shopping-heading">日曜日：お買い物タイム</h2>
         <div class="story-stage" id="shopping-stage">
           <img id="shopping-bg-image" class="story-bg-image is-hidden" alt="">
           <img id="shopping-player-image" class="story-player-image is-center is-hidden" alt="">
@@ -463,11 +513,26 @@
         <div class="guide-strip">
           <img id="ending-guide-image" class="guide-strip-image is-hidden" alt="ジョーくん">
           <div class="guide-bubble guide-bubble-inline">
-            <p class="guide-bubble-line" id="ending-joe-comment">1週間,よく頑張ったね！</p>
+            <p class="guide-bubble-line" id="ending-joe-comment">1週間、よく頑張ったね！</p>
           </div>
         </div>
         <div class="ending-card" id="ending-card"></div>
         <div class="ending-action-btn-group" id="ending-btn-group"></div>
+      </section>
+
+      <!-- ⑪.5 大分県・全国の詐欺被害データ専用ページ（結果画面の後・アンケートの前） -->
+      <section id="screen-oita-stats" class="screen">
+        <div class="stats-page-wrapper">
+          <div class="guide-strip">
+            <img id="stats-guide-image" class="guide-strip-image is-hidden" alt="ジョーくん">
+            <div class="guide-bubble guide-bubble-inline">
+              <p class="story-textbox-speaker" id="stats-joe-speaker">ジョーくん</p>
+              <p class="guide-bubble-line" id="stats-joe-comment"></p>
+            </div>
+          </div>
+          <div id="stats-page-container" class="stats-page-container"></div>
+          <div class="ending-action-btn-group" id="stats-page-btn-group"></div>
+        </div>
       </section>
 
       <!-- ⑫ ゲーム内完結アンケート画面 -->
@@ -480,9 +545,9 @@
             </div>
             <div class="survey-header-dialog">
               <span class="dialog-speaker">ジョーくん</span>
-              <p class="dialog-text">
+              <p class="dialog-text" id="survey-header-text">
                 1週間本当にお疲れさまでした！<br>
-                学んだことや感じたことを教えてほしいジョー！（全10問・約1分）
+                学んだことや感じたことを教えてほしいな！（全10問・約1分）
               </p>
             </div>
           </header>
@@ -491,15 +556,15 @@
             
             <div class="survey-section-card">
               <div class="section-card-badge">PART A</div>
-              <h3 class="section-card-title">🛡️ 防犯意識・行動の変化</h3>
+              <h3 class="section-card-title" id="survey-parta-title">🛡️ 防犯意識・行動の変化</h3>
               
               <div class="survey-q-item" data-qid="q1" data-required="true">
                 <div class="q-label-row">
                   <span class="q-num">Q1</span>
-                  <p class="q-title">このゲームをプレイして、詐欺に騙されないようにしようという意識は高まりましたか？</p>
-                  <span class="req-badge">必須</span>
+                  <p class="q-title" id="survey-q1-title">このゲームをプレイして、詐欺に騙されないようにしようという意識は高まりましたか？</p>
+                  <span class="req-badge" id="survey-req-1">必須</span>
                 </div>
-                <div class="pill-options-group">
+                <div class="pill-options-group" id="survey-q1-opts">
                   <button type="button" class="pill-btn" data-val="1">大いに高まった</button>
                   <button type="button" class="pill-btn" data-val="2">高まった</button>
                   <button type="button" class="pill-btn" data-val="3">あまり変わらない</button>
@@ -511,10 +576,10 @@
               <div class="survey-q-item" data-qid="q2" data-required="true">
                 <div class="q-label-row">
                   <span class="q-num">Q2</span>
-                  <p class="q-title">警察の防犯3原則（話さない・騙されない・渡さない）は分かりやすかったですか？</p>
-                  <span class="req-badge">必須</span>
+                  <p class="q-title" id="survey-q2-title">警察の防犯3原則（話さない・騙されない・渡さない）は分かりやすかったですか？</p>
+                  <span class="req-badge" id="survey-req-2">必須</span>
                 </div>
-                <div class="pill-options-group">
+                <div class="pill-options-group" id="survey-q2-opts">
                   <button type="button" class="pill-btn" data-val="1">とても分かりやすかった</button>
                   <button type="button" class="pill-btn" data-val="2">分かりやすかった</button>
                   <button type="button" class="pill-btn" data-val="3">少し難しかった</button>
@@ -526,10 +591,10 @@
               <div class="survey-q-item" data-qid="q3" data-required="true">
                 <div class="q-label-row">
                   <span class="q-num">Q3</span>
-                  <p class="q-title">今後、怪しい電話・メール・訪問があった場合、落ち着いて確認・相談できそうですか？</p>
-                  <span class="req-badge">必須</span>
+                  <p class="q-title" id="survey-q3-title">今後、怪しい電話・メール・訪問があった場合、落ち着いて確認・相談できそうですか？</p>
+                  <span class="req-badge" id="survey-req-3">必須</span>
                 </div>
-                <div class="pill-options-group">
+                <div class="pill-options-group" id="survey-q3-opts">
                   <button type="button" class="pill-btn" data-val="1">必ず確認・相談する</button>
                   <button type="button" class="pill-btn" data-val="2">気をつけて行動する</button>
                   <button type="button" class="pill-btn" data-val="3">少し不安がある</button>
@@ -540,15 +605,15 @@
 
             <div class="survey-section-card">
               <div class="section-card-badge">PART B</div>
-              <h3 class="section-card-title">📖 ゲームの分かりやすさ・難易度・解説</h3>
+              <h3 class="section-card-title" id="survey-partb-title">📖 ゲームの分かりやすさ・難易度・解説</h3>
 
               <div class="survey-q-item" data-qid="q4" data-required="true">
                 <div class="q-label-row">
                   <span class="q-num">Q4</span>
-                  <p class="q-title">ゲーム全体の分かりやすさや満足度はどうでしたか？</p>
-                  <span class="req-badge">必須</span>
+                  <p class="q-title" id="survey-q4-title">ゲーム全体の分かりやすさや満足度はどうでしたか？</p>
+                  <span class="req-badge" id="survey-req-4">必須</span>
                 </div>
-                <div class="pill-options-group">
+                <div class="pill-options-group" id="survey-q4-opts">
                   <button type="button" class="pill-btn" data-val="1">大変満足</button>
                   <button type="button" class="pill-btn" data-val="2">満足</button>
                   <button type="button" class="pill-btn" data-val="3">普通</button>
@@ -560,10 +625,10 @@
               <div class="survey-q-item" data-qid="q6" data-required="true">
                 <div class="q-label-row">
                   <span class="q-num">Q6</span>
-                  <p class="q-title">ゲームをプレイする前と比べて、詐欺かどうかを見分けるポイントが分かるようになりましたか？</p>
-                  <span class="req-badge">必須</span>
+                  <p class="q-title" id="survey-q6-title">ゲームをプレイする前と比べて、詐欺かどうかを見分けるポイントが分かるようになりましたか？</p>
+                  <span class="req-badge" id="survey-req-6">必須</span>
                 </div>
-                <div class="pill-options-group">
+                <div class="pill-options-group" id="survey-q6-opts">
                   <button type="button" class="pill-btn" data-val="1">とても分かるようになった</button>
                   <button type="button" class="pill-btn" data-val="2">少し分かるようになった</button>
                   <button type="button" class="pill-btn" data-val="3">あまり変わらない</button>
@@ -575,10 +640,10 @@
               <div class="survey-q-item" data-qid="q7" data-required="true">
                 <div class="q-label-row">
                   <span class="q-num">Q7</span>
-                  <p class="q-title">ゲームの中で、判断が難しいと感じた問題はありましたか？</p>
-                  <span class="req-badge">必須</span>
+                  <p class="q-title" id="survey-q7-title">ゲームの中で、判断が難しいと感じた問題はありましたか？</p>
+                  <span class="req-badge" id="survey-req-7">必須</span>
                 </div>
-                <div class="pill-options-group">
+                <div class="pill-options-group" id="survey-q7-opts">
                   <button type="button" class="pill-btn" data-val="1">たくさんあった</button>
                   <button type="button" class="pill-btn" data-val="2">いくつかあった</button>
                   <button type="button" class="pill-btn" data-val="3">あまりなかった</button>
@@ -590,10 +655,10 @@
               <div class="survey-q-item" data-qid="q8" data-required="true">
                 <div class="q-label-row">
                   <span class="q-num">Q8</span>
-                  <p class="q-title">問題の答えや解説は、詐欺への対策を理解するのに役立ちましたか？</p>
-                  <span class="req-badge">必須</span>
+                  <p class="q-title" id="survey-q8-title">問題の答えや解説は、詐欺への対策を理解するのに役立ちましたか？</p>
+                  <span class="req-badge" id="survey-req-8">必須</span>
                 </div>
-                <div class="pill-options-group">
+                <div class="pill-options-group" id="survey-q8-opts">
                   <button type="button" class="pill-btn" data-val="1">とても役立った</button>
                   <button type="button" class="pill-btn" data-val="2">役立った</button>
                   <button type="button" class="pill-btn" data-val="3">あまり役立たなかった</button>
@@ -605,15 +670,15 @@
 
             <div class="survey-section-card">
               <div class="section-card-badge">PART C</div>
-              <h3 class="section-card-title">💬 周囲への共有・感想・改善点</h3>
+              <h3 class="section-card-title" id="survey-partc-title">💬 周囲への共有・感想・改善点</h3>
 
               <div class="survey-q-item" data-qid="q9" data-required="true">
                 <div class="q-label-row">
                   <span class="q-num">Q9</span>
-                  <p class="q-title">ゲームで学んだ詐欺対策を、家族や友人にも伝えたいと思いましたか？</p>
-                  <span class="req-badge">必須</span>
+                  <p class="q-title" id="survey-q9-title">ゲームで学んだ詐欺対策を、家族や友人にも伝えたいと思いましたか？</p>
+                  <span class="req-badge" id="survey-req-9">必須</span>
                 </div>
-                <div class="pill-options-group">
+                <div class="pill-options-group" id="survey-q9-opts">
                   <button type="button" class="pill-btn" data-val="1">ぜひ伝えたい</button>
                   <button type="button" class="pill-btn" data-val="2">できれば伝えたい</button>
                   <button type="button" class="pill-btn" data-val="3">あまり思わない</button>
@@ -625,19 +690,19 @@
               <div class="survey-q-item" data-qid="q5">
                 <div class="q-label-row">
                   <span class="q-num">Q5</span>
-                  <p class="q-title">一番印象に残った詐欺の手口や、学んだ感想があれば教えてください。</p>
-                  <span class="opt-badge">任意</span>
+                  <p class="q-title" id="survey-q5-title">一番印象に残った詐欺の手口や、学んだ感想があれば教えてください。</p>
+                  <span class="opt-badge" id="survey-opt-5">任意</span>
                 </div>
-                <textarea name="q5" class="survey-textarea" rows="3" placeholder="例: 警察を騙るLINEの偽逮捕状がリアルで驚いた、など"></textarea>
+                <textarea name="q5" id="survey-q5-textarea" class="survey-textarea" rows="3" placeholder="例: 警察を騙るメッセージアプリの偽逮捕状がリアルで驚いた、など"></textarea>
               </div>
 
               <div class="survey-q-item" data-qid="q10">
                 <div class="q-label-row">
                   <span class="q-num">Q10</span>
-                  <p class="q-title">ゲームをもっと分かりやすく、役立つものにするために、改善してほしい点があれば教えてください。</p>
-                  <span class="opt-badge">任意</span>
+                  <p class="q-title" id="survey-q10-title">ゲームをもっと分かりやすく、役立つものにするために、改善してほしい点があれば教えてください。</p>
+                  <span class="opt-badge" id="survey-opt-10">任意</span>
                 </div>
-                <textarea name="q10" class="survey-textarea" rows="3" placeholder="例: 選択肢の文字をもっと大きくしてほしい、もっと手口を増やしてほしい、など"></textarea>
+                <textarea name="q10" id="survey-q10-textarea" class="survey-textarea" rows="3" placeholder="例: 選択肢の文字をもっと大きくしてほしい、もっと手口を増やしてほしい、など"></textarea>
               </div>
             </div>
 
@@ -650,8 +715,8 @@
 
           <div id="survey-thanks-card" class="survey-thanks-card is-hidden">
             <span class="thanks-icon">🎉</span>
-            <h3 class="thanks-title">アンケートにご協力いただき、誠にありがとうございました！</h3>
-            <p class="thanks-desc">いただいた貴重なご意見は、今後の防犯教材・研究の改善に役立てさせていただきます。</p>
+            <h3 class="thanks-title" id="survey-thanks-title">アンケートにご協力いただき、誠にありがとうございました！</h3>
+            <p class="thanks-desc" id="survey-thanks-desc">いただいた貴重なご意見は、今後の防犯教材・研究の改善に役立てさせていただきます。</p>
             <button id="btn-restart" class="btn btn-primary btn-thanks-restart" type="button">🎮 もう一度遊ぶ</button>
           </div>
 
@@ -664,7 +729,7 @@
     <div id="image-modal" class="image-modal-overlay is-hidden">
       <div class="image-modal-dialog">
         <div class="image-modal-controls">
-          <span class="image-modal-hint">🔍 ピンチ / タップで拡大</span>
+          <span class="image-modal-hint" id="image-modal-hint">🔍 ピンチ / タップで拡大</span>
           <div class="image-modal-btn-group">
             <button id="btn-zoom-reset" class="image-modal-zoom-btn" type="button">↺ 等倍</button>
             <button id="btn-close-image-modal" class="image-modal-close" type="button">✕ 閉じる</button>
@@ -680,18 +745,18 @@
     <div id="log-modal" class="log-modal-overlay is-hidden">
       <div class="log-modal-dialog">
         <header class="log-modal-header">
-          <h3>📜 直前のやり取り（会話ログ）</h3>
+          <h3 id="log-modal-title">📜 直前のやり取り（会話ログ）</h3>
           <button id="btn-close-log-modal" class="log-modal-close" type="button">✕ 閉じる</button>
         </header>
         <div class="log-modal-body" id="log-modal-content"></div>
       </div>
     </div>
 
-    <!-- 製作者用 パスコード認証モーダル（A5158） -->
+    <!-- 製作者用 パスコード認証モーダル -->
     <div id="auth-modal" class="auth-modal-overlay is-hidden">
       <div class="auth-modal-window">
         <h3 class="auth-modal-title">🔐 製作者認証</h3>
-        <p class="auth-modal-desc">製作者用パスコード（5文字）を入力してください</p>
+        <p class="auth-modal-desc">製作者用パスコードを入力してください</p>
         <input type="password" id="auth-passcode-input" class="auth-input-field" maxlength="10" placeholder="•••••">
         <p id="auth-error-msg" class="auth-error-msg is-hidden">⚠️ パスコードが正しくありません。</p>
         <div class="auth-btn-group">
@@ -973,24 +1038,28 @@
   </div>
 
   <!-- スクリプト群 -->
-  <script src="js/assets.js?v=20260827_v4"></script>
-  <script src="js/data.js?v=20260827_v4"></script>
-  <script src="js/state.js?v=20260827_v4"></script>
-  <script src="js/ui.js?v=20260827_v4"></script>
-  <script src="js/story.js?v=20260827_v4"></script>
-  <script src="js/analytics.js?v=20260827_v4"></script>
-  <script src="js/test-mode.js?v=20260827_v4"></script>
-  <script src="js/setup.js?v=20260827_v4"></script>
-  <script src="js/event.js?v=20260827_v4"></script>
-  <script src="js/ending.js?v=20260827_v4"></script>
-  <script src="js/validator.js?v=20260827_v4"></script>
-  <script src="js/preview.js?v=20260827_v4"></script>
-  <script src="js/main.js?v=20260827_v4"></script>
+  <script src="js/assets.js?v=20261119_v3"></script>
+  <script src="js/data-common.js?v=20261119_v3"></script>
+  <script src="js/data-elementary.js?v=20261119_v3"></script>
+  <script src="js/data-teen.js?v=20261119_v3"></script>
+  <script src="js/data-adult.js?v=20261119_v3"></script>
+  <script src="js/data-senior.js?v=20261119_v3"></script>
+  <script src="js/state.js?v=20261119_v3"></script>
+  <script src="js/ui.js?v=20261119_v3"></script>
+  <script src="js/story.js?v=20261119_v3"></script>
+  <script src="js/analytics.js?v=20261119_v3"></script>
+  <script src="js/test-mode.js?v=20261119_v3"></script>
+  <script src="js/setup.js?v=20261119_v3"></script>
+  <script src="js/event.js?v=20261119_v3"></script>
+  <script src="js/ending.js?v=20261119_v3"></script>
+  <script src="js/validator.js?v=20261119_v3"></script>
+  <script src="js/preview.js?v=20261119_v3"></script>
+  <script src="js/main.js?v=20261119_v3"></script>
 
   <!-- Firebase SDK (Compat版 CDN) と 初期化スクリプト -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-init.js?v=20260827_v4"></script>
+  <script src="js/firebase-init.js?v=20261119_v3"></script>
 </body>
 </html>

@@ -1,0 +1,263 @@
+/* =========================================================
+   survey.css
+   全10問 ゲーム内完結アンケート画面専用スタイル（#screen-survey）
+   ========================================================= */
+
+.survey-screen-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding-bottom: 30px;
+}
+
+.survey-screen-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-money);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.survey-header-avatar img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.survey-header-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dialog-speaker {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--color-money);
+  background: var(--color-navy);
+  padding: 1px 8px;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+
+.dialog-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-navy);
+  font-weight: 700;
+}
+
+.survey-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.survey-section-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  padding: 16px 14px 18px;
+  box-shadow: 0 4px 14px rgba(27, 42, 74, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.section-card-badge {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 900;
+  color: #FFFFFF;
+  background: var(--color-navy-soft);
+  padding: 2px 8px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.section-card-title {
+  margin: -8px 0 0;
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 900;
+  color: var(--color-navy);
+  border-bottom: 2px solid var(--color-bg);
+  padding-bottom: 6px;
+}
+
+.survey-q-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.survey-q-item.is-invalid {
+  border-color: var(--color-danger);
+  background: #FFF5F5;
+  animation: shakeAnim 0.35s ease-in-out;
+}
+
+@keyframes shakeAnim {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.q-label-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.q-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 13px;
+  color: #FFFFFF;
+  background: var(--color-navy);
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.q-title {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: var(--color-navy);
+  flex: 1;
+}
+
+.req-badge {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 900;
+  color: #FFFFFF;
+  background: var(--color-danger);
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.opt-badge {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--color-navy-soft);
+  background: #E4E9F3;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.pill-options-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+
+@media (min-width: 540px) {
+  .pill-options-group {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.pill-btn {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--color-navy-soft);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.pill-btn:hover {
+  border-color: var(--color-money);
+  color: var(--color-navy);
+  background: #FFFDF8;
+}
+
+.pill-btn.is-selected {
+  background: var(--color-navy) !important;
+  color: #FFFFFF !important;
+  border-color: var(--color-navy) !important;
+  box-shadow: 0 3px 10px rgba(27, 42, 74, 0.25);
+}
+
+.survey-textarea {
+  width: 100%;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-navy);
+  background: #FFFFFF;
+  outline: none;
+  resize: vertical;
+}
+
+.survey-textarea:focus {
+  border-color: var(--color-money);
+  box-shadow: 0 0 8px rgba(245, 166, 35, 0.3);
+}
+
+.survey-validation-alert {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--color-danger);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.btn-submit-game-survey {
+  padding: 16px 28px !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  margin-top: 6px;
+}
+
+.survey-thanks-card {
+  background: #FFFFFF;
+  border: 3px solid var(--color-safe);
+  border-radius: var(--radius-md);
+  padding: 30px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-card);
+  animation: fadeIn 0.4s var(--ease-gentle);
+}
+
+.thanks-icon { font-size: 44px; }
+.thanks-title { margin: 0; font-family: var(--font-display); font-size: 18px; font-weight: 900; color: var(--color-navy); }
+.thanks-desc { margin: 0; font-size: 14px; color: var(--color-navy-soft); line-height: 1.6; }
+.btn-thanks-restart { margin-top: 10px; width: 100%; max-width: 300px; }

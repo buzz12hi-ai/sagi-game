@@ -1,11 +1,17 @@
 /* =========================================================
    state.js
    ゲーム状態管理・出題バランス抽出ロジック
-   （既プレイ確認フラグ hasPlayedBefore 対応版）
+   （揺れ・点滅控えめ設定 reduceMotion 対応版）
    ========================================================= */
+
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  window.matchMedia &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const state = {
   deviceLayout: "mobile",
+  reduceMotion: Boolean(prefersReducedMotion),
   hasPlayedBefore: false,
   mode: "adult",
   playerName: "",
@@ -16,10 +22,10 @@ const state = {
   slotIndex: 0,
   dialogueIndex: 0,
   correctCount: 0,
-  
+
   joeExpression: "normal",
   selectedAction: null,
-  
+
   damages: {
     money: 0,
     personalInfo: 0,

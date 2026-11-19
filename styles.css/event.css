@@ -1,12 +1,9 @@
 /* =========================================================
    event.css
    イベント問題画面・選択肢・判定演出・結果解説・画像拡大モーダル・会話ログモーダル
-   （被害発生時の激しい赤フラッシュ・グリッチ振動演出強化版）
+   （揺れ控えめ時の静止警告表示 is-danger-static 対応版）
    ========================================================= */
 
-/* =========================================================
-   イベント（問題）画面レイアウト
-   ========================================================= */
 #screen-event {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -51,7 +48,6 @@
   }
 }
 
-/* ビジュアル枠（タップ・クリックで全画面拡大可能） */
 .event-visual {
   position: relative;
   width: 100%;
@@ -118,7 +114,6 @@
   transform: scale(1.02);
 }
 
-/* 「🔍 ピンチ・タップで拡大」バッジ */
 .zoom-hint-badge {
   position: absolute;
   bottom: 10px;
@@ -161,7 +156,6 @@
 .joe-support-icon { font-size: 14px; }
 .joe-support-text { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--color-navy); }
 
-/* 選択肢パネル */
 .choice-center-box {
   display: flex;
   flex-direction: column;
@@ -204,7 +198,6 @@
 .bubble-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; margin: 0 0 4px; }
 .bubble-text { font-size: 17px; line-height: 1.75; margin: 0; color: var(--color-navy-soft); white-space: pre-line; }
 
-/* 問題枠内に配置する見直しボタン */
 .btn-review-log-in-event {
   margin: 2px 0 4px !important;
   align-self: center !important;
@@ -266,7 +259,7 @@
 }
 
 /* =========================================================
-   判定ポップアップ & 思考演出（激しい赤フラッシュ・振動強化）
+   判定ポップアップ & 思考演出
    ========================================================= */
 .thinking-overlay {
   position: fixed;
@@ -321,9 +314,19 @@
   padding: 14px;
 }
 
-/* ★ 被害発生時の激しい赤フラッシュ＆警告シェイク ★ */
 .instant-pop-overlay.is-danger-flash {
   animation: dangerGlitchShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite alternate;
+}
+
+/* 揺れ・点滅控えめモード時の静止型危険強調 */
+.instant-pop-overlay.is-danger-static {
+  background: rgba(155, 28, 28, 0.88);
+}
+
+.instant-pop-overlay.is-danger-static .instant-pop-card {
+  border-color: #E85C4A;
+  border-width: 5px;
+  animation: none !important;
 }
 
 @keyframes dangerGlitchShake {
@@ -365,6 +368,10 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+}
+
+.app-shell.reduce-motion .instant-pop-card {
+  animation: none !important;
 }
 
 @keyframes popCardIn {
@@ -417,7 +424,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   overflow-y: auto;
 }
@@ -463,11 +470,11 @@
 
 .result-damage-alert {
   font-family: var(--font-display);
-  font-size: 13.5px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 900;
   color: #fff;
-  background: var(--color-danger);
-  padding: 4px 12px;
+  background: #C92A2A;
+  padding: 6px 14px;
   border-radius: 999px;
   margin: 0;
 }
@@ -485,28 +492,28 @@
 .result-point-panel {
   width: 100%;
   text-align: left;
-  background: rgba(245, 166, 35, 0.12);
-  border: 1px solid rgba(245, 166, 35, 0.35);
+  background: rgba(245, 166, 35, 0.14);
+  border: 1.5px solid rgba(245, 166, 35, 0.5);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  padding: 12px 14px;
 }
 
 .result-point-title {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 14px;
-  margin: 0 0 3px;
+  font-weight: 900;
+  font-size: 15px;
+  color: #8A5300;
+  margin: 0 0 4px;
 }
 
 .result-point-text {
-  font-size: 15px;
+  font-size: 15.5px;
   line-height: 1.75;
-  color: var(--color-navy-soft);
+  color: var(--color-navy);
   white-space: pre-line;
   margin: 0;
 }
 
-/* 結果画面の「📜 直前の会話・通知を見直す」ボタン */
 .btn-review-log {
   background: #FFFFFF;
   color: var(--color-navy);

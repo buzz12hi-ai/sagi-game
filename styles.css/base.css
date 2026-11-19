@@ -1,6 +1,7 @@
 /* =========================================================
    base.css
    全体基本設定・カラー変数・フォント・ルビ表示・共通部品・ステータスバー
+   【PC版曜日スクロールバー解消・揺れ控えめモード・上下見切れ防止対応版】
    ========================================================= */
 
 :root {
@@ -106,12 +107,13 @@ rt {
   body {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     padding: 16px 12px;
   }
   .app-shell {
     max-width: 840px;
     min-height: 94vh;
+    margin: auto;
     border-radius: 28px;
     overflow: hidden;
     box-shadow: var(--shadow-card);
@@ -148,7 +150,7 @@ rt {
 }
 
 /* =========================================================
-   ステータスバー
+   ステータスバー（PC版の曜日一覧スクロールバー解消）
    ========================================================= */
 .status-bar {
   display: flex;
@@ -162,12 +164,14 @@ rt {
   top: 0;
   z-index: 50;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  flex-wrap: wrap;
 }
 
 @media (min-width: 480px) {
   .status-bar {
     padding: 12px 16px;
     gap: 10px;
+    flex-wrap: nowrap;
   }
 }
 
@@ -203,16 +207,39 @@ rt {
 .target-label { opacity: 0.85; }
 .target-name { font-weight: 700; color: var(--color-money); }
 
+/* 拡大ドット（scale 1.1）が上下に溢れないよう padding を確保 */
 .day-tracker {
   display: flex;
+  align-items: center;
   gap: 4px;
+  padding: 4px 2px;
   flex-wrap: nowrap;
   overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
 
+.day-tracker::-webkit-scrollbar {
+  display: none;
+}
+
 @media (min-width: 480px) {
-  .day-tracker { gap: 6px; }
+  .day-tracker {
+    gap: 6px;
+    padding: 4px;
+  }
+}
+
+/* PC版・タブレット版ではスクロールバーを完全に不要化 */
+@media (min-width: 768px) {
+  .day-tracker {
+    overflow: visible;
+  }
+}
+
+.app-shell.layout-desktop .day-tracker {
+  overflow: visible;
 }
 
 .day-dot {
@@ -298,6 +325,29 @@ rt {
   background: rgba(232, 92, 74, 0.28) !important;
   font-weight: 900;
   animation: popMove 0.4s var(--ease-gentle);
+}
+
+.motion-mini-btn {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 5px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.motion-mini-btn.is-reduced {
+  background: #2E9E82;
+  border-color: #FFFFFF;
+}
+
+.motion-mini-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .retire-btn {
@@ -445,8 +495,15 @@ rt {
 
 .btn:active { transform: scale(0.97) !important; }
 
+.btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 @media (hover: hover) {
-  .btn:hover {
+  .btn:not(:disabled):hover {
     transform: scale(1.02);
     filter: brightness(1.06);
     box-shadow: 0 8px 20px rgba(27, 42, 74, 0.25);
@@ -473,4 +530,32 @@ rt {
   box-shadow: 0 8px 24px rgba(245, 166, 35, 0.45);
   font-size: 18px !important;
   font-weight: 900 !important;
+}
+
+/* =========================================================
+   揺れ・点滅控えめモード（.reduce-motion）および OS設定連動
+   ========================================================= */
+.app-shell.reduce-motion .bg-icon,
+.app-shell.reduce-motion .title-hero-glow,
+.app-shell.reduce-motion .title-char-joe-hero,
+.app-shell.reduce-motion .title-header-wrapper,
+.app-shell.reduce-motion .dayintro-shine,
+.app-shell.reduce-motion .dayintro-banner-container.is-animating,
+.app-shell.reduce-motion .zoom-hint-badge,
+.app-shell.reduce-motion .smartphone-frame.tall-phone.is-vibrating,
+.app-shell.reduce-motion .instant-pop-overlay.is-danger-flash,
+.app-shell.reduce-motion .survey-q-item.is-invalid,
+.app-shell.reduce-motion .wallet-chip.is-danger,
+.app-shell.reduce-motion .money-pop {
+  animation: none !important;
+}
+
+.app-shell.reduce-motion .smartphone-frame.tall-phone.is-vibrating {
+  transform: none !important;
+  border-color: var(--color-money) !important;
+}
+
+.app-shell.reduce-motion .screen,
+.app-shell.reduce-motion .btn {
+  animation: none !important;
 }

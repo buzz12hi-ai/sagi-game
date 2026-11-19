@@ -1,7 +1,7 @@
 /* =========================================================
    main.js
    アプリケーション統合エントリポイント
-   （中高生モード専用プレイ経験リスナー追加 ＆ イベントリスナー整理版）
+   （揺れ設定スイッチ・ルール画面・会話「前へ」ボタンイベント追加版）
    ========================================================= */
 
 // タイトル画面のジョーくん選出（金 0.1% / 銀 1.0% / 銅 5.0% / ノーマル全9表情ランダム 93.9%）
@@ -45,12 +45,22 @@ function renderTitleVisual() {
 const btnStart = document.getElementById("btn-start");
 if (btnStart) btnStart.addEventListener("click", handleStartClick);
 
-// 2. 表示デザイン選択 ➜ モード選択へ
+// 2. 表示デザイン選択 ➜ 揺れ・点滅設定画面へ
 const btnDevMobile = document.getElementById("btn-device-mobile");
 if (btnDevMobile) btnDevMobile.addEventListener("click", () => handleSelectDevice("mobile"));
 
 const btnDevDesktop = document.getElementById("btn-device-desktop");
 if (btnDevDesktop) btnDevDesktop.addEventListener("click", () => handleSelectDevice("desktop"));
+
+// 2.1 画面の揺れ・点滅設定スイッチ ＆ 次へボタン（ステータスバー含む）
+const btnToggleMotion = document.getElementById("btn-toggle-motion");
+if (btnToggleMotion) btnToggleMotion.addEventListener("click", toggleMotionPreference);
+
+const btnStatusMotionToggle = document.getElementById("btn-status-motion-toggle");
+if (btnStatusMotionToggle) btnStatusMotionToggle.addEventListener("click", toggleMotionPreference);
+
+const btnMotionNext = document.getElementById("btn-motion-next");
+if (btnMotionNext) btnMotionNext.addEventListener("click", handleMotionSettingNext);
 
 // 2.2 【中高生モード専用】プレイ経験確認選択
 const btnExpFirst = document.getElementById("btn-exp-first");
@@ -89,19 +99,25 @@ if (btnModeAdult) btnModeAdult.addEventListener("click", () => handleSelectMode(
 const btnModeSenior = document.getElementById("btn-mode-senior");
 if (btnModeSenior) btnModeSenior.addEventListener("click", () => handleSelectMode("senior"));
 
-// 5. 名前入力 ＆ スキップ
+// 5. 名前入力 ＆ スキップ ＆ ルール画面
 const btnNameSubmit = document.getElementById("btn-name-submit");
 if (btnNameSubmit) btnNameSubmit.addEventListener("click", handleNameSubmit);
 
 const btnNameSkip = document.getElementById("btn-name-skip");
 if (btnNameSkip) btnNameSkip.addEventListener("click", handleNameSkip);
 
-// 6. あらすじ・ストーリー進行
+const btnRulesNext = document.getElementById("btn-rules-next");
+if (btnRulesNext) btnRulesNext.addEventListener("click", goToItemSelect);
+
+// 6. あらすじ・ストーリー進行（会話 前へ/次へ）
 const btnSynopsisNext = document.getElementById("btn-synopsis-next");
 if (btnSynopsisNext) btnSynopsisNext.addEventListener("click", showEvent);
 
 const btnNarrationNext = document.getElementById("btn-narration-next");
 if (btnNarrationNext) btnNarrationNext.addEventListener("click", handleNarrationNext);
+
+const btnDialoguePrev = document.getElementById("btn-dialogue-prev");
+if (btnDialoguePrev) btnDialoguePrev.addEventListener("click", goToDialoguePrev);
 
 const btnDialogueNext = document.getElementById("btn-dialogue-next");
 if (btnDialogueNext) btnDialogueNext.addEventListener("click", goToDialogueNext);
@@ -176,6 +192,7 @@ window.addEventListener("pageshow", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  applyMotionPreference(state.reduceMotion);
   renderTitleVisual();
 });
 

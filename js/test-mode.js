@@ -1,7 +1,7 @@
 /* =========================================================
    test-mode.js
    製作者用パスコード認証 ＆ フルスクリーン管理コンソール ＆ 実演特化デバッグ制御
-   【全角半角自動正規化 ＆ Firebase Auth 連携版】
+   【パスコード表記削除版】
    ========================================================= */
 
 // 管理者アカウント情報（固定）
@@ -35,7 +35,8 @@ function openAuthModal() {
   const errorEl = document.getElementById("auth-error-msg");
   const descEl = document.querySelector(".auth-modal-desc");
   
-  if (descEl) descEl.textContent = "製作者用パスコード（AA5158）を入力してください";
+  // パスコードのヒント表記を削除
+  if (descEl) descEl.textContent = "製作者用パスコードを入力してください";
 
   if (input) {
     input.value = "";
@@ -58,10 +59,8 @@ async function verifyAndProceed() {
   const input = document.getElementById("auth-passcode-input");
   const errorEl = document.getElementById("auth-error-msg");
   const btn = document.getElementById("btn-auth-verify");
-  // 全角（ＡＡ５１５８等）が入っても自動で半角大文字「AA5158」に変換
   const enteredPasscode = normalizePasscode(input ? input.value : "");
 
-  // パスコードチェック
   if (enteredPasscode !== "AA5158") {
     if (errorEl) {
       errorEl.textContent = "⚠️ パスコードが正しくありません。";
@@ -89,7 +88,6 @@ async function verifyAndProceed() {
   }
 
   try {
-    // Firebase Auth で管理者ログインを実行
     await auth.signInWithEmailAndPassword(ADMIN_EMAIL, ADMIN_FIREBASE_PASSWORD);
     isDevAuthenticated = true;
     if (errorEl) errorEl.classList.add("is-hidden");
@@ -98,7 +96,7 @@ async function verifyAndProceed() {
   } catch (error) {
     console.warn("[Firebase Auth] 管理者ログイン失敗:", error);
     if (errorEl) {
-      errorEl.textContent = "⚠️ クラウド認証に失敗しました。承認済みドメイン設定等をご確認ください。";
+      errorEl.textContent = "⚠️ クラウド認証に失敗しました。";
       errorEl.classList.remove("is-hidden");
     }
     if (input) {
