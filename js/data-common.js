@@ -1,7 +1,7 @@
 /* =========================================================
    data-common.js
    共通目標アイテム・防犯3原則・スキルマップ・共通選択肢生成関数・
-   大分県＆警察庁公式統計データ（若年層・闇バイト含む）
+   大分県＆警察庁公式統計データ（接触手段・手口別ランキング詳細グラフデータ含む）
    ========================================================= */
 
 const ITEMS = [
@@ -82,12 +82,6 @@ const THREE_PRINCIPLES = [
   { head: "③ 騙されない（確認する・相談する）", desc: "届いた連絡先や話をそのまま信じず、自ら調べた正規窓口や家族・警察に確認する" }
 ];
 
-const THREE_PRINCIPLES_ELEMENTARY = [
-  { head: "① <ruby>喋<rt>しゃべ</rt></ruby>らない（<ruby>話<rt>はな</rt></ruby>さない・<ruby>教<rt>おし</rt></ruby>えない）", desc: "<ruby>相手<rt>あいて</rt></ruby>に <ruby>名前<rt>なまえ</rt></ruby>・<ruby>住所<rt>じゅうしょ</rt></ruby>・パスワード・<ruby>暗証<rt>あんしょう</rt></ruby><ruby>番号<rt>ばんごう</rt></ruby>を <ruby>教<rt>おし</rt></ruby>えない" },
-  { head: "② <ruby>払<rt>はら</rt></ruby>わない（<ruby>渡<rt>わた</rt></ruby>さない・<ruby>買<rt>か</rt></ruby>わない）", desc: "<ruby>急<rt>いそ</rt></ruby>がされても、すぐにお<ruby>金<rt>かね</rt></ruby>を <ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>まない・プリペイドカードを <ruby>買<rt>か</rt></ruby>わない" },
-  { head: "③ <ruby>騙<rt>だま</rt></ruby>されない（<ruby>確<rt>たし</rt></ruby>かめる・<ruby>相談<rt>そうだん</rt></ruby>する）", desc: "<ruby>届<rt>とど</rt></ruby>いた <ruby>連絡<rt>れんらく</rt></ruby>を そのまま <ruby>信<rt>しん</rt></ruby>じず、おうちの<ruby>人<rt>ひと</rt></ruby>や <ruby>警察<rt>けいさつ</rt></ruby>に <ruby>相談<rt>そうだん</rt></ruby>する" }
-];
-
 const THREE_PRINCIPLES_SENIOR = [
   { head: "① 話さない（個人情報を教えない）", desc: "相手へ名前・住所・口座番号・暗証番号などを電話やメールで教えない" },
   { head: "② 渡さない（お金やカードを払わない）", desc: "急かされても、すぐにお金を振り込んだり、コンビニで電子マネーを買わない" },
@@ -97,41 +91,43 @@ const THREE_PRINCIPLES_SENIOR = [
 const OITA_SCAM_STATS = {
   // ① 大分県内の特殊詐欺 被害件数・被害額推移（令和3〜7年）
   yearlyTrend: [
-    { yearLabel: "令和3年", rubyYearLabel: "<ruby>令和<rt>れいわ</rt></ruby>3<ruby>年<rt>ねん</rt></ruby>", cases: 150, amountText: "約8,178万円", rubyAmountText: "<ruby>約<rt>やく</rt></ruby>8,178<ruby>万円<rt>まんえん</rt></ruby>", note: "", rubyNote: "" },
-    { yearLabel: "令和4年", rubyYearLabel: "<ruby>令和<rt>れいわ</rt></ruby>4<ruby>年<rt>ねん</rt></ruby>", cases: 177, amountText: "約2億1,956万円", rubyAmountText: "<ruby>約<rt>やく</rt></ruby>2<ruby>億<rt>おく</rt></ruby>1,956<ruby>万円<rt>まんえん</rt></ruby>", note: "", rubyNote: "" },
-    { yearLabel: "令和5年", rubyYearLabel: "<ruby>令和<rt>れいわ</rt></ruby>5<ruby>年<rt>ねん</rt></ruby>", cases: 260, amountText: "約3億1,090万円", rubyAmountText: "<ruby>約<rt>やく</rt></ruby>3<ruby>億<rt>おく</rt></ruby>1,090<ruby>万円<rt>まんえん</rt></ruby>", note: "", rubyNote: "" },
-    { yearLabel: "令和6年", rubyYearLabel: "<ruby>令和<rt>れいわ</rt></ruby>6<ruby>年<rt>ねん</rt></ruby>", cases: 280, amountText: "約7億3,684万円", rubyAmountText: "<ruby>約<rt>やく</rt></ruby>7<ruby>億<rt>おく</rt></ruby>3,684<ruby>万円<rt>まんえん</rt></ruby>", note: "※SNS型投資・ロマンス詐欺（279件・約16億1,237万円）含む計559件・約23億4,921万円", rubyNote: "※SNS<ruby>型<rt>がた</rt></ruby>を <ruby>含<rt>ふく</rt></ruby>めると <ruby>計<rt>けい</rt></ruby>559<ruby>件<rt>けん</rt></ruby>・<ruby>約<rt>やく</rt></ruby>23<ruby>億<rt>おく</rt></ruby>4,921<ruby>万円<rt>まんえん</rt></ruby>" },
-    { yearLabel: "令和7年", rubyYearLabel: "<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>", cases: 400, amountText: "約8億5,893万円", rubyAmountText: "<ruby>約<rt>やく</rt></ruby>8<ruby>億<rt>おく</rt></ruby>5,893<ruby>万円<rt>まんえん</rt></ruby>", note: "※SNS型投資・ロマンス詐欺（347件・約15億1,409万円）含む計747件・約23億7,302万円", rubyNote: "※SNS<ruby>型<rt>がた</rt></ruby>を <ruby>含<rt>ふく</rt></ruby>めると <ruby>計<rt>けい</rt></ruby>747<ruby>件<rt>けん</rt></ruby>・<ruby>約<rt>やく</rt></ruby>23<ruby>億<rt>おく</rt></ruby>7,302<ruby>万円<rt>まんえん</rt></ruby>" }
+    { yearLabel: "令和3年", cases: 150, amountText: "約8,178万円", note: "" },
+    { yearLabel: "令和4年", cases: 177, amountText: "約2億1,956万円", note: "" },
+    { yearLabel: "令和5年", cases: 260, amountText: "約3億1,090万円", note: "" },
+    { yearLabel: "令和6年", cases: 280, amountText: "約7億3,684万円", note: "※SNS型投資・ロマンス詐欺（279件・約16億1,237万円）含む計559件・約23億4,921万円" },
+    { yearLabel: "令和7年", cases: 400, amountText: "約8億5,893万円", note: "※SNS型投資・ロマンス詐欺（347件・約15億1,409万円）含む計747件・約23億7,302万円" }
   ],
   // ② 大分県内の被害者年代別割合（令和8年9月末 暫定値）
   ageBreakdown: [
-    { label: "20歳代未満", rubyLabel: "20<ruby>歳代未満<rt>さいだいみまん</rt></ruby>", pct: 1.8, highlight: false },
-    { label: "20歳代", rubyLabel: "20<ruby>歳代<rt>さいだい</rt></ruby>", pct: 11.3, highlight: false },
-    { label: "30歳代", rubyLabel: "30<ruby>歳代<rt>さいだい</rt></ruby>", pct: 9.4, highlight: false },
-    { label: "40歳代", rubyLabel: "40<ruby>歳代<rt>さいだい</rt></ruby>", pct: 10.8, highlight: false },
-    { label: "50歳代", rubyLabel: "50<ruby>歳代<rt>さいだい</rt></ruby>", pct: 19.4, highlight: false },
-    { label: "60〜64歳", rubyLabel: "60〜64<ruby>歳<rt>さい</rt></ruby>", pct: 9.7, highlight: false },
-    { label: "65歳以上", rubyLabel: "65<ruby>歳以上<rt>さいいじょう</rt></ruby>", pct: 37.6, highlight: true }
+    { label: "20歳代未満", pct: 1.8, highlight: false },
+    { label: "20歳代", pct: 11.3, highlight: false },
+    { label: "30歳代", pct: 9.4, highlight: false },
+    { label: "40歳代", pct: 10.8, highlight: false },
+    { label: "50歳代", pct: 19.4, highlight: false },
+    { label: "60〜64歳", pct: 9.7, highlight: false },
+    { label: "65歳以上", pct: 37.6, highlight: true }
   ],
-  // ③ 警察庁確定値（全国・令和7年）：ニセ警察詐欺 年代別認知件数（個人被害計11,012件）
-  nisePoliceByAge: [
-    { label: "10代以下", rubyLabel: "10<ruby>代以下<rt>だいいか</rt></ruby>", cases: 48, detail: "携帯着信 81.3%", rubyDetail: "<ruby>携帯<rt>けいたい</rt></ruby> 81.3%", highlight: false },
-    { label: "20代", rubyLabel: "20<ruby>代<rt>だい</rt></ruby>", cases: 1718, detail: "携帯着信 94.5%", rubyDetail: "<ruby>携帯<rt>けいたい</rt></ruby> 94.5%", highlight: true },
-    { label: "30代（最多）", rubyLabel: "30<ruby>代<rt>だい</rt></ruby>（<ruby>最多<rt>さいた</rt></ruby>）", cases: 2239, detail: "携帯着信 96.9%", rubyDetail: "<ruby>携帯<rt>けいたい</rt></ruby> 96.9%", highlight: true },
-    { label: "40代", rubyLabel: "40<ruby>代<rt>だい</rt></ruby>", cases: 1612, detail: "携帯着信 91.8%", rubyDetail: "<ruby>携帯<rt>けいたい</rt></ruby> 91.8%", highlight: false },
-    { label: "50代", rubyLabel: "50<ruby>代<rt>だい</rt></ruby>", cases: 1376, detail: "携帯着信 66.9%", rubyDetail: "<ruby>携帯<rt>けいたい</rt></ruby> 66.9%", highlight: false },
-    { label: "60代", rubyLabel: "60<ruby>代<rt>だい</rt></ruby>", cases: 1545, detail: "固定電話 56.6%", rubyDetail: "<ruby>固定電話<rt>こていでんわ</rt></ruby> 56.6%", highlight: false },
-    { label: "70代", rubyLabel: "70<ruby>代<rt>だい</rt></ruby>", cases: 1554, detail: "固定電話 71.8%", rubyDetail: "<ruby>固定電話<rt>こていでんわ</rt></ruby> 71.8%", highlight: false },
-    { label: "80代以上", rubyLabel: "80<ruby>代以上<rt>だいいじょう</rt></ruby>", cases: 920, detail: "固定電話 79.1%", rubyDetail: "<ruby>固定電話<rt>こていでんわ</rt></ruby> 79.1%", highlight: false }
+  // ③ 警察庁確定値（全国・令和7年）：SNS型投資・ロマンス詐欺の主な当初接触手段
+  contactMethods: [
+    { label: "バナー等広告 (YouTube・投資サイト等)", count: 3785 },
+    { label: "ダイレクトメッセージ (Instagram・LINE等)", count: 3549 }
+  ],
+  // ⑤ 警察庁確定値（全国・令和7年）：特殊詐欺の手口別認知件数ランキング TOP5
+  scamRanking: [
+    { rank: 1, name: "オレオレ詐欺 (ニセ警察含む)", cases: 14489 },
+    { rank: 2, name: "架空料金請求詐欺", cases: 5706 },
+    { rank: 3, name: "還付金詐欺", cases: 3179 },
+    { rank: 4, name: "預貯金詐欺", cases: 1707 },
+    { rank: 5, name: "キャッシュカード詐欺盗", cases: 1243 }
   ],
   // ④ 警察庁「令和7年の犯罪情勢」：主な資金獲得犯罪（闇バイト等）の検挙人員 年齢別割合
   darkJobArrestByAge: [
-    { label: "14〜19歳（10代）", rubyLabel: "14〜19<ruby>歳<rt>さい</rt></ruby>（10<ruby>代<rt>だい</rt></ruby>）", pct: 15.7, highlight: true },
-    { label: "20〜24歳（最多）", rubyLabel: "20〜24<ruby>歳<rt>さい</rt></ruby>（<ruby>最多<rt>さいた</rt></ruby>）", pct: 23.4, highlight: true },
-    { label: "25〜29歳", rubyLabel: "25〜29<ruby>歳<rt>さい</rt></ruby>", pct: 18.7, highlight: true },
-    { label: "30〜39歳", rubyLabel: "30〜39<ruby>歳<rt>さい</rt></ruby>", pct: 19.9, highlight: false },
-    { label: "40〜49歳", rubyLabel: "40〜49<ruby>歳<rt>さい</rt></ruby>", pct: 11.7, highlight: false },
-    { label: "50歳以上", rubyLabel: "50<ruby>歳以上<rt>さいいじょう</rt></ruby>", pct: 10.7, highlight: false }
+    { label: "14〜19歳 (10代)", pct: 15.7, highlight: true },
+    { label: "20〜24歳 (最多)", pct: 23.4, highlight: true },
+    { label: "25〜29歳", pct: 18.7, highlight: true },
+    { label: "30〜39歳", pct: 19.9, highlight: false },
+    { label: "40〜49歳", pct: 11.7, highlight: false },
+    { label: "50歳以上", pct: 10.7, highlight: false }
   ]
 };
 
@@ -206,22 +202,22 @@ const SKILL_MAP = {
 };
 
 const SKILL_MAP_ELEMENTARY = {
-  "elementary_q01": "メールの <ruby>通知<rt>つうち</rt></ruby>に <ruby>慌<rt>あわ</rt></ruby>てず <ruby>大人<rt>おとな</rt></ruby>の<ruby>人<rt>ひと</rt></ruby>に <ruby>相談<rt>そうだん</rt></ruby>する<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q02": "プレゼント<ruby>当選<rt>とうせん</rt></ruby><ruby>画面<rt>がめん</rt></ruby>の <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>の <ruby>要求<rt>ようきゅう</rt></ruby>を <ruby>見抜<rt>みぬ</rt></ruby>く<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q03": "<ruby>突然<rt>とつぜん</rt></ruby>の <ruby>点検<rt>てんけん</rt></ruby><ruby>訪問<rt>ほうもん</rt></ruby>に <ruby>玄関<rt>げんかん</rt></ruby>を <ruby>開<rt>あ</rt></ruby>けずに <ruby>対応<rt>たいおう</rt></ruby>する<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q04": "<ruby>別<rt>べつ</rt></ruby>アカウントからの <ruby>友達<rt>ともだち</rt></ruby>の お<ruby>金<rt>かね</rt></ruby>の お<ruby>願<rt>ねが</rt></ruby>いを <ruby>確<rt>たし</rt></ruby>かめる<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q05": "<ruby>割引<rt>わりびき</rt></ruby><ruby>広告<rt>こうこく</rt></ruby>に まどわされず <ruby>公式<rt>こうしき</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>を <ruby>確認<rt>かくにん</rt></ruby>する<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q06": "ネットの <ruby>知<rt>し</rt></ruby>らない<ruby>人<rt>ひと</rt></ruby>からの お<ruby>金<rt>かね</rt></ruby>もうけの <ruby>話<rt>はなし</rt></ruby>を <ruby>断<rt>ことわ</rt></ruby>る<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q07": "コイン<ruby>増殖<rt>ぞうしょく</rt></ruby>の <ruby>裏<rt>うら</rt></ruby>ワザを <ruby>装<rt>よそお</rt></ruby>う アカウント<ruby>盗難<rt>とうなん</rt></ruby>を <ruby>防<rt>ふせ</rt></ruby>ぐ<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q08": "<ruby>画面<rt>がめん</rt></ruby><ruby>共有<rt>きょうゆう</rt></ruby>による <ruby>認証<rt>にんしょう</rt></ruby>コードの <ruby>流出<rt>りゅうしゅつ</rt></ruby>を <ruby>防<rt>ふせ</rt></ruby>ぐ<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q09": "<ruby>人気<rt>にんき</rt></ruby><ruby>配信者<rt>はいしんしゃ</rt></ruby>を <ruby>名乗<rt>なの</rt></ruby>る アカウントからの <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby><ruby>要求<rt>ようきゅう</rt></ruby>を <ruby>見破<rt>みやぶ</rt></ruby>る<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q10": "<ruby>無料<rt>むりょう</rt></ruby>コードを <ruby>口実<rt>こうじつ</rt></ruby>にした <ruby>認証<rt>にんしょう</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>の <ruby>要求<rt>ようきゅう</rt></ruby>を <ruby>遮断<rt>しゃだん</rt></ruby>する<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q11": "かんたん<ruby>副業<rt>ふくぎょう</rt></ruby>を うたう <ruby>広告<rt>こうこく</rt></ruby>を <ruby>冷静<rt>れいせい</rt></ruby>に <ruby>見極<rt>みきわ</rt></ruby>める<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q12": "ATMで <ruby>困<rt>こま</rt></ruby>っている お<ruby>年寄<rt>としよ</rt></ruby>りを <ruby>店員<rt>てんいん</rt></ruby>に <ruby>知<rt>し</rt></ruby>らせて <ruby>助<rt>たす</rt></ruby>ける<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q13": "<ruby>電話<rt>でんわ</rt></ruby>で <ruby>慌<rt>あわ</rt></ruby>てる <ruby>家族<rt>かぞく</rt></ruby>を <ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>かせて <ruby>被害<rt>ひがい</rt></ruby>を <ruby>防<rt>ふせ</rt></ruby>ぐ<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q14": "いつもと <ruby>違<rt>ちが</rt></ruby>う デザインの <ruby>公式<rt>こうしき</rt></ruby><ruby>広告<rt>こうこく</rt></ruby>を <ruby>正<rt>ただ</rt></ruby>しく <ruby>確認<rt>かくにん</rt></ruby>する<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q15": "<ruby>不在<rt>ふざい</rt></ruby><ruby>通知<rt>つうち</rt></ruby>から <ruby>公式<rt>こうしき</rt></ruby>ルートで <ruby>再配達<rt>さいはいたつ</rt></ruby>を <ruby>頼<rt>たの</rt></ruby>む<ruby>力<rt>ちから</rt></ruby>",
-  "elementary_q16": "お<ruby>店<rt>みせ</rt></ruby>からの <ruby>期間<rt>きかん</rt></ruby><ruby>限定<rt>げんてい</rt></ruby>クーポンを <ruby>正<rt>ただ</rt></ruby>しく <ruby>確<rt>たし</rt></ruby>かめる<ruby>力<rt>ちから</rt></ruby>"
+  "elementary_q01": "メールの通知に慌てず大人の人に相談する力",
+  "elementary_q02": "プレゼント当選画面の個人情報要求を見抜く力",
+  "elementary_q03": "突然の点検訪問に玄関を開けず対応する力",
+  "elementary_q04": "別アカウントからの友達の送金要求を確かめる力",
+  "elementary_q05": "割引広告に惑わされず公式情報を確認する力",
+  "elementary_q06": "ネットの知らない人からの儲け話を断る力",
+  "elementary_q07": "コイン増殖の裏ワザを装うアカウント盗難を防ぐ力",
+  "elementary_q08": "画面共有による認証コードの流出を防ぐ力",
+  "elementary_q09": "人気配信者を名乗るアカウントからの個人情報要求を見破る力",
+  "elementary_q10": "無料コードを口実にした認証情報要求を遮断する力",
+  "elementary_q11": "簡単副業を謳う広告を冷静に見極める力",
+  "elementary_q12": "ATMで困っているお年寄りを店員に知らせて助ける力",
+  "elementary_q13": "電話で慌てる家族を落ち着かせて被害を防ぐ力",
+  "elementary_q14": "いつもと違うデザインの公式広告を正しく確認する力",
+  "elementary_q15": "不在通知から公式ルートで再配達を依頼する力",
+  "elementary_q16": "お店からの期間限定クーポンを正しく確かめる力"
 };
 
 function getQuestionChoices(question) {

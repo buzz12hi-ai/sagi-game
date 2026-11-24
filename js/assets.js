@@ -1,7 +1,7 @@
 /* =========================================================
    assets.js
    画像アセット・ファイルパス定義
-   【日本語ファイル名エンコードエラー完全回避・安全マッピング版】
+   【実際のファイル名と完全一致させたセーフマッピング版】
    ========================================================= */
 
 const IMG_BASE = "resource/images/";
@@ -46,7 +46,6 @@ const IMAGE_ASSETS = {
     joeSilver:         IMG_BASE + "銀ジョー君.png",
     joeBronze:         IMG_BASE + "銅ジョー君.png",
 
-    // 学生主人公（ファイル名エンコードトラブルを防ぐため、普通主人公学生等を確実に指定）
     studentNeutral:    IMG_BASE + "主人公普通学生.png",
     studentHappy:      IMG_BASE + "主人公喜び学生.png",
     studentSad:        IMG_BASE + "主人公泣き学生.png",
@@ -60,14 +59,13 @@ const IMAGE_ASSETS = {
     adultSad:          IMG_BASE + "一般主人公哀.png",
     adultQuestion:     IMG_BASE + "一般主人公.png",
     adultThinking:     IMG_BASE + "一般主人公.png",
-    adultWorry:        IMG_BASE + "一般主人公哀.png",
     adultWalking:      IMG_BASE + "一般主人公.png",
     adultSmartphone:   IMG_BASE + "一般主人公.png",
     adultAngry:        IMG_BASE + "一般主人公怒.png",
 
     seniorNeutral:     IMG_BASE + "高齢者.png",
-    seniorHappy:      IMG_BASE + "高齢者笑顔.png",
-    seniorSad:        IMG_BASE + "困っている高齢者.png",
+    seniorHappy:       IMG_BASE + "高齢者笑顔.png",
+    seniorSad:         IMG_BASE + "困っている高齢者.png",
     seniorQuestion:    IMG_BASE + "高齢者.png",
     seniorWorry:       IMG_BASE + "困っている高齢者.png",
     seniorWalking:     IMG_BASE + "高齢者.png",
@@ -131,17 +129,18 @@ const IMAGE_ASSETS = {
     hotelBookingScam:                 IMG_BASE + "一般_ホテル予約詐欺.jpg",
     cardFraudPhishing:                IMG_BASE + "一般_カード不正利用詐欺.jpg",
 
-    fakePoliceLineScam:               IMG_BASE + "偽警察詐欺.png",
+    // 高齢者モード（実際のファイル名と完全一致）
+    fakePoliceLineScam:               IMG_BASE + "高齢者_警察官騙り逮捕状詐欺.jpg",
     benefitScam:                      IMG_BASE + "高齢者_市役所還付金詐欺.jpg",
     electricityPlanScam:              IMG_BASE + "高齢者_電力プラン契約詐欺.jpg",
     bankMaturityReal:                 IMG_BASE + "高齢者_銀行満期案内本物.jpg",
     waterPurifierScam:                IMG_BASE + "高齢者_水道局騙り浄水器詐欺.jpg",
     gasInspectionReal:                IMG_BASE + "高齢者_ガス定期点検本物.jpg",
     pensionProcedureScam:             IMG_BASE + "高齢者_年金手続き詐欺.jpg",
-    deliverySmishingScam:             IMG_BASE + "宅配メール.png",
+    deliverySmishingScam:             IMG_BASE + "高齢者_宅配スミッシング.jpg",
     supportScam:                      IMG_BASE + "高齢者_サポート詐欺.jpg",
     taxSeizureScam:                   IMG_BASE + "高齢者_国税庁差押メール詐欺.jpg",
-    mobileBillReal:                   IMG_BASE + "携帯ショップ電話.png",
+    mobileBillReal:                   IMG_BASE + "高齢者_携帯料金通知本物.jpg",
     cardStatementReal:                IMG_BASE + "高齢者_カード明細通知本物.jpg"
   }
 };

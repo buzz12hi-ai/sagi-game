@@ -1,7 +1,7 @@
 /* =========================================================
    stats.css
    大分県・全国特殊詐欺被害データ専用ページ（#screen-oita-stats）
-   （若年層・闇バイト統計、HTML/CSS棒グラフ、数値カード）
+   （高齢者向け文字サイズ案内バナー・注意喚起カード・全7ブロック対応版）
    ========================================================= */
 
 .stats-page-wrapper {
@@ -17,6 +17,30 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+/* 高齢者モード専用案内バナー */
+.stats-senior-notice-banner {
+  background: #FFF3CD;
+  border: 2.5px solid #F5A623;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.2);
+}
+
+.senior-notice-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.senior-notice-text {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #7A4F01;
+  font-weight: 700;
 }
 
 .oita-stats-panel {
@@ -211,12 +235,49 @@
   background: linear-gradient(90deg, #E85C4A 0%, #B81D13 100%);
 }
 
-.oita-bar-fill.is-youth-highlight {
-  background: linear-gradient(90deg, #9D4EDD 0%, #5A189A 100%);
+.oita-bar-fill.is-contact {
+  background: linear-gradient(90deg, #3A86FF 0%, #4361EE 100%);
 }
 
-.oita-bar-fill.is-dark-byte {
-  background: linear-gradient(90deg, #E85C4A 0%, #9B2226 100%);
+.oita-bar-fill.is-ranking {
+  background: linear-gradient(90deg, #FB8500 0%, #D90429 100%);
+}
+
+/* 誘い文句特徴カードグリッド */
+.stats-warning-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+@media (min-width: 600px) {
+  .stats-warning-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stats-warn-card {
+  background: #FFF5F5;
+  border: 1.5px solid #E85C4A;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stats-warn-card strong {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: #C92A2A;
+}
+
+.stats-warn-card p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-navy);
 }
 
 .oita-sub-note {
@@ -244,11 +305,15 @@
   font-weight: 700;
 }
 
-.oita-source-footer {
-  font-size: 11.5px;
-  line-height: 1.6;
-  color: var(--color-navy-soft);
-  border-top: 1.5px dashed var(--color-border);
-  padding-top: 10px;
+.stats-sources-list {
   margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--color-navy);
+}
+
+.stats-sources-list a {
+  color: #2E4374;
+  text-decoration: underline;
 }

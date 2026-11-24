@@ -1,6 +1,6 @@
 /* =========================================================
    sub-view-2.css
-   Joe-kun Invader Arcade Style Sheet
+   Joe-kun Invader Arcade Style Sheet (50 enemies, accordion panel)
    ========================================================= */
 
 .sv2-overlay {
@@ -49,7 +49,7 @@
 .sv2-title {
   margin: 0;
   font-family: "Zen Maru Gothic", sans-serif;
-  font-size: 18px;
+  font-size: 16.5px;
   font-weight: 900;
   color: #7CE8CB;
   letter-spacing: 0.04em;
@@ -60,7 +60,7 @@
   border: 1.5px solid #F5A623;
   color: #FFE39E;
   font-family: "Zen Maru Gothic", sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 900;
   padding: 4px 12px;
   border-radius: 999px;
@@ -72,18 +72,17 @@
   background: rgba(255, 255, 255, 0.09);
   border-radius: 10px;
   padding: 7px 10px;
-  font-size: 12.5px;
+  font-size: 12px;
   line-height: 1.5;
   color: #DCE6F5;
   text-align: center;
   font-weight: 700;
 }
 
-/* ── Arcade Field ── */
 .sv2-field {
   position: relative;
   width: 100%;
-  height: 330px;
+  height: 350px;
   background-color: #050914;
   background-image:
     linear-gradient(rgba(91, 230, 194, 0.07) 1px, transparent 1px),
@@ -97,7 +96,7 @@
 
 @media (min-height: 760px) {
   .sv2-field {
-    height: 360px;
+    height: 390px;
   }
 }
 
@@ -111,7 +110,6 @@
   z-index: 2;
 }
 
-/* ── Player Ship (Joe-kun) ── */
 .sv2-player {
   position: absolute;
   bottom: 6px;
@@ -133,7 +131,6 @@
   filter: drop-shadow(0 0 8px rgba(91, 230, 194, 0.7));
 }
 
-/* ── Projectile Bullet ── */
 .sv2-bullet {
   position: absolute;
   width: 6px;
@@ -146,7 +143,6 @@
   pointer-events: none;
 }
 
-/* ── Enemy Characters (Silhouettes, Icons, Fraud Word Plates) ── */
 .sv2-enemy {
   position: absolute;
   min-width: 42px;
@@ -166,12 +162,6 @@
   filter: drop-shadow(0 0 6px rgba(232, 92, 74, 0.75));
 }
 
-.sv2-enemy-icon {
-  font-size: 26px;
-  line-height: 1;
-  filter: drop-shadow(0 0 8px rgba(245, 166, 35, 0.85));
-}
-
 .sv2-enemy-word {
   background: linear-gradient(135deg, #E85C4A 0%, #B81D13 100%);
   border: 1.5px solid #FFE39E;
@@ -185,14 +175,6 @@
   box-shadow: 0 0 10px rgba(232, 92, 74, 0.7);
 }
 
-@media (min-width: 480px) {
-  .sv2-enemy-word {
-    font-size: 11px;
-    padding: 4px 8px;
-  }
-}
-
-/* Explosion Popup Effect */
 .sv2-boom {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -210,7 +192,101 @@
   100% { opacity: 0; transform: translate(-50%, -90%) scale(1.0); }
 }
 
-/* ── Result Overlay ── */
+/* ── Wave Clear Accordion Panel Style ── */
+.sv2-accordion-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: rgba(9, 15, 32, 0.95);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.sv2-accordion-panel.is-hidden {
+  display: none !important;
+}
+
+.sv2-acc-title {
+  margin: 0;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #7CE8CB;
+}
+
+.sv2-acc-sub {
+  margin: 0;
+  font-size: 12px;
+  color: #B4C4DB;
+  font-weight: 700;
+}
+
+.sv2-acc-list {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 200px;
+  padding-right: 2px;
+}
+
+.sv2-acc-item {
+  background: #1B2A4A;
+  border: 1.5px solid #3B5284;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.sv2-acc-header {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Zen Maru Gothic", sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  color: #FFE39E;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sv2-acc-arrow {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.sv2-acc-body {
+  max-height: 0;
+  overflow: hidden;
+  background: #0D1426;
+  padding: 0 12px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #DCE6F5;
+  font-weight: 700;
+  transition: max-height 0.25s ease-out, padding 0.25s ease-out;
+}
+
+.sv2-acc-item.is-open .sv2-acc-body {
+  max-height: 150px;
+  padding: 8px 12px;
+}
+
+.sv2-acc-item.is-open .sv2-acc-arrow {
+  transform: rotate(180deg);
+}
+
+/* ── Result Panel ── */
 .sv2-result-panel {
   position: absolute;
   inset: 0;
@@ -244,7 +320,7 @@
 
 .sv2-result-sub {
   margin: 0;
-  font-size: 14px;
+  font-size: 13.5px;
   color: #E2ECFC;
   font-weight: 700;
 }
@@ -257,7 +333,7 @@
   border-radius: 12px;
   padding: 10px 12px;
   color: #1B2A4A;
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.6;
   font-weight: 900;
 }
@@ -291,7 +367,6 @@
   border-color: #7CE8CB;
 }
 
-/* ── Control Buttons ── */
 .sv2-controls {
   display: grid;
   grid-template-columns: 1fr 1.4fr 1fr;
@@ -303,7 +378,7 @@
   border-radius: 14px;
   padding: 12px 6px;
   font-family: "Zen Maru Gothic", sans-serif;
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 900;
   cursor: pointer;
   background: #1B2A4A;
@@ -326,15 +401,14 @@
   box-shadow: 0 4px 14px rgba(46, 158, 130, 0.45);
 }
 
-/* ── Anti-fraud Message Box ── */
 .sv2-notice-box {
   background: #FFF9EB;
   border: 2px solid #F5A623;
   border-radius: 12px;
   padding: 8px 12px;
   color: #1B2A4A;
-  font-size: 12.5px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.5;
   font-weight: 700;
   text-align: center;
 }
@@ -347,11 +421,11 @@
 
 .sv2-btn-sub {
   flex: 1;
-  min-width: 130px;
+  min-width: 120px;
   border-radius: 999px;
   padding: 10px 12px;
   font-family: "Zen Maru Gothic", sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 900;
   cursor: pointer;
   border: 1.5px solid #F5A623;

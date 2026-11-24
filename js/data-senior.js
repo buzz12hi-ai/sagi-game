@@ -1,7 +1,7 @@
 /* =========================================================
    data-senior.js
    高齢者モード専用問題プール（全16問）
-   【平易表現・一般名称統一・誤記修正版】
+   【問題9キャラクター変更（消防士）＆ファイル名完全一致対応版】
    ========================================================= */
 
 const QUESTIONS_SENIOR = [
@@ -124,7 +124,7 @@ const QUESTIONS_SENIOR = [
   {
     id: "senior_q06", category: "scam", source: "自宅訪問", title: "突然の屋根点検訪問",
     characterName: "突然の訪問作業員",
-    narration: "自宅のインターホンが鳴り、作業服の男が立っていました。\n「近所で工事をしている者ですが、お宅の屋根の瓦がずれてますよ。無料で見てあげます。」",
+    narration: "自宅のインターホンが鳴り、作業服の男が立っていました。\n「近所で工事をしている者ですが、お宅の屋根の瓦がズレてますよ。無料で見てあげます。」",
     dialogue: [
       { speaker: "作業員", line: "「ハシゴですぐ登って確認しますね。」" },
       { speaker: "あなた", line: "（突然の訪問だが…どう対応すべきか？）" }
@@ -136,12 +136,12 @@ const QUESTIONS_SENIOR = [
     screenshot: null,
     desc: "「屋根を無料で点検する」と訪問業者が迫ってきた。あなたならどうする？",
     correctChoices: [
-      { text: "「知り合いの大工さんに見てもらいますので結構です」と断り、絶対に敷地や屋根に上がらせない", money: 0, principleTag: "safe", explain: "正解！【話さない・家に入れない】突然来た点検業者は絶対に家や屋根に上げないことが被害を防ぐ一番の方法です！" }
+      { text: "「知り合いの大工さんに見てもらいますので結構です」と断り、絶対に敷地や屋根に上がらせない", money: 0, principleTag: "safe", explain: "正解！【話さない・家に入れない】突然来た点検業者は理由を告げずきっぱり断ることが一番の方法です！" }
     ],
     wrongChoices: [
       { text: "「家を建てた会社名と家族の連絡先」を業者に教えて相談させようとする", money: -15000, principleTag: "speak", damageType: "personal_info", explain: "【喋ってしまった！】個人情報を悪質業者に知られてしまい、何度も押し掛け営業を受けるようになりました。" },
       { text: "「今すぐ応急処置が必要」と言われ、その場で手付金として30,000円を手渡す", money: -30000, principleTag: "pay", damageType: "money", explain: "【払ってしまった！】お金を払った後、雑な工事をされてさらに高額な追加工事を迫られました。" },
-      { text: "無料で見てもらえるなら助かると思い、屋根に登って点検してもらう", money: -25000, principleTag: "fooled", damageType: "money", explain: "【相手に騙された！】点検商法です！わざと屋根を壊され、「直さないと危険」と高額な工事契約を結ばされました。" }
+      { text: "無料で見てもらえるなら助かると思い、屋根に登って点検してもらう", money: -25000, principleTag: "fooled", damageType: "money", explain: "【相手に騙された！】点検商法です！わざと屋根を壊され、「今すぐ修理しないと崩れる」と高額契約を結ばされました。" }
     ]
   },
   {
@@ -192,6 +192,7 @@ const QUESTIONS_SENIOR = [
   },
   {
     id: "senior_q09", category: "scam", source: "自宅訪問", title: "住宅防火対策および消火設備のご案内",
+    // 消防士に変更
     characterName: "自称・防災点検員",
     narration: "消防服に似た服を着た人物が訪ねてきました。\n「消防署の方から来ました。消火器の交換が義務化されたので設置します。」",
     dialogue: [
@@ -201,7 +202,8 @@ const QUESTIONS_SENIOR = [
     point: "消防署が消火器の訪問販売や集金を行うことは絶対にありません。「消防署の方（方角）」と言って職員のように思い込ませる手口です。",
     notification: null,
     bg: IMAGE_ASSETS.backgrounds.entrance,
-    character: IMAGE_ASSETS.characters.suspiciousVisitor,
+    // 作業員(suspiciousVisitor)から消防士(fireTruck)に変更
+    character: IMAGE_ASSETS.characters.fireTruck,
     screenshot: null,
     desc: "「消火器の交換代金を支払え」と請求された。あなたならどうする？",
     correctChoices: [

@@ -1,11 +1,6 @@
 /* =========================================================
    sub-view-2.js
-   ジョーくんインベーダー制御モジュール
-   【未定義エラー完全解消版】
-   ・雑魚27体：上空からバラバラに順次降下
-   ・第2波：銀ジョー（HP5）＆ 銅ジョー（HP5）同時出現
-   ・第3波：金ジョー（HP6）単独降臨 ➜ 撃破で完全クリア
-   ※本編・Firebaseとは完全に独立して動作します
+   Joe-kun Invader Arcade Style Sheet (50 enemies, 3 waves + bosses, accordion results)
    ========================================================= */
 
 (function () {
@@ -21,29 +16,47 @@
 
   let sv2Enemies = [];
   let sv2Bullets = [];
-  let sv2EnemyDir = 1; // 1: 右, -1: 左（未定義エラー防止のため確実にスコープ先頭で宣言）
 
   // ウェーブ進行管理
-  // 1: 雑魚27体（順次降下）
-  // 2: 銀(HP5) ＆ 銅(HP5) ボス戦
-  // 3: 金(HP6) ラスボス戦
+  // 1: 雑魚 17体
+  // 2: 雑魚 17体
+  // 3: 雑魚 16体
+  // 4: ボス戦 (銀＆銅)
+  // 5: 最終決戦 (金ボス)
   let sv2Wave = 1;
-  let sv2Wave1SpawnCount = 0;
-  const SV2_WAVE1_TOTAL = 27;
+  let sv2WaveSpawnCount = 0;
+  const SV2_WAVE_TOTALS = [0, 17, 17, 16]; 
   let sv2SpawnCooldown = 0;
+  let sv2DestroyedScamNames = []; // このウェーブで撃ち落とした詐欺名称の蓄積
+
+  const SV2_SCAM_DATABASE = [
+    { name: "🚨 架空請求詐欺", desc: "身に覚えのない有料動画等の未納料金を名目に、SMSやハガキで連絡させ、電子マネーや銀行振込で金をだまし取る手口。" },
+    { name: "👮 ニセ警察詐欺", desc: "警察や検察官を名らい、「マネーロンダリングに関与している」「逮捕状が出ている」と脅して資産を移させる手口。" },
+    { name: "💼 闇バイト", desc: "「高額報酬・荷物を運ぶだけ」といったSNSの甘い誘いに乗せられ、特殊詐欺の受け子や出し子として逮捕される犯罪。" },
+    { name: "💰 還付金詐欺", desc: "市役所職員を名乗り、「医療費や税金の払い戻しがある」とATMへ誘導し、実際には犯人口座へ送金させる手口。" },
+    { name: "📉 SNS型投資・ロマンス詐欺", desc: "SNSで親密になった相手から「絶対に儲かる投資がある」と勧誘され、架空の投資プラットフォームで金をだまし取られる手口。" },
+    { name: "💻 サポート詐欺", desc: "パソコン閲覧中に突然ウイルス感染の偽警告と電話番号を表示し、サポート料名目で電子マネーをだまし取る手口。" },
+    { name: "📦 宅配・不在通知の偽SMS", desc: "「荷物を持ち帰った」というSMSから偽アプリや偽サイトへ誘導し、IDやパスワード、個人情報を盗み取る手口。" },
+    { name: "🌐 国際電話の悪用", desc: "＋から始まる海外の国際電話番号を利用し、自動音声や不審な着信で折り返し通話料金や個人情報を狙う手口。" },
+    { name: "🏷️ オレオレ詐欺", desc: "「オレだけどカバンを落とした」と息子や孫を装い、緊急の現金が必要だと言って現金をだまし取る定番の手口。" },
+    { name: "🎫 チケット転売詐欺", desc: "SNS上でライブチケット等の個人間取引を持ちかけ、代金を先払いさせた後に連絡を絶つ詐欺。" },
+    { name: "🖨️ 屋根点検商法", desc: "「無料で屋根を見てあげる」と突然訪問し、わざと瓦を壊して高額な修繕工事契約を迫る悪質商法。" },
+    { name: "🪙 電子マネー要求", desc: "詐欺の支払いに、足がつきにくいコンビニのプリペイド型電子マネーカードの番号を指定して要求する手口。" },
+    { name: "📢 マイナンバー不審通知", desc: "「電子証明書の期限切れ」などを口実にSMSやメールを送り、偽サイトで暗証番号や個人情報を入力させる手口。" },
+    { name: "📱 画面共有の悪用", desc: "通話アプリの画面共有機能を使わせ、スマホに届いたSMSの認証番号を盗み見たり不正送金させる極めて危険な手口。" },
+    { name: "✉️ 税関・関税未納通知", desc: "「海外からの荷物が税関で止まっている」という偽メールを送り、クレジットカード情報を入力させるフィッシング手口。" }
+  ];
 
   function getPlayerSpriteSrc() {
-    if (typeof IMAGE_ASSETS !== "undefined" && IMAGE_ASSETS.characters && IMAGE_ASSETS.characters.joeCheer) {
-      return IMAGE_ASSETS.characters.joeCheer;
-    }
-    return "resource/images/ジョー君応援.png";
+    return (typeof IMAGE_ASSETS !== "undefined" && IMAGE_ASSETS.characters && IMAGE_ASSETS.characters.joeCheer)
+      ? IMAGE_ASSETS.characters.joeCheer
+      : "resource/images/ジョー君応援.png";
   }
 
   function getEnemySilhouetteSrc() {
-    if (typeof IMAGE_ASSETS !== "undefined" && IMAGE_ASSETS.characters && IMAGE_ASSETS.characters.silhouette) {
-      return IMAGE_ASSETS.characters.silhouette;
-    }
-    return "resource/images/シルエット.png";
+    return (typeof IMAGE_ASSETS !== "undefined" && IMAGE_ASSETS.characters && IMAGE_ASSETS.characters.silhouette)
+      ? IMAGE_ASSETS.characters.silhouette
+      : "resource/images/シルエット.png";
   }
 
   function getBossSpriteSrc(type) {
@@ -62,12 +75,12 @@
     overlay.innerHTML = `
       <div class="sv2-window">
         <header class="sv2-header">
-          <h2 class="sv2-title">👾 ジョーくんインベーダー</h2>
-          <span id="sv2-status-chip" class="sv2-status-chip">第1波: 残り27体</span>
+          <h2 class="sv2-title">👾 ジョーくんインベーダー (50体モード)</h2>
+          <span id="sv2-status-chip" class="sv2-status-chip">Wave 1: 残り17体</span>
         </header>
 
         <p class="sv2-guide">
-          【操作方法】「◀ 左へ」「▶ 右へ」で移動、「🚀 発射！」（またはスペースキー）で撃退！
+          【操作方法】「◀ 左へ」「▶ 右へ」で移動、「🚀 発射！」で撃退！全3Wave＋ボス戦を突破せよ！
         </p>
 
         <div class="sv2-field" id="sv2-field">
@@ -79,9 +92,18 @@
             <img src="${getPlayerSpriteSrc()}" alt="ジョーくん">
           </div>
 
+          <!-- Wave Clear Accordion Result Panel -->
+          <div class="sv2-accordion-panel is-hidden" id="sv2-accordion-panel">
+            <h3 class="sv2-acc-title" id="sv2-acc-title">🎉 Wave 1 クリア！</h3>
+            <p class="sv2-acc-sub">このウェーブで撃ち落とした詐欺の解説（タップして展開）:</p>
+            <div class="sv2-acc-list" id="sv2-acc-list"></div>
+            <button type="button" id="sv2-btn-next-wave" class="sv2-res-btn is-replay">次へすすむ ▶</button>
+          </div>
+
+          <!-- Final Result Panel -->
           <div class="sv2-result-panel is-hidden" id="sv2-result-panel">
-            <h3 class="sv2-result-title" id="sv2-result-title">🎉 防衛成功！</h3>
-            <p class="sv2-result-sub" id="sv2-result-sub">すべての怪しい敵を撃退しました！</p>
+            <h3 class="sv2-result-title" id="sv2-result-title">🎉 完全防衛クリア！</h3>
+            <p class="sv2-result-sub" id="sv2-result-sub">全50体の敵とボスをすべて撃退しました！</p>
             <div class="sv2-result-safety">
               詐欺には気を付けよう！<br>
               遊んでくれてありがとう！<br>
@@ -116,18 +138,16 @@
     bindInvaderEvents();
   }
 
-  function spawnSingleWave1Enemy() {
+  function spawnSingleWaveEnemy() {
     const layer = document.getElementById("sv2-enemies-layer");
-    if (!layer || sv2Wave1SpawnCount >= SV2_WAVE1_TOTAL) return;
+    if (!layer || sv2Wave > 3) return;
 
-    sv2Wave1SpawnCount++;
+    const maxThisWave = SV2_WAVE_TOTALS[sv2Wave];
+    if (sv2WaveSpawnCount >= maxThisWave) return;
 
-    const icons = ["⚠️", "📱", "💰", "🎭", "🚨"];
-    const scamWords = [
-      "架空請求", "ニセ警察", "闇バイト", "当選詐欺", "還付金詐欺",
-      "投資詐欺", "ロマンス", "偽警告", "ワンクリック", "名義貸し"
-    ];
+    sv2WaveSpawnCount++;
 
+    const scamObj = SV2_SCAM_DATABASE[Math.floor(Math.random() * SV2_SCAM_DATABASE.length)];
     const silhouetteSrc = getEnemySilhouetteSrc();
     const startX = 10 + Math.random() * 80;
     const startY = -8;
@@ -138,32 +158,32 @@
     el.style.top = `${startY}%`;
 
     const randKind = Math.random();
-    if (randKind < 0.3) {
+    if (randKind < 0.35) {
       el.innerHTML = `<img src="${silhouetteSrc}" alt="不審者">`;
-    } else if (randKind < 0.6) {
-      el.innerHTML = `<span class="sv2-enemy-icon">${icons[Math.floor(Math.random() * icons.length)]}</span>`;
     } else {
-      const word = scamWords[Math.floor(Math.random() * scamWords.length)];
-      el.innerHTML = `<span class="sv2-enemy-word">${word}</span>`;
+      el.innerHTML = `<span class="sv2-enemy-word">${scamObj.name}</span>`;
     }
 
     layer.appendChild(el);
 
+    const speedMultiplier = 1.0 + (sv2Wave - 1) * 0.25;
+
     sv2Enemies.push({
       x: startX,
       y: startY,
-      speedY: 6.5 + Math.random() * 4.5,
+      speedY: (6.0 + Math.random() * 4.0) * speedMultiplier,
       vx: (Math.random() - 0.5) * 16,
       alive: true,
       el: el,
       isBoss: false,
-      hp: 1
+      hp: 1,
+      scamData: scamObj
     });
 
     updateStatusChip();
   }
 
-  function spawnWave2Bosses() {
+  function spawnWave4Bosses() {
     const layer = document.getElementById("sv2-enemies-layer");
     if (!layer) return;
     layer.innerHTML = "";
@@ -195,7 +215,8 @@
       el: elBronze,
       isBoss: true,
       hp: 5,
-      maxHp: 5
+      maxHp: 5,
+      scamData: { name: "🥉 銅のジョーボス", desc: "第4波のボスクラス！激しいフェイント攻撃をしてくる。" }
     });
 
     // 銀ジョー（右側・HP5）
@@ -221,13 +242,14 @@
       el: elSilver,
       isBoss: true,
       hp: 5,
-      maxHp: 5
+      maxHp: 5,
+      scamData: { name: "🥈 銀のジョーボス", desc: "第4波の強敵ボス！素早く動き回るぞ。" }
     });
 
     updateStatusChip();
   }
 
-  function spawnWave3Boss() {
+  function spawnWave5Boss() {
     const layer = document.getElementById("sv2-enemies-layer");
     if (!layer) return;
     layer.innerHTML = "";
@@ -257,7 +279,8 @@
       el: elGold,
       isBoss: true,
       hp: 6,
-      maxHp: 6
+      maxHp: 6,
+      scamData: { name: "🥇 金のジョー（ラスボス）", desc: "最終決戦の最強ボス！全ての防犯知識を総動員して撃破せよ！" }
     });
 
     updateStatusChip();
@@ -275,15 +298,16 @@
     const chip = document.getElementById("sv2-status-chip");
     if (!chip) return;
 
-    if (sv2Wave === 1) {
+    if (sv2Wave <= 3) {
       const aliveOnScreen = sv2Enemies.filter((e) => e.alive).length;
-      const remainingTotal = (SV2_WAVE1_TOTAL - sv2Wave1SpawnCount) + aliveOnScreen;
-      chip.textContent = `第1波: 残り${remainingTotal}体`;
-    } else if (sv2Wave === 2) {
+      const maxThisWave = SV2_WAVE_TOTALS[sv2Wave];
+      const remainingTotal = (maxThisWave - sv2WaveSpawnCount) + aliveOnScreen;
+      chip.textContent = `Wave ${sv2Wave}: 残り${remainingTotal}体`;
+    } else if (sv2Wave === 4) {
       const aliveBosses = sv2Enemies.filter((e) => e.alive);
       const hpText = aliveBosses.map(b => `${b.id === 'silver' ? '銀' : '銅'}:${b.hp}`).join(' / ');
-      chip.textContent = `第2波 ボス戦 [${hpText || '撃破'}]`;
-    } else if (sv2Wave === 3) {
+      chip.textContent = `Wave 4 ボス戦 [${hpText || '撃破'}]`;
+    } else if (sv2Wave === 5) {
       const goldBoss = sv2Enemies.find(e => e.id === "gold" && e.alive);
       chip.textContent = `最終決戦！ 金のジョー [HP: ${goldBoss ? goldBoss.hp : 0}]`;
     }
@@ -306,24 +330,26 @@
   function startInvaderGame() {
     stopLoop();
     const resultPanel = document.getElementById("sv2-result-panel");
+    const accPanel = document.getElementById("sv2-accordion-panel");
     if (resultPanel) resultPanel.classList.add("is-hidden");
+    if (accPanel) accPanel.classList.add("is-hidden");
 
     sv2PlayerX = 50;
     sv2MoveDir = 0;
-    sv2EnemyDir = 1; // ここで参照しても確実に初期化済み
     sv2Wave = 1;
-    sv2Wave1SpawnCount = 0;
+    sv2WaveSpawnCount = 0;
     sv2SpawnCooldown = 0;
     sv2LastShotTime = 0;
+    sv2DestroyedScamNames = [];
 
     clearBulletsAndEffects();
     const layer = document.getElementById("sv2-enemies-layer");
     if (layer) layer.innerHTML = "";
     sv2Enemies = [];
 
-    spawnSingleWave1Enemy();
-    spawnSingleWave1Enemy();
-    spawnSingleWave1Enemy();
+    spawnSingleWaveEnemy();
+    spawnSingleWaveEnemy();
+    spawnSingleWaveEnemy();
 
     updatePlayerUI();
     updateStatusChip();
@@ -355,6 +381,73 @@
     }
   }
 
+  function showWaveAccordionPanel() {
+    stopLoop();
+    setControlsEnabled(false);
+
+    const accPanel = document.getElementById("sv2-accordion-panel");
+    const titleEl = document.getElementById("sv2-acc-title");
+    const listEl = document.getElementById("sv2-acc-list");
+    if (!accPanel || !listEl) return;
+
+    if (titleEl) titleEl.textContent = `🎉 Wave ${sv2Wave} クリア！`;
+    listEl.innerHTML = "";
+
+    // このウェーブで撃ち落としたユニークな詐欺名称のリスト
+    const uniqueScams = Array.from(new Set(sv2DestroyedScamNames));
+    sv2DestroyedScamNames = []; // リセット
+
+    if (uniqueScams.length === 0) {
+      uniqueScams.push({ name: "🛡️ 防犯意識の向上", desc: "日頃から怪しい誘いに乗らない強い心が身につきました。" });
+    }
+
+    uniqueScams.forEach((scam) => {
+      const item = document.createElement("div");
+      item.className = "sv2-acc-item";
+      item.innerHTML = `
+        <div class="sv2-acc-header">
+          <span>${scam.name}</span>
+          <span class="sv2-acc-arrow">▼</span>
+        </div>
+        <div class="sv2-acc-body">
+          <p>${scam.desc}</p>
+        </div>
+      `;
+
+      item.querySelector(".sv2-acc-header").addEventListener("click", () => {
+        item.classList.toggle("is-open");
+      });
+
+      listEl.appendChild(item);
+    });
+
+    accPanel.classList.remove("is-hidden");
+  }
+
+  function resumeNextWave() {
+    const accPanel = document.getElementById("sv2-accordion-panel");
+    if (accPanel) accPanel.classList.add("is-hidden");
+
+    sv2Wave++;
+    sv2WaveSpawnCount = 0;
+    clearBulletsAndEffects();
+
+    if (sv2Wave === 2 || sv2Wave === 3) {
+      spawnSingleWaveEnemy();
+      spawnSingleWaveEnemy();
+    } else if (sv2Wave === 4) {
+      spawnWave4Bosses();
+    } else if (sv2Wave === 5) {
+      spawnWave5Boss();
+    }
+
+    updateStatusChip();
+    setControlsEnabled(true);
+    sv2Running = true;
+    sv2LastTime = performance.now();
+    sv2RafId = requestAnimationFrame(gameLoop);
+  }
+
   function finishInvaderGame(isWin) {
     stopLoop();
     sv2MoveDir = 0;
@@ -370,7 +463,7 @@
     }
     if (subEl) {
       subEl.textContent = isWin
-        ? "雑魚27体と、銀・銅・金のボスジョーくんをすべて撃退しました！完璧な防犯力！"
+        ? "全50体の敵と銀・銅・金のボスをすべて撃退しました！完璧な防犯力です！"
         : "ゲームオーバー！怪しい敵に防衛ラインを突破されました。次は全ボス撃退を目指そう！";
     }
     if (panel) panel.classList.remove("is-hidden");
@@ -444,6 +537,10 @@
           if (Math.abs(b.x - e.x) <= hitRange && Math.abs(b.y - e.y) <= (hitRange * 1.1)) {
             b.active = false;
 
+            if (e.scamData) {
+              sv2DestroyedScamNames.push(e.scamData);
+            }
+
             if (e.isBoss) {
               e.hp -= 1;
               spawnHitEffect(e.x, e.y, true);
@@ -482,33 +579,33 @@
       }
     }
 
-    // 3. 第1波の順次スポーン
-    if (sv2Wave === 1 && sv2Wave1SpawnCount < SV2_WAVE1_TOTAL) {
+    // 3. Wave 1〜3の順次スポーン
+    if (sv2Wave <= 3 && sv2WaveSpawnCount < SV2_WAVE_TOTALS[sv2Wave]) {
       sv2SpawnCooldown += dt;
       const activeCount = sv2Enemies.filter((e) => e.alive).length;
-      if (activeCount < 4 || sv2SpawnCooldown > 1.1) {
+      if (activeCount < 4 || sv2SpawnCooldown > 1.0) {
         sv2SpawnCooldown = 0;
-        spawnSingleWave1Enemy();
+        spawnSingleWaveEnemy();
       }
     }
 
-    // 4. ウェーブクリア＆ボス遷移判定
+    // 4. ウェーブクリア＆次ステージ遷移判定
     const aliveEnemies = sv2Enemies.filter((e) => e.alive);
     if (aliveEnemies.length === 0) {
-      if (sv2Wave === 1 && sv2Wave1SpawnCount >= SV2_WAVE1_TOTAL) {
-        sv2Wave = 2;
-        spawnWave2Bosses();
-      } else if (sv2Wave === 2) {
-        sv2Wave = 3;
-        spawnWave3Boss();
-      } else if (sv2Wave === 3) {
+      if (sv2Wave <= 3 && sv2WaveSpawnCount >= SV2_WAVE_TOTALS[sv2Wave]) {
+        showWaveAccordionPanel();
+        return;
+      } else if (sv2Wave === 4) {
+        sv2Wave = 5;
+        spawnWave5Boss();
+      } else if (sv2Wave === 5) {
         finishInvaderGame(true);
         return;
       }
     }
 
     // 5. 敵の移動処理
-    if (sv2Wave === 1) {
+    if (sv2Wave <= 3) {
       for (let i = 0; i < sv2Enemies.length; i++) {
         const e = sv2Enemies[i];
         if (!e.alive) continue;
@@ -525,7 +622,7 @@
           return;
         }
       }
-    } else if (sv2Wave === 2) {
+    } else if (sv2Wave === 4) {
       for (let i = 0; i < sv2Enemies.length; i++) {
         const b = sv2Enemies[i];
         if (!b.alive) continue;
@@ -548,7 +645,7 @@
           return;
         }
       }
-    } else if (sv2Wave === 3) {
+    } else if (sv2Wave === 5) {
       const gold = sv2Enemies[0];
       if (gold && gold.alive) {
         gold.x += gold.vx * dt;
@@ -585,6 +682,7 @@
     const btnLeft = document.getElementById("sv2-btn-left");
     const btnRight = document.getElementById("sv2-btn-right");
     const btnFire = document.getElementById("sv2-btn-fire");
+    const btnNextWave = document.getElementById("sv2-btn-next-wave");
     const btnBackMenu = document.getElementById("sv2-btn-back-menu");
     const btnExit = document.getElementById("sv2-btn-exit");
 
@@ -606,24 +704,15 @@
     window.addEventListener("touchend", stopMove);
     window.addEventListener("touchcancel", stopMove);
 
-    if (btnFire) {
-      btnFire.addEventListener("click", fireBullet);
-    }
+    if (btnFire) btnFire.addEventListener("click", fireBullet);
+    if (btnNextWave) btnNextWave.addEventListener("click", resumeNextWave);
 
     if (btnBackMenu) btnBackMenu.addEventListener("click", backToMenu);
-    if (btnExit) {
-      btnExit.addEventListener("click", () => {
-        closeInvaderStage();
-      });
-    }
+    if (btnExit) btnExit.addEventListener("click", closeInvaderStage);
 
     if (resReplay) resReplay.addEventListener("click", startInvaderGame);
     if (resMenu) resMenu.addEventListener("click", backToMenu);
-    if (resExit) {
-      resExit.addEventListener("click", () => {
-        closeInvaderStage();
-      });
-    }
+    if (resExit) resExit.addEventListener("click", closeInvaderStage);
 
     document.addEventListener("keydown", (e) => {
       const overlay = document.getElementById("sv2-overlay");
@@ -659,7 +748,7 @@
         id: "invader",
         icon: "👾",
         title: "ジョーくんインベーダー",
-        desc: "27体の詐欺敵 ➜ 銀＆銅ボス(HP5) ➜ 金ボス(HP6)を撃退！",
+        desc: "全50体撃破！3Wave雑魚 ➜ 銀＆銅ボス ➜ 金ボスと戦う本格防衛ゲーム！",
         onOpen: openInvaderStage
       });
     }
