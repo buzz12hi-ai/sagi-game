@@ -1,13 +1,15 @@
 /* =========================================================
    ending.js
    お買い物判定・エンディングランク計算・結果発表・#9110案内・
-   専用統計データページ（警察庁アプリルビ対応＆高齢者バナー拡大対応版）
+   専用統計データページ（中高生モードクラッシュ完全修復版）
    ========================================================= */
 
 function showShoppingScreen() {
   updateStatusBar();
   const card = document.getElementById("shopping-card");
-  const item = state.selectedItem;
+  
+  // itemが存在しない場合（テストモード直飛び等）の安全フォールバック
+  const item = state.selectedItem || (typeof ITEMS !== "undefined" && ITEMS.length > 0 ? ITEMS[0] : { name: "目標アイテム", price: 10000, emoji: "🎁" });
   const canAfford = state.money >= item.price;
   const isElem = state.mode === "elementary";
 
@@ -15,9 +17,11 @@ function showShoppingScreen() {
   const priceText = isElem
     ? `${item.price.toLocaleString("ja-JP")}<ruby>円<rt>えん</rt></ruby>`
     : `¥${item.price.toLocaleString("ja-JP")}`;
+
+  // ★ クラッシュの原因だった item.money を state.money に完全修正 ★
   const moneyText = isElem
     ? `${state.money.toLocaleString("ja-JP")}<ruby>円<rt>えん</rt></ruby>`
-    : `¥${item.money.toLocaleString("ja-JP")}`;
+    : `¥${state.money.toLocaleString("ja-JP")}`;
 
   if (isElem) {
     card.innerHTML = `
@@ -541,12 +545,10 @@ function buildOitaStatsHTML(isElem) {
   const h4Title7 = isElem ? "⑦ <ruby>詐欺<rt>さぎ</rt></ruby>に<ruby>遭<rt>あ</rt></ruby>いそうになったときの<ruby>対処方法<rt>たいしょほう</rt></ruby>" : "⑦ 詐欺に遭いそうになったときの対処方法";
   const h4Title8 = isElem ? "⑧ <ruby>詐欺<rt>さぎ</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>相談窓口<rt>そうだんまどぐち</rt></ruby>" : "⑧ 詐欺に関する相談窓口";
   const h4Title9 = isElem ? "⑨ 【<ruby>全国<rt>ぜんこく</rt></ruby>】<ruby>都道府県別<rt>とどうふけんべつ</rt></ruby>の<ruby>詐欺被害件数<rt>さぎひがいけんすう</rt></ruby>ランキング TOP5（<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>）" : "⑨ 【全国】都道府県別の詐欺被害件数ランキング TOP5（令和7年）";
+  const h4TitleApp = isElem ? "📱 警察庁推奨の特殊詐欺対策アプリのご案内" : "📱 警察庁推奨の特殊詐欺対策アプリのご案内";
   const h4Title10 = isElem ? "⑩ <ruby>公式統計<rt>こうしきとうけい</rt></ruby>データ・<ruby>出典一覧<rt>しゅってんいちらん</rt></ruby>" : "⑩ 公式統計データ・出典一覧";
 
   // 1枚目：警察庁推奨アプリブロックの小学生モード用完全ルビ対応定義
-  const h4TitleApp = isElem
-    ? "📱 <ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>の <ruby>特殊詐欺対策<rt>とくしゅさぎたいさく</rt></ruby>アプリの ご<ruby>案内<rt>あんない</rt></ruby>"
-    : "📱 警察庁推奨の特殊詐欺対策アプリのご案内";
   const appLeadTxt = isElem
     ? "<ruby>怪<rt>あや</rt></ruby>しい<ruby>電話<rt>でんわ</rt></ruby>を <ruby>自動<rt>じどう</rt></ruby>でブロック・<ruby>警告<rt>けいこく</rt></ruby>してくれる <ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>の <ruby>詐欺対策<rt>さぎたいさく</rt></ruby>アプリです。"
     : "怪しい電話を自動でブロック・警告してくれる警察庁推奨の詐欺対策アプリです。";
