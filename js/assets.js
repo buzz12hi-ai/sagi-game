@@ -84,6 +84,11 @@ const IMAGE_ASSETS = {
     silhouette:        IMG_BASE + "シルエット.png"
   },
 
+  // アイコン・シンボル画像
+  icons: {
+    policeApp:         IMG_BASE + "警察アプリ.png"
+  },
+
   screenshots: {
     elementaryPoliceMailScam:         IMG_BASE + "小学生_偽警察メール詐欺.jpg",
     elementaryGamePrizeScam:          IMG_BASE + "小学生_ゲーム機当選詐欺.jpg",

@@ -1,7 +1,7 @@
 /* =========================================================
    ending.js
    お買い物判定・エンディングランク計算・結果発表・#9110案内・
-   専用統計データページ（順序整理・都道府県ランキング追加・表現改善・完全ふりがな対応版）
+   専用統計データページ（警察庁アプリルビ対応＆高齢者バナー拡大対応版）
    ========================================================= */
 
 function showShoppingScreen() {
@@ -27,7 +27,7 @@ function showShoppingScreen() {
         <ruby>今<rt>いま</rt></ruby>の <ruby>所持金<rt>しょじきん</rt></ruby>は <strong>${moneyText}</strong> だよ。<br>
         ${
           canAfford
-            ? `1<ruby>週間<rt>しゅうかん</rt></ruby>、お<ruby>金<rt>かね</rt></ruby>を <ruby>守<rt>mamo</rt></ruby>った <ruby>成果<rt>せいか</rt></ruby>で <ruby>無事<rt>ぶじ</rt></ruby>に「${itemDisp}」を <ruby>買<rt>か</rt></ruby>うことが できました！`
+            ? `1<ruby>週間<rt>しゅうかん</rt></ruby>、お<ruby>金<rt>かね</rt></ruby>を <ruby>守<rt>まも</rt></ruby>った <ruby>成果<rt>せいか</rt></ruby>で <ruby>無事<rt>ぶじ</rt></ruby>に「${itemDisp}」を <ruby>買<rt>か</rt></ruby>うことが できました！`
             : `<ruby>残念<rt>ざんねん</rt></ruby>！ <ruby>被害<rt>ひがい</rt></ruby>によって お<ruby>金<rt>かね</rt></ruby>が <ruby>足<rt>た</rt></ruby>りず「${itemDisp}」を <ruby>買<rt>か</rt></ruby>うことが できませんでした…`
         }
       </p>
@@ -406,8 +406,8 @@ function buildOitaStatsHTML(isElem) {
       <div class="stats-senior-notice-banner">
         <span class="senior-notice-icon">🔍</span>
         <div class="senior-notice-text">
-          <strong>【表示に関するご案内】</strong><br>
-          ※以下の詐欺被害データや統計の文字が小さい場合は、お使いの端末やブラウザの拡大機能（画面をピンチアウトするなど）で大きくしてご覧ください。
+          <strong class="senior-notice-head">【表示に関するご案内】</strong><br>
+          <span class="senior-notice-body">※以下の詐欺被害データや統計の文字が小さい場合は、お使いの端末やブラウザの拡大機能（画面をピンチアウトするなど）で大きくしてご覧ください。</span>
         </div>
       </div>
     `;
@@ -498,19 +498,16 @@ function buildOitaStatsHTML(isElem) {
     `;
   }).join("");
 
-  // 都道府県別ランキングデータ（警察庁公式統計：令和7年 特殊詐欺 都道府県別認知件数上位）
   const prefRankingData = [
     { rank: 1, name: "東京都", cases: 7215 },
     { rank: 2, name: "大阪府", cases: 3102 },
     { rank: 3, name: "神奈川県", cases: 2410 },
     { rank: 4, name: "埼玉県", cases: 2198 },
-    { rank: 5, name: "千葉県", cases: 1850 },
-    // 大分県の順位（大分県は全国で400件のためTOP5外。ご要望通り別枠で正確な順位を表示）
-    { isOita: true, rank: "35位前後", name: "大分県", cases: 400 }
+    { rank: 5, name: "千葉県", cases: 1850 }
   ];
 
   const maxPrefCases = 8000;
-  const prefRankingHTML = prefRankingData.filter(p => !p.isOita).map(row => {
+  const prefRankingHTML = prefRankingData.map(row => {
     const widthPct = Math.min(100, Math.round((row.cases / maxPrefCases) * 100));
     const caseUnit = isElem ? "<ruby>件<rt>けん</rt></ruby>" : "件";
     let nameTxt = row.name;
@@ -545,6 +542,31 @@ function buildOitaStatsHTML(isElem) {
   const h4Title8 = isElem ? "⑧ <ruby>詐欺<rt>さぎ</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>相談窓口<rt>そうだんまどぐち</rt></ruby>" : "⑧ 詐欺に関する相談窓口";
   const h4Title9 = isElem ? "⑨ 【<ruby>全国<rt>ぜんこく</rt></ruby>】<ruby>都道府県別<rt>とどうふけんべつ</rt></ruby>の<ruby>詐欺被害件数<rt>さぎひがいけんすう</rt></ruby>ランキング TOP5（<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>）" : "⑨ 【全国】都道府県別の詐欺被害件数ランキング TOP5（令和7年）";
   const h4Title10 = isElem ? "⑩ <ruby>公式統計<rt>こうしきとうけい</rt></ruby>データ・<ruby>出典一覧<rt>しゅってんいちらん</rt></ruby>" : "⑩ 公式統計データ・出典一覧";
+
+  // 1枚目：警察庁推奨アプリブロックの小学生モード用完全ルビ対応定義
+  const h4TitleApp = isElem
+    ? "📱 <ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>の <ruby>特殊詐欺対策<rt>とくしゅさぎたいさく</rt></ruby>アプリの ご<ruby>案内<rt>あんない</rt></ruby>"
+    : "📱 警察庁推奨の特殊詐欺対策アプリのご案内";
+  const appLeadTxt = isElem
+    ? "<ruby>怪<rt>あや</rt></ruby>しい<ruby>電話<rt>でんわ</rt></ruby>を <ruby>自動<rt>じどう</rt></ruby>でブロック・<ruby>警告<rt>けいこく</rt></ruby>してくれる <ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>の <ruby>詐欺対策<rt>さぎたいさく</rt></ruby>アプリです。"
+    : "怪しい電話を自動でブロック・警告してくれる警察庁推奨の詐欺対策アプリです。";
+  const appNameTxt = isElem
+    ? "🛡️ <ruby>詐欺対策<rt>さぎたいさく</rt></ruby> by NTTタウンページ"
+    : "🛡️ 詐欺対策 by NTTタウンページ";
+  const appDescTxt = isElem
+    ? "<ruby>迷惑電話<rt>めいわくでんわ</rt></ruby>・<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby>の <ruby>疑<rt>うたが</rt></ruby>いがある <ruby>着信<rt>ちゃくしん</rt></ruby>を <ruby>自動<rt>じどう</rt></ruby>で <ruby>検知<rt>けんち</rt></ruby>し、<ruby>画面<rt>がめん</rt></ruby>に <ruby>警告<rt>けいこく</rt></ruby>を <ruby>表示<rt>ひょうじ</rt></ruby>して <ruby>防犯<rt>ぼうはん</rt></ruby>！"
+    : "迷惑電話・特殊詐欺の疑いがある着信を自動で検知し、画面に警告を表示して防犯！";
+  const appBtnTxt = isElem
+    ? "📱 <ruby>警察庁公式<rt>けいさつちょうこうしき</rt></ruby>ページで アプリを <ruby>詳<rt>くわ</rt></ruby>しく<ruby>見<rt>み</rt></ruby>る ▶"
+    : "📱 警察庁公式ページでアプリを詳しく見る ▶";
+  const appSourceTxt = isElem
+    ? "<ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>・SOS47 <ruby>特殊詐欺対策<rt>とくしゅさぎたいさく</rt></ruby>ページ"
+    : "出典：警察庁・SOS47 特殊詐欺対策ページ";
+
+  // 警察アプリアイコン画像の取得
+  const policeAppIconSrc = (typeof IMAGE_ASSETS !== "undefined" && IMAGE_ASSETS.icons && IMAGE_ASSETS.icons.policeApp)
+    ? IMAGE_ASSETS.icons.policeApp
+    : "resource/images/警察アプリ.png";
 
   if (isElem) {
     return `
@@ -680,7 +702,7 @@ function buildOitaStatsHTML(isElem) {
           <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>・<ruby>国民生活センター<rt>こくみんせいかつせんたー</rt></ruby></p>
         </div>
 
-        <!-- ⑨ 都道府県別ランキング TOP5 ＋ 大分県の順位 -->
+        <!-- ⑨ 都道府県別ランキング TOP5 -->
         <div class="oita-chart-block">
           <h4 class="oita-chart-subtitle">${h4Title9}</h4>
           <p class="oita-chart-caption"><ruby>全国<rt>ぜんこく</rt></ruby>で<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby>の<ruby>被害<rt>ひがい</rt></ruby>が<ruby>多<rt>おお</rt></ruby>い<ruby>上位<rt>じょうい</rt></ruby>5<ruby>都府県<rt>とふけん</rt></ruby>と<ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>状況<rt>じょうこう</rt></ruby>。</p>
@@ -691,6 +713,29 @@ function buildOitaStatsHTML(isElem) {
           <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>「<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>における<ruby>特殊詐欺等<rt>とくしゅさぎとう</rt></ruby>の<ruby>認知<rt>にんち</rt></ruby>・<ruby>検挙状況<rt>けんきょじょうきょう</rt></ruby>」</p>
         </div>
 
+        <!-- 📱 警察庁推奨アプリ紹介ブロック（小学生モード完全ふりがな対応） -->
+        <div class="oita-chart-block" style="border: 2.5px solid #2E9E82; background: #EAF8F4;">
+          <h4 class="oita-chart-subtitle" style="border-left-color: #2E9E82; color: #16654E;">${h4TitleApp}</h4>
+          <p class="oita-chart-caption">${appLeadTxt}</p>
+          
+          <div class="police-app-showcase-card">
+            <div class="police-app-icon-wrap">
+              <img src="${policeAppIconSrc}" alt="詐欺対策アプリ" class="police-app-icon-img" onerror="this.style.display='none';">
+            </div>
+            <div class="police-app-info-wrap">
+              <strong class="police-app-name">${appNameTxt}</strong>
+              <p class="police-app-desc">${appDescTxt}</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 12px; text-align: center;">
+            <a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener" class="btn btn-primary" style="display: inline-block; width: auto; padding: 11px 24px; font-size: 14.5px; background: #2E9E82; border-radius: 999px;">
+              ${appBtnTxt}
+            </a>
+          </div>
+          <p class="oita-block-source" style="margin-top: 8px;">${appSourceTxt}</p>
+        </div>
+
         <!-- ⑩ 公式統計データ・出典一覧 -->
         <div class="oita-chart-block">
           <h4 class="oita-chart-subtitle">${h4Title10}</h4>
@@ -699,6 +744,7 @@ function buildOitaStatsHTML(isElem) {
             <li><ruby>大分県警察<rt>おおいたけんけいさつ</rt></ruby>：<a href="https://www.pref.oita.jp/site/oitakenkei/" target="_blank" rel="noopener"><ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>犯罪情勢<rt>はんざいじょうせい</rt></ruby>・<ruby>安全<rt>あんぜん</rt></ruby>・<ruby>安心<rt>あんしん</rt></ruby>まちづくり<ruby>推進室通信<rt>すいしんしつしん</rt></ruby></a></li>
             <li><ruby>金融庁<rt>きんゆうちょう</rt></ruby>：<a href="https://www.fsa.go.jp/" target="_blank" rel="noopener"><ruby>投資詐欺<rt>とうしさぎ</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>注意喚起<rt>ちゅういかんき</rt></ruby>資料</a></li>
             <li><ruby>国民生活センター<rt>こくみんせいかつせんたー</rt></ruby>：<a href="https://www.kokusen.go.jp/" target="_blank" rel="noopener"><ruby>消費者<rt>しょうひしゃ</rt></ruby>ホットライン188</a></li>
+            <li><ruby>警察庁SOS47<rt>けいさつちょうえすおーえす47</rt></ruby>：<a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener"><ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>アプリページ</a></li>
           </ul>
         </div>
       </div>
@@ -838,7 +884,7 @@ function buildOitaStatsHTML(isElem) {
         <p class="oita-block-source">出典：警察庁・国民生活センター</p>
       </div>
 
-      <!-- ⑨ 都道府県別ランキング TOP5 ＋ 大分県の順位 -->
+      <!-- ⑨ 都道府県別ランキング TOP5 -->
       <div class="oita-chart-block">
         <h4 class="oita-chart-subtitle">⑨ 【全国】都道府県別の詐欺被害件数ランキング TOP5（令和7年）</h4>
         <p class="oita-chart-caption">全国で特殊詐欺の被害が多い上位5都府県と大分県の状況。</p>
@@ -849,6 +895,29 @@ function buildOitaStatsHTML(isElem) {
         <p class="oita-block-source">出典：警察庁「令和7年における特殊詐欺及びSNS型投資・ロマンス詐欺の認知・検挙状況等について（確定値）」</p>
       </div>
 
+      <!-- 📱 警察庁推奨アプリ紹介ブロック（画像アイコン組み込み） -->
+      <div class="oita-chart-block" style="border: 2.5px solid #2E9E82; background: #EAF8F4;">
+        <h4 class="oita-chart-subtitle" style="border-left-color: #2E9E82; color: #16654E;">📱 警察庁推奨の特殊詐欺対策アプリのご案内</h4>
+        <p class="oita-chart-caption">怪しい電話を自動でブロック・警告してくれる警察庁推奨の詐欺対策アプリです。</p>
+        
+        <div class="police-app-showcase-card">
+          <div class="police-app-icon-wrap">
+            <img src="${policeAppIconSrc}" alt="詐欺対策アプリ" class="police-app-icon-img" onerror="this.style.display='none';">
+          </div>
+          <div class="police-app-info-wrap">
+            <strong class="police-app-name">🛡️ 詐欺対策 by NTTタウンページ</strong>
+            <p class="police-app-desc">迷惑電話・特殊詐欺の疑いがある着信を自動で検知し、画面に警告を表示して防犯！</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; text-align: center;">
+          <a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener" class="btn btn-primary" style="display: inline-block; width: auto; padding: 11px 24px; font-size: 14.5px; background: #2E9E82; border-radius: 999px;">
+            📱 警察庁公式ページでアプリを詳しく見る ▶
+          </a>
+        </div>
+        <p class="oita-block-source" style="margin-top: 8px;">出典：警察庁・SOS47 特殊詐欺対策ページ</p>
+      </div>
+
       <!-- ⑩ 公式統計データ・出典一覧 -->
       <div class="oita-chart-block">
         <h4 class="oita-chart-subtitle">⑩ 公式統計データ・出典一覧</h4>
@@ -857,6 +926,7 @@ function buildOitaStatsHTML(isElem) {
           <li>大分県警察：<a href="https://www.pref.oita.jp/site/oitakenkei/" target="_blank" rel="noopener">「大分県の犯罪情勢」・安全・安心まちづくり推進室通信</a></li>
           <li>金融庁：<a href="https://www.fsa.go.jp/" target="_blank" rel="noopener">投資詐欺に関する注意喚起資料</a></li>
           <li>国民生活センター：<a href="https://www.kokusen.go.jp/" target="_blank" rel="noopener">消費者ホットライン188</a></li>
+          <li>警察庁SOS47：<a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener">警察庁推奨アプリページ</a></li>
         </ul>
       </div>
 
