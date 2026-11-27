@@ -1,7 +1,7 @@
 /* =========================================================
    story.js
    会話・あらすじ・自己紹介・通知・週末ふりかえりストーリー演出
-   （会話「前へ戻る」機能・揺れ控えめ対応・表記修正・小学生総ルビ対応版）
+   【日常行動選択の完全ランダム発生対応版】
    ========================================================= */
 
 const FALLBACK_SCENE_BG = IMAGE_ASSETS.backgrounds.livingRoom;
@@ -33,7 +33,7 @@ function showJoeIntro(onNext) {
       introTextEl.innerHTML = `
         はじめまして！ 私は防犯サポーターのジョーくんです！<br><br>
         この1週間、あなたの生活に潜む「詐欺の手口」を見抜くお手伝いをします。<br>
-        大切なお金と暮らしを守るため、一緒に落ち着いて見分けていきましょう！
+        大切なお金と安心を守るため、一緒に落ち着いて見分けていきましょう！
       `;
     } else if (state.mode === "adult") {
       introTextEl.innerHTML = `
@@ -65,10 +65,12 @@ function startEventFlow() {
   isDialogueTransitioning = false;
 
   const slot = currentScheduleSlot();
-  const weekdayName = slot.weekdayName;
 
-  if ((state.mode === "elementary" || state.mode === "teen") && !slot.isSunday && slot.isFirstOfSlot && DAILY_ACTIONS_BY_DAY[weekdayName]) {
-    showDailyActionChoice(weekdayName);
+  // 曜日やクエスト進行に関わらず、毎回約65%の確率（完全ランダム）で日常行動選択をトリガー
+  const shouldTriggerAction = (state.mode === "elementary" || state.mode === "teen") && !slot.isSunday && (Math.random() < 0.65);
+
+  if (shouldTriggerAction) {
+    showDailyActionChoice(slot.weekdayName);
   } else {
     continueEventFlow();
   }
@@ -91,7 +93,10 @@ function showDailyActionChoice(weekdayName) {
     ? DAILY_ACTIONS_BY_DAY_ELEMENTARY
     : DAILY_ACTIONS_BY_DAY;
 
-  const actions = actionSource[weekdayName] || actionSource["月"];
+  const allActionKeys = Object.keys(actionSource);
+  const randomKey = allActionKeys[Math.floor(Math.random() * allActionKeys.length)];
+  const actions = shuffleArray(actionSource[randomKey] || actionSource["月"]).slice(0, 3);
+
   actions.forEach(act => {
     const btn = document.createElement("button");
     btn.type = "button";
@@ -167,7 +172,6 @@ function handleNarrationNext() {
   }
 }
 
-// 会話表示（「前へ」ボタンの有効/無効制御を含む）
 function showDialogueLine() {
   const question = currentQuestion();
   const dialogues = (question && question.dialogue) ? question.dialogue : [];
@@ -217,7 +221,6 @@ function goToDialogueNext() {
   }
 }
 
-// 左右の立ち絵（主人公・NPC）を正しく配置・表示する関数
 function renderDialogueStage(question, line) {
   const bgImg = document.getElementById("dialogue-bg-image");
   const leftImg = document.getElementById("dialogue-left-image");
@@ -225,7 +228,6 @@ function renderDialogueStage(question, line) {
 
   setImageSafely(bgImg, question.bg || FALLBACK_SCENE_BG);
 
-  // 左側：プレイヤー（主人公）
   const playerImage = getPlayerImage("playerNeutral");
   if (leftImg) {
     setImageSafely(leftImg, playerImage);
@@ -234,7 +236,6 @@ function renderDialogueStage(question, line) {
     applyCharacterBlend(leftImg, playerImage);
   }
 
-  // 右側：NPC（question.characterに設定されているもの）
   if (rightImg) {
     if (question.character) {
       setImageSafely(rightImg, question.character);
@@ -261,7 +262,6 @@ function goToAfterDialogue() {
   }
 }
 
-// スマホ通知画面（揺れ控えめ時は振動・バイブを停止）
 function showPikonNotification() {
   const question = currentQuestion();
   const notifTextEl = document.getElementById("notification-text");
@@ -345,7 +345,6 @@ function showPikonNotification() {
   notificationAutoTimer = setTimeout(proceedToQuestion, 1500);
 }
 
-// 週末ふりかえり画面（2人並列）
 function showWeekRecap() {
   const bgImg = document.getElementById("week-recap-bg-image");
   const playerImg = document.getElementById("week-recap-player-image");
@@ -388,7 +387,7 @@ function showWeekRecap() {
         ${safeDispName}、<ruby>本当<rt>ほんとう</rt></ruby>に よく <ruby>頑張<rt>がんば</rt></ruby>ったね！<br><br>
         <ruby>怪<rt>あや</rt></ruby>しいメールや メッセージ、<ruby>危<rt>あぶ</rt></ruby>ない お<ruby>誘<rt>さそ</rt></ruby>いも <ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>いて <ruby>見<rt>み</rt></ruby>ぬいてきたね。<br><br>
         ✨ <strong>さぁ！ ずっと <ruby>待<rt>ま</rt></ruby>ちに待った お<ruby>買<rt>か</rt></ruby>い<ruby>物<rt>もの</rt></ruby>の <ruby>時間<rt>じかん</rt></ruby>だ！</strong><br>
-        お<ruby>小遣<rt>こづか</rt></ruby>いを <ruby>守<rt>まも</rt></ruby>って、<ruby>欲<rt>ほ</rt></ruby>しかったものは <ruby>買<rt>か</rt></ruby>えるかな…！？
+        お<ruby>小遣<rt>こづか</rt></ruby>いを <ruby>守<rt>mamo</rt></ruby>って、<ruby>欲<rt>ほ</rt></ruby>しかったものは <ruby>買<rt>か</rt></ruby>えるかな…！？
       `;
     } else {
       recapTextEl.innerHTML = `

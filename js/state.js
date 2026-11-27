@@ -1,7 +1,7 @@
 /* =========================================================
    state.js
    ゲーム状態管理・出題バランス抽出ロジック
-   （揺れ・点滅控えめ設定 reduceMotion 対応版）
+   【全モード 詐欺4・本物2・助ける1（計7問）統一対応版】
    ========================================================= */
 
 const prefersReducedMotion =
@@ -64,64 +64,38 @@ function shuffleArray(array) {
 
 function buildDaySchedule(mode) {
   const schedule = [];
-
-  if (mode === "senior" || mode === "adult") {
-    for (let day = 0; day < 7; day++) {
-      schedule.push({
-        weekdayIndex: day,
-        dayNumber: `DAY${day + 1}`,
-        weekdayName: SEVEN_DAY_LABELS[day],
-        periodLabel: "",
-        isFirstOfSlot: true,
-        isSunday: day === 6
-      });
-    }
-  } else {
-    const doubleDayIndexes = new Set([0, 1, 3]);
-
-    for (let day = 0; day < 7; day++) {
-      const questionsOnThisDay = doubleDayIndexes.has(day) ? 2 : 1;
-      for (let slot = 0; slot < questionsOnThisDay; slot++) {
-        schedule.push({
-          weekdayIndex: day,
-          dayNumber: `DAY${day + 1}`,
-          weekdayName: SEVEN_DAY_LABELS[day],
-          periodLabel: questionsOnThisDay === 2 ? (slot === 0 ? "午前" : "午後") : "",
-          isFirstOfSlot: slot === 0,
-          isSunday: day === 6
-        });
-      }
-    }
+  // 全モード共通で1日1問×7日間（月〜日）の全7スロットに統一
+  for (let day = 0; day < 7; day++) {
+    schedule.push({
+      weekdayIndex: day,
+      dayNumber: `DAY${day + 1}`,
+      weekdayName: SEVEN_DAY_LABELS[day],
+      periodLabel: "",
+      isFirstOfSlot: true,
+      isSunday: day === 6
+    });
   }
-
   return schedule;
 }
 
 function pickWeeklyQuestions(mode) {
+  let pool = [];
   if (mode === "senior") {
-    const pool = shuffleArray(QUESTIONS_SENIOR);
-    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 5);
-    const realPicked = pool.filter(q => q.category === "real").slice(0, 2);
-    return shuffleArray([...scamPicked, ...realPicked]);
+    pool = shuffleArray(QUESTIONS_SENIOR);
   } else if (mode === "adult") {
-    const pool = shuffleArray(QUESTIONS_ADULT);
-    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 5);
-    const realPicked = pool.filter(q => q.category === "real").slice(0, 1);
-    const helpPicked = pool.filter(q => q.category === "help").slice(0, 1);
-    return shuffleArray([...scamPicked, ...realPicked, ...helpPicked]);
+    pool = shuffleArray(QUESTIONS_ADULT);
   } else if (mode === "teen") {
-    const pool = shuffleArray(QUESTIONS_TEEN);
-    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 7);
-    const realPicked = pool.filter(q => q.category === "real").slice(0, 2);
-    const helpPicked = pool.filter(q => q.category === "help").slice(0, 1);
-    return shuffleArray([...scamPicked, ...realPicked, ...helpPicked]);
+    pool = shuffleArray(QUESTIONS_TEEN);
   } else {
-    const pool = shuffleArray(QUESTIONS_ELEMENTARY);
-    const scamPicked = pool.filter(q => q.category === "scam").slice(0, 7);
-    const realPicked = pool.filter(q => q.category === "real").slice(0, 2);
-    const helpPicked = pool.filter(q => q.category === "help").slice(0, 1);
-    return shuffleArray([...scamPicked, ...realPicked, ...helpPicked]);
+    pool = shuffleArray(QUESTIONS_ELEMENTARY);
   }
+
+  // 詐欺4問 ＋ 本物2問 ＋ 助ける1問 ＝ 合計7問で全モード統一抽出
+  const scamPicked = pool.filter(q => q.category === "scam").slice(0, 4);
+  const realPicked = pool.filter(q => q.category === "real").slice(0, 2);
+  const helpPicked = pool.filter(q => q.category === "help").slice(0, 1);
+
+  return shuffleArray([...scamPicked, ...realPicked, ...helpPicked]);
 }
 
 function currentQuestion() {

@@ -41,6 +41,10 @@
         <div id="target-item-display" class="target-item-chip is-hidden">
           <span class="target-label" id="target-item-label">目標:</span>
           <span id="target-item-name" class="target-name"></span>
+          <!-- ★ 目標達成・防衛進捗ゲージ ★ -->
+          <div class="statusBar-gauge-track" title="目標金額に対する所持金の比率">
+            <div id="statusBar-gauge-fill" class="statusBar-gauge-fill"></div>
+          </div>
         </div>
         <div class="wallet-chip" id="wallet-chip-box">
           <span class="wallet-icon">💰</span>
@@ -141,7 +145,7 @@
         </div>
       </section>
 
-      <!-- ①.1 対象者モード選択画面（4モード対応） -->
+      <!-- ①.1 対象者モード選択画面（全7問表記に統一） -->
       <section id="screen-mode-select" class="screen">
         <div class="mode-select-container">
           <h2 class="mode-select-title">どのモードで遊びますか？</h2>
@@ -150,12 +154,12 @@
           <div class="mode-select-grid">
             <button id="btn-mode-elementary" class="mode-card" type="button">
               <div class="mode-badge badge-elementary">🎒 小学生モード</div>
-              <p class="mode-card-desc">やさしい言葉とふりがな付きで安心チャレンジ！（全10問）</p>
+              <p class="mode-card-desc">やさしい言葉とふりがな付きで安心チャレンジ！（全7問）</p>
             </button>
 
             <button id="btn-mode-teen" class="mode-card" type="button">
               <div class="mode-badge badge-teen">🏫 中高生モード</div>
-              <p class="mode-card-desc">SNS・ゲーム・バイト・友達トラブルを見抜こう！（全10問）</p>
+              <p class="mode-card-desc">SNS・ゲーム・バイト・友達トラブルを見抜こう！（全7問）</p>
             </button>
 
             <button id="btn-mode-adult" class="mode-card" type="button">
@@ -230,7 +234,7 @@
         <button id="btn-intro-next" class="btn btn-primary">次へ進む</button>
       </section>
 
-      <!-- ①.8 ルール説明画面（小学生・中高生モード専用） -->
+      <!-- ①.8 ルール説明画面 -->
       <section id="screen-rules" class="screen">
         <div class="rules-container">
           <div class="rules-header-strip">
@@ -295,7 +299,7 @@
         <button id="btn-dayintro-next" class="btn btn-primary">次へ</button>
       </section>
 
-      <!-- ④.5 日常行動選択画面（小学生・中高生モードのみ） -->
+      <!-- ④.5 日常行動選択画面 -->
       <section id="screen-daily-action" class="screen">
         <div class="story-stage">
           <img id="action-bg-image" class="story-bg-image is-hidden" alt="">
@@ -329,7 +333,7 @@
         <button id="btn-narration-next" class="btn btn-primary">次へ</button>
       </section>
 
-      <!-- ⑥ キャラクター会話画面（主人公＝左側固定・前へ/次へ並列ボタン） -->
+      <!-- ⑥ キャラクター会話画面 -->
       <section id="screen-dialogue" class="screen">
         <div class="story-stage" id="dialogue-stage">
           <img id="dialogue-bg-image" class="story-bg-image is-hidden" alt="">
@@ -499,7 +503,7 @@
         <button id="btn-week-recap-next" class="btn btn-primary">次へ進む</button>
       </section>
 
-      <!-- ⑩ 買い物イベント（小学生・中高生モードのみ） -->
+      <!-- ⑩ 買い物イベント -->
       <section id="screen-shopping" class="screen">
         <h2 class="screen-heading" id="shopping-heading">日曜日：お買い物タイム</h2>
         <div class="story-stage" id="shopping-stage">
@@ -522,7 +526,7 @@
         <div class="ending-action-btn-group" id="ending-btn-group"></div>
       </section>
 
-      <!-- ⑪.5 大分県・全国の詐欺被害データ専用ページ（結果画面の後・アンケートの前） -->
+      <!-- ⑪.5 大分県・全国の詐欺被害データ専用ページ -->
       <section id="screen-oita-stats" class="screen">
         <div class="stats-page-wrapper">
           <div class="guide-strip">

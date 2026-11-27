@@ -1,7 +1,7 @@
 /* =========================================================
    event.js
    問題出題・選択肢回答判定・ダメージ計算・結果表示・進行制御
-   （揺れ控えめ静止表示・一般名称化・小学生総ルビ対応版）
+   【所持金変動時の進捗ゲージ即時連動＆遷移安定完全版】
    ========================================================= */
 
 function showEvent() {
@@ -103,7 +103,6 @@ function renderChoices(question) {
     btn.className = "choice-btn";
     btn.type = "button";
 
-    // 3原則透視タグ表示
     if (state.isTestMode && state.showPrincipleTags) {
       let badgeHTML = "";
       if (choice.type === "correct") {
@@ -141,7 +140,7 @@ function handleChoiceWithDelay(choice) {
   setTimeout(() => {
     if (thinkingOverlay) thinkingOverlay.classList.add("is-hidden");
     handleChoice(choice);
-  }, 800);
+  }, 600);
 }
 
 function getNextButtonLabel() {
@@ -198,14 +197,16 @@ function getReactionComment(choiceType) {
   return shuffleArray(options)[0];
 }
 
-// 選択後の判定・集計・被害計算
+// 選択後の判定・集計・被害計算（所持金変動と同時に進捗ゲージを即座に動かす）
 function handleChoice(choice) {
   const question = currentQuestion();
   const isElem = state.mode === "elementary";
 
   state.money += choice.money;
   showMoneyDelta(choice.money);
-  updateMoneyDisplay();
+
+  // ★ 所持金変更の瞬間にステータスバーと目標進捗ゲージを即時再計算してアニメーション連動 ★
+  updateStatusBar();
 
   const isCorrect = choice.type === "correct" || choice.money > 0 || (choice.money === 0 && !choice.damageType);
   if (isCorrect) {
@@ -244,38 +245,40 @@ function handleChoice(choice) {
   const popMoney = document.getElementById("instant-pop-money");
   const popSub = document.getElementById("instant-pop-sub");
 
-  popBadge.classList.remove("is-correct", "is-partial", "is-wrong");
-  popMoney.classList.remove("is-plus", "is-minus", "is-zero");
+  if (popBadge) popBadge.classList.remove("is-correct", "is-partial", "is-wrong");
+  if (popMoney) popMoney.classList.remove("is-plus", "is-minus", "is-zero");
   if (popOverlay) {
-    popOverlay.classList.remove("is-danger-flash", "is-danger-static");
+    popOverlay.classList.remove("is-hidden", "is-danger-flash", "is-danger-static");
   }
 
+  const yenUnit = isElem ? "<ruby>円<rt>えん</rt></ruby>" : "円";
+
   if (question.category === "real" && isCorrect) {
-    popBadge.innerHTML = isElem
-      ? "⭕ <ruby>安全<rt>あんぜん</rt></ruby>に <ruby>確認<rt>かくにん</rt></ruby>できた！"
-      : "⭕ 安全に確認できた！";
-    popBadge.classList.add("is-correct");
-    popSub.innerHTML = isElem
-      ? "<ruby>正<rt>ただ</rt></ruby>しい <ruby>方法<rt>ほうほう</rt></ruby>で <ruby>確認<rt>かくにん</rt></ruby>できたよ！"
-      : "正規の手続きで正しく処理できました！";
+    if (popBadge) {
+      popBadge.innerHTML = isElem ? "⭕ <ruby>安全<rt>あんぜん</rt></ruby>に <ruby>確認<rt>かくにん</rt></ruby>できた！" : "⭕ 安全に確認できた！";
+      popBadge.classList.add("is-correct");
+    }
+    if (popSub) {
+      popSub.innerHTML = isElem ? "<ruby>正<rt>ただ</rt></ruby>しい <ruby>方法<rt>ほうほう</rt></ruby>で <ruby>確認<rt>かくにん</rt></ruby>できたよ！" : "正規の手続きで正しく処理できました！";
+    }
     setJoeExpression("happy");
   } else if (isCorrect) {
-    popBadge.innerHTML = isElem
-      ? "✨ <ruby>被害<rt>ひがい</rt></ruby>を <ruby>防<rt>ふせ</rt></ruby>げた！"
-      : "✨ 被害を防げた！";
-    popBadge.classList.add("is-correct");
-    popSub.innerHTML = isElem
-      ? "<ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>いた <ruby>判断<rt>はんだん</rt></ruby>で お<ruby>金<rt>かね</rt></ruby>を しっかり<ruby>守<rt>まも</rt></ruby>れたね！"
-      : "冷静な判断でお金をしっかり守れたね！";
+    if (popBadge) {
+      popBadge.innerHTML = isElem ? "✨ <ruby>被害<rt>ひがい</rt></ruby>を <ruby>防<rt>ふせ</rt></ruby>げた！" : "✨ 被害を防げた！";
+      popBadge.classList.add("is-correct");
+    }
+    if (popSub) {
+      popSub.innerHTML = isElem ? "<ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>いた <ruby>判断<rt>はんだん</rt></ruby>で お<ruby>金<rt>かね</rt></ruby>を しっかり<ruby>守<rt>まも</rt></ruby>れたね！" : "冷静な判断でお金をしっかり守れたね！";
+    }
     setJoeExpression("cheer");
   } else {
-    popBadge.innerHTML = isElem
-      ? "⚠️ <ruby>被害<rt>ひがい</rt></ruby><ruby>発生<rt>はっせい</rt></ruby>！"
-      : "⚠️ 被害発生！";
-    popBadge.classList.add("is-wrong");
-    popSub.innerHTML = isElem
-      ? `<ruby>被害額<rt>ひがいがく</rt></ruby>：${Math.abs(choice.money).toLocaleString("ja-JP")}<ruby>円<rt>えん</rt></ruby>！`
-      : `被害額：${Math.abs(choice.money).toLocaleString("ja-JP")}円！`;
+    if (popBadge) {
+      popBadge.innerHTML = isElem ? "⚠️ <ruby>被害<rt>ひがい</rt></ruby><ruby>発生<rt>はっせい</rt></ruby>！" : "⚠️ 被害発生！";
+      popBadge.classList.add("is-wrong");
+    }
+    if (popSub) {
+      popSub.innerHTML = isElem ? `<ruby>被害額<rt>ひがいがく</rt></ruby>：${Math.abs(choice.money).toLocaleString("ja-JP")}<ruby>円<rt>えん</rt></ruby>！` : `被害額：${Math.abs(choice.money).toLocaleString("ja-JP")}円！`;
+    }
     setJoeExpression("sad");
 
     if (popOverlay) {
@@ -287,19 +290,18 @@ function handleChoice(choice) {
     }
   }
 
-  const yenUnit = isElem ? "<ruby>円<rt>えん</rt></ruby>" : "円";
-  if (choice.money > 0) {
-    popMoney.innerHTML = `＋${choice.money.toLocaleString("ja-JP")}${yenUnit}`;
-    popMoney.classList.add("is-plus");
-  } else if (choice.money < 0) {
-    popMoney.innerHTML = `－${Math.abs(choice.money).toLocaleString("ja-JP")}${yenUnit}`;
-    popMoney.classList.add("is-minus");
-  } else {
-    popMoney.innerHTML = `±0${yenUnit}`;
-    popMoney.classList.add("is-zero");
+  if (popMoney) {
+    if (choice.money > 0) {
+      popMoney.innerHTML = `＋${choice.money.toLocaleString("ja-JP")}${yenUnit}`;
+      popMoney.classList.add("is-plus");
+    } else if (choice.money < 0) {
+      popMoney.innerHTML = `－${Math.abs(choice.money).toLocaleString("ja-JP")}${yenUnit}`;
+      popMoney.classList.add("is-minus");
+    } else {
+      popMoney.innerHTML = `±0${yenUnit}`;
+      popMoney.classList.add("is-zero");
+    }
   }
-
-  if (popOverlay) popOverlay.classList.remove("is-hidden");
 
   const badge = document.getElementById("result-badge");
   const reactionText = document.getElementById("result-reaction");
@@ -311,80 +313,72 @@ function handleChoice(choice) {
   const pointText = document.getElementById("result-point");
   const resultCharacterImg = document.getElementById("result-character-image");
 
-  badge.classList.remove("is-correct", "is-partial", "is-wrong");
-  moneyText.classList.remove("is-plus", "is-minus", "is-zero");
-  damageAlertEl.classList.add("is-hidden");
+  if (badge) badge.classList.remove("is-correct", "is-partial", "is-wrong");
+  if (moneyText) moneyText.classList.remove("is-plus", "is-minus", "is-zero");
+  if (damageAlertEl) damageAlertEl.classList.add("is-hidden");
 
   if (question.category === "real" && isCorrect) {
-    badge.innerHTML = isElem
-      ? "⭕ <ruby>安全<rt>あんぜん</rt></ruby>に <ruby>確認<rt>かくにん</rt></ruby><ruby>完了<rt>かんりょう</rt></ruby>！"
-      : "⭕ 安全に確認完了！";
-    badge.classList.add("is-correct");
-    pointTitleEl.innerHTML = isElem
-      ? "🎉 <ruby>安全<rt>あんぜん</rt></ruby>な <ruby>手続<rt>てつづ</rt></ruby>きの ポイント"
-      : "🎉 正規手続きのポイント";
+    if (badge) {
+      badge.innerHTML = isElem ? "⭕ <ruby>安全<rt>あんぜん</rt></ruby>に <ruby>確認<rt>かくにん</rt></ruby><ruby>完了<rt>かんりょう</rt></ruby>！" : "⭕ 安全に確認完了！";
+      badge.classList.add("is-correct");
+    }
+    if (pointTitleEl) pointTitleEl.innerHTML = isElem ? "🎉 <ruby>安全<rt>あんぜん</rt></ruby>な <ruby>手続<rt>てつづ</rt></ruby>きの ポイント" : "🎉 正規手続きのポイント";
   } else if (isCorrect) {
-    badge.innerHTML = isElem
-      ? "⭕ <ruby>被害<rt>ひがい</rt></ruby>を <ruby>防<rt>ふせ</rt></ruby>げた！"
-      : "⭕ 被害を防げた！";
-    badge.classList.add("is-correct");
-    pointTitleEl.innerHTML = isElem
-      ? "<ruby>今回<rt>こんかい</rt></ruby>の <ruby>防犯<rt>ぼうはん</rt></ruby>ポイント"
-      : "今回の防犯ポイント";
+    if (badge) {
+      badge.innerHTML = isElem ? "⭕ <ruby>被害<rt>ひがい</rt></ruby>を <ruby>防<rt>ふせ</rt></ruby>げた！" : "⭕ 被害を防げた！";
+      badge.classList.add("is-correct");
+    }
+    if (pointTitleEl) pointTitleEl.innerHTML = isElem ? "<ruby>今回<rt>こんかい</rt></ruby>の <ruby>防犯<rt>ぼうはん</rt></ruby>ポイント" : "今回の防犯ポイント";
   } else {
-    badge.innerHTML = isElem
-      ? "❌ トラブル<ruby>発生<rt>はっせい</rt></ruby>！"
-      : "❌ トラブル発生！";
-    badge.classList.add("is-wrong");
-    pointTitleEl.innerHTML = isElem
-      ? "<ruby>防犯<rt>ぼうはん</rt></ruby>の ポイント"
-      : "防犯のポイント";
+    if (badge) {
+      badge.innerHTML = isElem ? "❌ トラブル<ruby>発生<rt>はっせい</rt></ruby>！" : "❌ トラブル発生！";
+      badge.classList.add("is-wrong");
+    }
+    if (pointTitleEl) pointTitleEl.innerHTML = isElem ? "<ruby>防犯<rt>ぼうはん</rt></ruby>の ポイント" : "防犯のポイント";
 
-    if (choice.damageType === "personal_info") {
-      damageAlertEl.innerHTML = isElem
-        ? "⚠️ <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby><ruby>流出<rt>りゅうしゅつ</rt></ruby>リスク！"
-        : "⚠️ 個人情報流出リスク！";
-      damageAlertEl.classList.remove("is-hidden");
-    } else if (choice.damageType === "account") {
-      damageAlertEl.innerHTML = isElem
-        ? "⚠️ アカウント<ruby>乗<rt>の</rt></ruby>っ<ruby>取<rt>と</rt></ruby>りリスク！"
-        : "⚠️ アカウント乗っ取りリスク！";
-      damageAlertEl.classList.remove("is-hidden");
-    } else if (choice.damageType === "line_takeover") {
-      damageAlertEl.innerHTML = isElem
-        ? "⚠️ SNS・メッセージアプリ <ruby>乗<rt>の</rt></ruby>っ<ruby>取<rt>と</rt></ruby>りリスク！"
-        : "⚠️ SNS・メッセージアプリ乗っ取りリスク！";
+    if (damageAlertEl && choice.damageType) {
+      if (choice.damageType === "personal_info") {
+        damageAlertEl.innerHTML = isElem ? "⚠️ <ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby><ruby>流出<rt>りゅうしゅつ</rt></ruby>リスク！" : "⚠️ 個人情報流出リスク！";
+      } else if (choice.damageType === "account") {
+        damageAlertEl.innerHTML = isElem ? "⚠️ アカウント<ruby>乗<rt>の</rt></ruby>っ<ruby>取<rt>と</rt></ruby>りリスク！" : "⚠️ アカウント乗っ取りリスク！";
+      } else if (choice.damageType === "line_takeover") {
+        damageAlertEl.innerHTML = isElem ? "⚠️ SNS・メッセージアプリ <ruby>乗<rt>の</rt></ruby>っ<ruby>取<rt>と</rt></ruby>りリスク！" : "⚠️ SNS・メッセージアプリ乗っ取りリスク！";
+      }
       damageAlertEl.classList.remove("is-hidden");
     }
   }
 
-  reactionText.innerHTML = getReactionComment(isCorrect ? "correct" : "wrong");
+  if (reactionText) reactionText.innerHTML = getReactionComment(isCorrect ? "correct" : "wrong");
 
-  if (choice.money > 0) {
-    moneyText.innerHTML = `＋${choice.money.toLocaleString("ja-JP")}${yenUnit}`;
-    moneyText.classList.add("is-plus");
-  } else if (choice.money < 0) {
-    moneyText.innerHTML = `－${Math.abs(choice.money).toLocaleString("ja-JP")}${yenUnit}`;
-    moneyText.classList.add("is-minus");
-  } else {
-    moneyText.innerHTML = isElem
-      ? "<ruby>所持金<rt>しょじきん</rt></ruby>の <ruby>増減<rt>ぞうげん</rt></ruby>なし（0<ruby>円<rt>えん</rt></ruby>）"
-      : "所持金の増減なし（0円）";
-    moneyText.classList.add("is-zero");
+  if (moneyText) {
+    if (choice.money > 0) {
+      moneyText.innerHTML = `＋${choice.money.toLocaleString("ja-JP")}${yenUnit}`;
+      moneyText.classList.add("is-plus");
+    } else if (choice.money < 0) {
+      moneyText.innerHTML = `－${Math.abs(choice.money).toLocaleString("ja-JP")}${yenUnit}`;
+      moneyText.classList.add("is-minus");
+    } else {
+      moneyText.innerHTML = isElem ? "<ruby>所持金<rt>しょじきん</rt></ruby>の <ruby>増減<rt>ぞうげん</rt></ruby>なし（0<ruby>円<rt>えん</rt></ruby>）" : "所持金の増減なし（0円）";
+      moneyText.classList.add("is-zero");
+    }
   }
 
-  currentMoneyText.innerHTML = isElem
-    ? `<ruby>現在<rt>げんざい</rt></ruby>の <ruby>所持金<rt>しょじきん</rt></ruby>：${state.money.toLocaleString("ja-JP")}<ruby>円<rt>えん</rt></ruby>`
-    : `現在の所持金：¥${state.money.toLocaleString("ja-JP")}`;
-  explain.innerHTML = choice.explain;
-  pointText.innerHTML = question.point || "";
+  if (currentMoneyText) {
+    currentMoneyText.innerHTML = isElem
+      ? `<ruby>現在<rt>げんざい</rt></ruby>の <ruby>所持金<rt>しょじきん</rt></ruby>：${state.money.toLocaleString("ja-JP")}<ruby>円<rt>えん</rt></ruby>`
+      : `現在の所持金：¥${state.money.toLocaleString("ja-JP")}`;
+  }
+  if (explain) explain.innerHTML = choice.explain;
+  if (pointText) pointText.innerHTML = question.point || "";
 
   const guideImg = document.getElementById("result-guide-image");
   setImageSafely(guideImg, getJoeImage(state.joeExpression));
   applyCharacterBlend(guideImg, getJoeImage(state.joeExpression));
 
   setImageSafely(resultCharacterImg, resultCharacterFor(isCorrect ? "correct" : "wrong"));
-  document.getElementById("btn-next").innerHTML = getNextButtonLabel();
+  
+  const btnNext = document.getElementById("btn-next");
+  if (btnNext) btnNext.innerHTML = getNextButtonLabel();
 
   setTimeout(() => {
     if (popOverlay) {
@@ -392,7 +386,7 @@ function handleChoice(choice) {
       popOverlay.classList.remove("is-danger-flash", "is-danger-static");
     }
     showScreen("screen-result");
-  }, 1200);
+  }, 1000);
 }
 
 function goToNextDay() {

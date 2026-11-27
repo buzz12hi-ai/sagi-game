@@ -1,7 +1,7 @@
 /* =========================================================
    ui.js
    UI描画・4モード表示制御・揺れ控えめ反映・小学生総ルビ切替・ピンチズーム・会話ログ
-   【XSS対策エスケープ・全画面ルビ切替・404セーフローダー対応版】
+   【進捗ゲージリアルタイム連動・即時反映完全版】
    ========================================================= */
 
 window.DEBUG_MODE = false;
@@ -128,9 +128,6 @@ function getPlayerImage(expressionType) {
   }
 }
 
-/* =========================================================
-   画面の揺れ・点滅設定（reduceMotion）反映処理
-   ========================================================= */
 function applyMotionPreference(isReduced) {
   state.reduceMotion = Boolean(isReduced);
   const shell = document.getElementById("app-shell");
@@ -174,9 +171,6 @@ function toggleMotionPreference() {
   applyMotionPreference(!state.reduceMotion);
 }
 
-/* =========================================================
-   小学生モード用 全画面ルビ切替 & 他モード標準復元
-   ========================================================= */
 function setHtmlById(id, html) {
   const el = document.getElementById(id);
   if (el) el.innerHTML = html;
@@ -194,13 +188,11 @@ function setPillLabels(groupId, labels) {
 function applyModeTextsUI() {
   const isElem = state.mode === "elementary";
 
-  // 1. ステータスバー
   setHtmlById("target-item-label", isElem ? "<ruby>目標<rt>もくひょう</rt></ruby>:" : "目標:");
   setHtmlById("money-yen-label", isElem ? "<ruby>円<rt>えん</rt></ruby>" : "円");
   setHtmlById("btn-retire", isElem ? "やめる" : "リタイア");
   applyMotionPreference(state.reduceMotion);
 
-  // 2. 名前入力画面
   setHtmlById("name-input-prompt", isElem
     ? "こんにちは！<br><ruby>君<rt>きみ</rt></ruby>の<ruby>名前<rt>なまえ</rt></ruby>を <ruby>教<rt>おし</rt></ruby>えて！"
     : "こんにちは！<br>君の名前を教えて！"
@@ -219,7 +211,6 @@ function applyModeTextsUI() {
     : "スキップ（「あなた」で進む）"
   );
 
-  // 3. 自己紹介・ルール・目標選択・あらすじ・曜日・行動・ナレーション・会話
   setHtmlById("btn-intro-next", isElem ? "<ruby>次<rt>つぎ</rt></ruby>へ <ruby>進<rt>すす</rt></ruby>む" : "次へ進む");
   setHtmlById("rules-joe-lead", isElem
     ? "チャレンジを <ruby>始<rt>はじ</rt></ruby>める<ruby>前<rt>まえ</rt></ruby>に、ゲームのルールを <ruby>確認<rt>かくにん</rt></ruby>しよう！"
@@ -235,7 +226,7 @@ function applyModeTextsUI() {
     : "1週間後、欲しいものを買えるかな？"
   );
   setHtmlById("item-intro-sub", isElem
-    ? "<ruby>今週<rt>こんしゅう</rt></ruby>のおこづかい 50,000<ruby>円<rt>えん</rt></ruby>を <ruby>守<rt>まも</rt></ruby>って、お<ruby>買<rt>か</rt></ruby>い<ruby>物<rt>もの</rt></ruby>に <ruby>挑戦<rt>ちょうせん</rt></ruby>しよう！"
+    ? "<ruby>今週<rt>こんしゅう</rt></ruby>のおこづかい 50,000<ruby>円<rt>えん</rt></ruby>を <ruby>守<rt>mamo</rt></ruby>って、お<ruby>買<rt>か</rt></ruby>い<ruby>物<rt>もの</rt></ruby>に <ruby>挑戦<rt>ちょうせん</rt></ruby>しよう！"
     : "今週のおこづかい50,000円を守って、買い物に挑戦しよう！"
   );
   setHtmlById("item-guide-line", isElem
@@ -260,7 +251,6 @@ function applyModeTextsUI() {
   setHtmlById("btn-dialogue-prev", isElem ? "◀ <ruby>前<rt>まえ</rt></ruby>へ" : "◀ 前へ");
   setHtmlById("btn-dialogue-next", isElem ? "<ruby>次<rt>つぎ</rt></ruby>へ ▶" : "次へ ▶");
 
-  // 4. スマホ通知・問題画面・結果画面・ふりかえり・買い物
   setHtmlById("phone-date-text", isElem ? "10<ruby>月<rt>がつ</rt></ruby>15<ruby>日<rt>にち</rt></ruby>(<ruby>月<rt>げつ</rt></ruby>)" : "10月15日(月)");
   setHtmlById("phone-app-name", isElem ? "メッセージ" : "メッセージ");
   setHtmlById("phone-app-time", isElem ? "たった<ruby>今<rt>いま</rt></ruby>" : "たった今");
@@ -291,14 +281,12 @@ function applyModeTextsUI() {
   setHtmlById("shopping-heading", isElem ? "<ruby>日曜日<rt>にちようび</rt></ruby>：お<ruby>買<rt>か</rt></ruby>い<ruby>物<rt>もの</rt></ruby>タイム" : "日曜日：お買い物タイム");
   setHtmlById("btn-ending", isElem ? "<ruby>結果<rt>けっか</rt></ruby>を <ruby>見<rt>み</rt></ruby>る" : "結果を見る");
 
-  // 5. モーダル見出し
   setHtmlById("image-modal-hint", isElem ? "🔍 タップで <ruby>拡大<rt>かくだい</rt></ruby>" : "🔍 ピンチ / タップで拡大");
   setHtmlById("btn-zoom-reset", isElem ? "↺ もとに<ruby>戻<rt>もど</rt></ruby>す" : "↺ 等倍");
   setHtmlById("btn-close-image-modal", isElem ? "✕ <ruby>閉<rt>と</rt></ruby>じる" : "✕ 閉じる");
   setHtmlById("log-modal-title", isElem ? "📜 <ruby>直前<rt>ちょくぜん</rt></ruby>の やり<ruby>取<rt>と</rt></ruby>り（<ruby>会話<rt>かいわ</rt></ruby>ログ）" : "📜 直前のやり取り（会話ログ）");
   setHtmlById("btn-close-log-modal", isElem ? "✕ <ruby>閉<rt>と</rt></ruby>じる" : "✕ 閉じる");
 
-  // 6. アンケート画面
   setHtmlById("survey-header-text", isElem
     ? "1<ruby>週間<rt>しゅうかん</rt></ruby> <ruby>本当<rt>ほんとう</rt></ruby>に お<ruby>疲<rt>つか</rt></ruby>れさまでした！<br><ruby>学<rt>まな</rt></ruby>んだことや <ruby>感<rt>かん</rt></ruby>じたことを <ruby>教<rt>おし</rt></ruby>えてね！（<ruby>全<rt>ぜん</rt></ruby>10<ruby>問<rt>もん</rt></ruby>・<ruby>約<rt>やく</rt></ruby>1<ruby>分<rt>ふん</rt></ruby>）"
     : "1週間本当にお疲れさまでした！<br>学んだことや感じたことを教えてほしいな！（全10問・約1分）"
@@ -306,127 +294,6 @@ function applyModeTextsUI() {
   setHtmlById("survey-parta-title", isElem ? "🛡️ <ruby>防犯<rt>ぼうはん</rt></ruby><ruby>意識<rt>いしき</rt></ruby>・<ruby>行動<rt>こうどう</rt></ruby>の <ruby>変化<rt>へんか</rt></ruby>" : "🛡️ 防犯意識・行動の変化");
   setHtmlById("survey-partb-title", isElem ? "📖 ゲームの <ruby>分<rt>わ</rt></ruby>かりやすさ・<ruby>難<rt>むずか</rt></ruby>しさ・<ruby>解説<rt>かいせつ</rt></ruby>" : "📖 ゲームの分かりやすさ・難易度・解説");
   setHtmlById("survey-partc-title", isElem ? "💬 まわりへの <ruby>共有<rt>きょうゆう</rt></ruby>・<ruby>感想<rt>かんそう</rt></ruby>・<ruby>改善点<rt>かいぜんてん</rt></ruby>" : "💬 周囲への共有・感想・改善点");
-
-  for (let i = 1; i <= 9; i++) {
-    setHtmlById(`survey-req-${i}`, isElem ? "<ruby>必須<rt>ひっす</rt></ruby>" : "必須");
-  }
-  setHtmlById("survey-opt-5", isElem ? "<ruby>任意<rt>にんい</rt></ruby>" : "任意");
-  setHtmlById("survey-opt-10", isElem ? "<ruby>任意<rt>にんい</rt></ruby>" : "任意");
-
-  setHtmlById("survey-q1-title", isElem
-    ? "このゲームを プレイして、<ruby>詐欺<rt>さぎ</rt></ruby>に <ruby>騙<rt>だま</rt></ruby>されないようにしようという <ruby>気持<rt>きも</rt></ruby>ちは <ruby>高<rt>たか</rt></ruby>まりましたか？"
-    : "このゲームをプレイして、詐欺に騙されないようにしようという意識は高まりましたか？"
-  );
-  setPillLabels("survey-q1-opts", isElem
-    ? ["<ruby>大<rt>おお</rt></ruby>いに <ruby>高<rt>たか</rt></ruby>まった", "<ruby>高<rt>たか</rt></ruby>まった", "あまり <ruby>変<rt>か</rt></ruby>わらない", "<ruby>変<rt>か</rt></ruby>わらない"]
-    : ["大いに高まった", "高まった", "あまり変わらない", "変わらない"]
-  );
-
-  setHtmlById("survey-q2-title", isElem
-    ? "<ruby>警察<rt>けいさつ</rt></ruby>の <ruby>防犯<rt>ぼうはん</rt></ruby>3<ruby>原則<rt>げんそく</rt></ruby>（<ruby>話<rt>はな</rt></ruby>さない・<ruby>騙<rt>だま</rt></ruby>されない・<ruby>渡<rt>わた</rt></ruby>さない）は <ruby>分<rt>わ</rt></ruby>かりやすかったですか？"
-    : "警察の防犯3原則（話さない・騙されない・渡さない）は分かりやすかったですか？"
-  );
-  setPillLabels("survey-q2-opts", isElem
-    ? ["とても <ruby>分<rt>わ</rt></ruby>かりやすかった", "<ruby>分<rt>わ</rt></ruby>かりやすかった", "<ruby>少<rt>すこ</rt></ruby>し <ruby>難<rt>むずか</rt></ruby>しかった", "<ruby>難<rt>むずか</rt></ruby>しかった"]
-    : ["とても分かりやすかった", "分かりやすかった", "少し難しかった", "難しかった"]
-  );
-
-  setHtmlById("survey-q3-title", isElem
-    ? "これから <ruby>怪<rt>あや</rt></ruby>しい <ruby>電話<rt>でんわ</rt></ruby>・メール・<ruby>訪問<rt>ほうもん</rt></ruby>が あったとき、<ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>いて <ruby>確認<rt>かくにん</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>できそうですか？"
-    : "今後、怪しい電話・メール・訪問があった場合、落ち着いて確認・相談できそうですか？"
-  );
-  setPillLabels("survey-q3-opts", isElem
-    ? ["かならず <ruby>確認<rt>かくにん</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>する", "<ruby>気<rt>き</rt></ruby>をつけて <ruby>行動<rt>こうどう</rt></ruby>する", "<ruby>少<rt>すこ</rt></ruby>し <ruby>不安<rt>ふあん</rt></ruby>がある"]
-    : ["必ず確認・相談する", "気をつけて行動する", "少し不安がある"]
-  );
-
-  setHtmlById("survey-q4-title", isElem
-    ? "ゲーム<ruby>全体<rt>ぜんたい</rt></ruby>の <ruby>分<rt>わ</rt></ruby>かりやすさや <ruby>満足度<rt>まんぞくど</rt></ruby>は どうでしたか？"
-    : "ゲーム全体の分かりやすさや満足度はどうでしたか？"
-  );
-  setPillLabels("survey-q4-opts", isElem
-    ? ["たいへん <ruby>満足<rt>まんぞく</rt></ruby>", "<ruby>満足<rt>まんぞく</rt></ruby>", "<ruby>普通<rt>ふつう</rt></ruby>", "<ruby>不満<rt>ふまん</rt></ruby>"]
-    : ["大変満足", "満足", "普通", "不満"]
-  );
-
-  setHtmlById("survey-q6-title", isElem
-    ? "ゲームを する<ruby>前<rt>まえ</rt></ruby>と <ruby>比<rt>くら</rt></ruby>べて、<ruby>詐欺<rt>さぎ</rt></ruby>かどうかを <ruby>見分<rt>みわ</rt></ruby>ける ポイントが <ruby>分<rt>わ</rt></ruby>かるようになりましたか？"
-    : "ゲームをプレイする前と比べて、詐欺かどうかを見分けるポイントが分かるようになりましたか？"
-  );
-  setPillLabels("survey-q6-opts", isElem
-    ? ["とても <ruby>分<rt>わ</rt></ruby>かるようになった", "<ruby>少<rt>すこ</rt></ruby>し <ruby>分<rt>わ</rt></ruby>かるようになった", "あまり <ruby>変<rt>か</rt></ruby>わらない", "まだ <ruby>難<rt>むずか</rt></ruby>しい"]
-    : ["とても分かるようになった", "少し分かるようになった", "あまり変わらない", "まだ難しい"]
-  );
-
-  setHtmlById("survey-q7-title", isElem
-    ? "ゲームの <ruby>中<rt>なか</rt></ruby>で、<ruby>判断<rt>はんだん</rt></ruby>が <ruby>難<rt>むずか</rt></ruby>しいと <ruby>感<rt>かん</rt></ruby>じた <ruby>問題<rt>もんだい</rt></ruby>は ありましたか？"
-    : "ゲームの中で、判断が難しいと感じた問題はありましたか？"
-  );
-  setPillLabels("survey-q7-opts", isElem
-    ? ["たくさん あった", "いくつか あった", "あまり なかった", "なかった"]
-    : ["たくさんあった", "いくつかあった", "あまりなかった", "なかった"]
-  );
-
-  setHtmlById("survey-q8-title", isElem
-    ? "<ruby>問題<rt>もんだい</rt></ruby>の <ruby>答<rt>こた</rt></ruby>えや <ruby>解説<rt>かいせつ</rt></ruby>は、<ruby>詐欺<rt>さぎ</rt></ruby>への <ruby>対策<rt>たいさく</rt></ruby>を <ruby>理解<rt>りかい</rt></ruby>するのに <ruby>役立<rt>やくだ</rt></ruby>ちましたか？"
-    : "問題の答えや解説は、詐欺への対策を理解するのに役立ちましたか？"
-  );
-  setPillLabels("survey-q8-opts", isElem
-    ? ["とても <ruby>役立<rt>やくだ</rt></ruby>った", "<ruby>役立<rt>やくだ</rt></ruby>った", "あまり <ruby>役立<rt>やくだ</rt></ruby>たなかった", "<ruby>役立<rt>やくだ</rt></ruby>たなかった"]
-    : ["とても役立った", "役立った", "あまり役立たなかった", "役立たなかった"]
-  );
-
-  setHtmlById("survey-q9-title", isElem
-    ? "ゲームで <ruby>学<rt>まな</rt></ruby>んだ <ruby>詐欺<rt>さぎ</rt></ruby><ruby>対策<rt>たいさく</rt></ruby>を、<ruby>家族<rt>かぞく</rt></ruby>や <ruby>友達<rt>ともだち</rt></ruby>にも <ruby>伝<rt>つた</rt></ruby>えたいと <ruby>思<rt>おも</rt></ruby>いましたか？"
-    : "ゲームで学んだ詐欺対策を、家族や友人にも伝えたいと思いましたか？"
-  );
-  setPillLabels("survey-q9-opts", isElem
-    ? ["ぜひ <ruby>伝<rt>つた</rt></ruby>えたい", "できれば <ruby>伝<rt>つた</rt></ruby>えたい", "あまり <ruby>思<rt>おも</rt></ruby>わない", "<ruby>思<rt>おも</rt></ruby>わない"]
-    : ["ぜひ伝えたい", "できれば伝えたい", "あまり思わない", "思わない"]
-  );
-
-  setHtmlById("survey-q5-title", isElem
-    ? "<ruby>一番<rt>いちばん</rt></ruby> <ruby>印象<rt>いんしょう</rt></ruby>に <ruby>残<rt>のこ</rt></ruby>った <ruby>詐欺<rt>さぎ</rt></ruby>の <ruby>手口<rt>てぐち</rt></ruby>や、<ruby>学<rt>まな</rt></ruby>んだ <ruby>感想<rt>かんそう</rt></ruby>が あれば <ruby>教<rt>おし</rt></ruby>えてください。"
-    : "一番印象に残った詐欺の手口や、学んだ感想があれば教えてください。"
-  );
-  setHtmlById("survey-q10-title", isElem
-    ? "ゲームを もっと <ruby>分<rt>わ</rt></ruby>かりやすく、<ruby>役立<rt>やくだ</rt></ruby>つものに するために、<ruby>直<rt>なお</rt></ruby>してほしい <ruby>点<rt>てん</rt></ruby>が あれば <ruby>教<rt>おし</rt></ruby>えてください。"
-    : "ゲームをもっと分かりやすく、役立つものにするために、改善してほしい点があれば教えてください。"
-  );
-
-  const q5Ta = document.getElementById("survey-q5-textarea");
-  const q10Ta = document.getElementById("survey-q10-textarea");
-  if (q5Ta) {
-    q5Ta.placeholder = isElem
-      ? "れい：けいさつの ふりをした メールが こわくて おどろいた、など"
-      : "例: 警察を騙るメッセージアプリの偽逮捕状がリアルで驚いた、など";
-  }
-  if (q10Ta) {
-    q10Ta.placeholder = isElem
-      ? "れい：もじを もっと おおきくしてほしい、など"
-      : "例: 選択肢の文字をもっと大きくしてほしい、もっと手口を増やしてほしい、など";
-  }
-
-  setHtmlById("survey-validation-msg", isElem
-    ? "⚠️ <ruby>赤枠<rt>あかわく</rt></ruby>で <ruby>囲<rt>かこ</rt></ruby>まれた <ruby>必須<rt>ひっす</rt></ruby><ruby>項目<rt>こうもく</rt></ruby>に お<ruby>答<rt>こた</rt></ruby>えください。"
-    : "⚠️ 赤枠で囲まれた必須項目にお答えください。"
-  );
-  setHtmlById("btn-submit-survey", isElem
-    ? "📋 アンケートを <ruby>送信<rt>そうしん</rt></ruby>する"
-    : "📋 アンケートを送信する"
-  );
-  setHtmlById("survey-thanks-title", isElem
-    ? "アンケートに ご<ruby>協力<rt>きょうりょく</rt></ruby>いただき、ありがとうございました！"
-    : "アンケートにご協力いただき、誠にありがとうございました！"
-  );
-  setHtmlById("survey-thanks-desc", isElem
-    ? "いただいた ご<ruby>意見<rt>いけん</rt></ruby>は、これからも よりよい <ruby>防犯<rt>ぼうはん</rt></ruby>ゲームの <ruby>改善<rt>かいぜん</rt></ruby>に <ruby>役立<rt>やくだ</rt></ruby>てます。"
-    : "いただいた貴重なご意見は、今後の防犯教材・研究の改善に役立てさせていただきます。"
-  );
-  setHtmlById("btn-restart", isElem
-    ? "🎮 もう<ruby>一度<rt>いちど</rt></ruby> <ruby>遊<rt>あそ</rt></ruby>ぶ"
-    : "🎮 もう一度遊ぶ"
-  );
 }
 
 function setJoeSupportMessage(msg) {
@@ -482,18 +349,39 @@ function showMoneyDelta(amount) {
   }, 1600);
 }
 
+// 所持金変更時に即時ゲージ幅を再計算して反映する関数
 function updateTargetItemDisplay() {
   const chip = document.getElementById("target-item-display");
   const nameEl = document.getElementById("target-item-name");
+  const gaugeFill = document.getElementById("statusBar-gauge-fill");
   if (!chip || !nameEl) return;
 
-  if ((state.mode === "elementary" || state.mode === "teen") && state.selectedItem) {
-    if (state.mode === "elementary" && state.selectedItem.rubyName) {
-      nameEl.innerHTML = state.selectedItem.rubyName;
-    } else {
-      nameEl.textContent = state.selectedItem.name;
-    }
+  if (state.selectedItem) {
+    const isElem = state.mode === "elementary";
+    const itemDisp = (isElem && state.selectedItem.rubyName) ? state.selectedItem.rubyName : escapeHTML(state.selectedItem.name);
+    const priceText = isElem
+      ? `${state.selectedItem.price.toLocaleString("ja-JP")}<ruby>円<rt>えん</rt></ruby>`
+      : `¥${state.selectedItem.price.toLocaleString("ja-JP")}`;
+
+    nameEl.innerHTML = `${itemDisp} (${priceText})`;
     chip.classList.remove("is-hidden");
+
+    if (gaugeFill) {
+      const targetPrice = Number(state.selectedItem.price) || 1;
+      const currentMoney = Number(state.money) || 0;
+      
+      let ratio = (currentMoney / targetPrice) * 100;
+      ratio = Math.max(0, Math.min(100, ratio));
+
+      gaugeFill.style.width = `${ratio}%`;
+
+      gaugeFill.classList.remove("is-warning", "is-danger");
+      if (currentMoney < targetPrice) {
+        gaugeFill.classList.add("is-danger");
+      } else if (ratio < 60) {
+        gaugeFill.classList.add("is-warning");
+      }
+    }
   } else {
     chip.classList.add("is-hidden");
   }

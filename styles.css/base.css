@@ -1,7 +1,7 @@
 /* =========================================================
    base.css
    全体基本設定・カラー変数・フォント・ルビ表示・共通部品・ステータスバー
-   【PC版曜日スクロールバー解消・揺れ控えめモード・上下見切れ防止対応版】
+   【スマホ版ステータスバー最適化・進捗ゲージ対応版】
    ========================================================= */
 
 :root {
@@ -64,7 +64,6 @@ img {
   display: none !important;
 }
 
-/* ★ ふりがな（ルビ）の上部表示スタイル ★ */
 ruby {
   ruby-position: over;
   ruby-align: center;
@@ -86,9 +85,6 @@ rt {
   color: #4B5E80;
 }
 
-/* =========================================================
-   基本レイアウト & アプリシェル（レスポンシブ & 切替対応）
-   ========================================================= */
 .app-shell {
   width: 100%;
   max-width: 100%;
@@ -128,7 +124,6 @@ rt {
   }
 }
 
-/* ★ スマホ版デザイン強制モード ★ */
 .app-shell.layout-mobile {
   max-width: 480px !important;
   min-height: 92vh;
@@ -144,20 +139,16 @@ rt {
   height: 340px !important;
 }
 
-/* ★ iPad・パソコン版デザイン強制モード ★ */
 .app-shell.layout-desktop {
   max-width: 1000px !important;
 }
 
-/* =========================================================
-   ステータスバー（PC版の曜日一覧スクロールバー解消）
-   ========================================================= */
 .status-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: var(--color-navy);
   color: #fff;
   position: sticky;
@@ -169,8 +160,8 @@ rt {
 
 @media (min-width: 480px) {
   .status-bar {
-    padding: 12px 16px;
-    gap: 10px;
+    padding: 10px 14px;
+    gap: 8px;
     flex-wrap: nowrap;
   }
 }
@@ -182,37 +173,68 @@ rt {
 .status-right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   position: relative;
   flex-shrink: 0;
 }
 
+/* =========================================================
+   スマホ版対応ステータスバー内 目標チップ ＆ 進捗ゲージ
+   ========================================================= */
 .target-item-chip {
-  display: none;
-  align-items: center;
-  gap: 4px;
-  background: rgba(255, 255, 255, 0.18);
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 11.5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.16);
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 10px;
   font-family: var(--font-display);
+  max-width: 140px;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 480px) {
   .target-item-chip {
-    display: flex;
+    max-width: 180px;
+    font-size: 11px;
+    padding: 5px 10px;
   }
 }
 
 .target-label { opacity: 0.85; }
-.target-name { font-weight: 700; color: var(--color-money); }
+.target-name { font-weight: 700; color: var(--color-money); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
 
-/* 拡大ドット（scale 1.1）が上下に溢れないよう padding を確保 */
+.statusBar-gauge-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.statusBar-gauge-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #2E9E82, #5BE6C2);
+  border-radius: 999px;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.statusBar-gauge-fill.is-warning {
+  background: linear-gradient(90deg, #F5A623, #FFC966);
+}
+
+.statusBar-gauge-fill.is-danger {
+  background: linear-gradient(90deg, #E85C4A, #FF8E7F);
+}
+
 .day-tracker {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 2px;
+  gap: 3px;
+  padding: 2px;
   flex-wrap: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
@@ -226,12 +248,11 @@ rt {
 
 @media (min-width: 480px) {
   .day-tracker {
-    gap: 6px;
+    gap: 5px;
     padding: 4px;
   }
 }
 
-/* PC版・タブレット版ではスクロールバーを完全に不要化 */
 @media (min-width: 768px) {
   .day-tracker {
     overflow: visible;
@@ -243,13 +264,13 @@ rt {
 }
 
 .day-dot {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11.5px;
+  font-size: 11px;
   font-family: var(--font-display);
   background: rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.55);
@@ -263,14 +284,6 @@ rt {
     width: 30px;
     height: 30px;
     font-size: 13px;
-  }
-}
-
-@media (min-width: 768px) {
-  .day-dot {
-    width: 32px;
-    height: 32px;
-    font-size: 13.5px;
   }
 }
 
@@ -291,14 +304,14 @@ rt {
 .wallet-chip {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 5px 10px;
+  padding: 4px 8px;
   border-radius: 999px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   white-space: nowrap;
   position: relative;
   transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
@@ -312,13 +325,6 @@ rt {
   }
 }
 
-@media (min-width: 768px) {
-  .wallet-chip {
-    padding: 7px 16px;
-    font-size: 16.5px;
-  }
-}
-
 .wallet-chip.is-danger {
   color: #FF4D4D !important;
   border-color: #FF4D4D !important;
@@ -329,16 +335,20 @@ rt {
 
 .motion-mini-btn {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: #FFFFFF;
   background: rgba(255, 255, 255, 0.16);
   border: 1px solid rgba(255, 255, 255, 0.35);
-  padding: 5px 9px;
+  padding: 4px 7px;
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.15s ease, transform 0.15s ease;
   white-space: nowrap;
+}
+
+@media (min-width: 480px) {
+  .motion-mini-btn { font-size: 11px; padding: 5px 9px; }
 }
 
 .motion-mini-btn.is-reduced {
@@ -346,21 +356,16 @@ rt {
   border-color: #FFFFFF;
 }
 
-.motion-mini-btn:hover {
-  background: rgba(255, 255, 255, 0.28);
-}
-
 .retire-btn {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: #FFFFFF;
   background: #E85C4A;
   border: none;
-  padding: 5px 10px;
+  padding: 4px 8px;
   border-radius: 999px;
   cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease;
   box-shadow: 0 2px 6px rgba(232, 92, 74, 0.3);
   white-space: nowrap;
 }
@@ -402,9 +407,6 @@ rt {
   100% { opacity: 0; transform: translateY(12px); }
 }
 
-/* =========================================================
-   スクリーンエリア & 画面コンテナ
-   ========================================================= */
 #screen-area {
   flex: 1;
   padding: 12px 10px 20px;
@@ -413,18 +415,6 @@ rt {
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-}
-
-@media (min-width: 480px) {
-  #screen-area {
-    padding: 16px 16px 28px;
-  }
-}
-
-@media (min-width: 768px) {
-  #screen-area {
-    padding: 24px 32px 36px;
-  }
 }
 
 .screen {
@@ -436,10 +426,6 @@ rt {
   animation: fadeIn 0.3s var(--ease-gentle);
 }
 
-@media (min-width: 480px) {
-  .screen { gap: 16px; }
-}
-
 .screen.active {
   display: flex;
 }
@@ -449,9 +435,6 @@ rt {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* =========================================================
-   共通ボタン
-   ========================================================= */
 .btn {
   font-family: var(--font-display);
   font-weight: 700;
@@ -462,7 +445,6 @@ rt {
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
   width: 100%;
-  animation: btnEnter 0.3s var(--ease-gentle);
   touch-action: manipulation;
   text-decoration: none;
   display: inline-flex;
@@ -471,89 +453,9 @@ rt {
   text-align: center;
 }
 
-@media (min-width: 480px) {
-  .btn {
-    font-size: 17px;
-    padding: 16px 30px;
-  }
-}
-
-@media (min-width: 768px) {
-  .btn {
-    width: auto;
-    align-self: center;
-    min-width: 300px;
-    font-size: 18px;
-    padding: 18px 38px;
-  }
-}
-
-@keyframes btnEnter {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.btn:active { transform: scale(0.97) !important; }
-
-.btn:disabled {
-  opacity: 0.42;
-  cursor: not-allowed;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-@media (hover: hover) {
-  .btn:not(:disabled):hover {
-    transform: scale(1.02);
-    filter: brightness(1.06);
-    box-shadow: 0 8px 20px rgba(27, 42, 74, 0.25);
-  }
-}
-
-.btn-primary {
-  background: var(--color-navy);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(27, 42, 74, 0.2);
-}
-
-.btn-secondary {
-  background: var(--color-surface);
-  color: var(--color-navy);
-  border: 2px solid var(--color-navy-soft);
-  box-shadow: 0 4px 12px rgba(27, 42, 74, 0.1);
-}
-
-.btn-survey {
-  background: linear-gradient(135deg, #F5A623 0%, #E8831A 100%);
-  color: #FFFFFF !important;
-  border: 2px solid #FFFFFF;
-  box-shadow: 0 8px 24px rgba(245, 166, 35, 0.45);
-  font-size: 18px !important;
-  font-weight: 900 !important;
-}
-
-/* =========================================================
-   揺れ・点滅控えめモード（.reduce-motion）および OS設定連動
-   ========================================================= */
-.app-shell.reduce-motion .bg-icon,
-.app-shell.reduce-motion .title-hero-glow,
-.app-shell.reduce-motion .title-char-joe-hero,
-.app-shell.reduce-motion .title-header-wrapper,
-.app-shell.reduce-motion .dayintro-shine,
-.app-shell.reduce-motion .dayintro-banner-container.is-animating,
-.app-shell.reduce-motion .zoom-hint-badge,
-.app-shell.reduce-motion .smartphone-frame.tall-phone.is-vibrating,
-.app-shell.reduce-motion .instant-pop-overlay.is-danger-flash,
-.app-shell.reduce-motion .survey-q-item.is-invalid,
-.app-shell.reduce-motion .wallet-chip.is-danger,
-.app-shell.reduce-motion .money-pop {
-  animation: none !important;
-}
-
-.app-shell.reduce-motion .smartphone-frame.tall-phone.is-vibrating {
-  transform: none !important;
-  border-color: var(--color-money) !important;
-}
+.btn-primary { background: var(--color-navy); color: #fff; }
+.btn-secondary { background: var(--color-surface); color: var(--color-navy); border: 2px solid var(--color-navy-soft); }
+.btn-survey { background: linear-gradient(135deg, #F5A623, #E8831A); color: #FFFFFF !important; }
 
 .app-shell.reduce-motion .screen,
 .app-shell.reduce-motion .btn {

@@ -1,14 +1,13 @@
 /* =========================================================
    ending.js
    お買い物判定・エンディングランク計算・結果発表・#9110案内・
-   専用統計データページ（中高生モードクラッシュ完全修復版）
+   専用統計データページ（スクロールトップ強制リセット対応版）
    ========================================================= */
 
 function showShoppingScreen() {
   updateStatusBar();
   const card = document.getElementById("shopping-card");
   
-  // itemが存在しない場合（テストモード直飛び等）の安全フォールバック
   const item = state.selectedItem || (typeof ITEMS !== "undefined" && ITEMS.length > 0 ? ITEMS[0] : { name: "目標アイテム", price: 10000, emoji: "🎁" });
   const canAfford = state.money >= item.price;
   const isElem = state.mode === "elementary";
@@ -18,7 +17,6 @@ function showShoppingScreen() {
     ? `${item.price.toLocaleString("ja-JP")}<ruby>円<rt>えん</rt></ruby>`
     : `¥${item.price.toLocaleString("ja-JP")}`;
 
-  // ★ クラッシュの原因だった item.money を state.money に完全修正 ★
   const moneyText = isElem
     ? `${state.money.toLocaleString("ja-JP")}<ruby>円<rt>えん</rt></ruby>`
     : `¥${state.money.toLocaleString("ja-JP")}`;
@@ -31,7 +29,7 @@ function showShoppingScreen() {
         <ruby>今<rt>いま</rt></ruby>の <ruby>所持金<rt>しょじきん</rt></ruby>は <strong>${moneyText}</strong> だよ。<br>
         ${
           canAfford
-            ? `1<ruby>週間<rt>しゅうかん</rt></ruby>、お<ruby>金<rt>かね</rt></ruby>を <ruby>守<rt>まも</rt></ruby>った <ruby>成果<rt>せいか</rt></ruby>で <ruby>無事<rt>ぶじ</rt></ruby>に「${itemDisp}」を <ruby>買<rt>か</rt></ruby>うことが できました！`
+            ? `1<ruby>週間<rt>しゅうかん</rt></ruby>、お<ruby>金<rt>かね</rt></ruby>を <ruby>守<rt>mamo</rt></ruby>った <ruby>成果<rt>せいか</rt></ruby>で <ruby>無事<rt>ぶじ</rt></ruby>に「${itemDisp}」を <ruby>買<rt>か</rt></ruby>うことが できました！`
             : `<ruby>残念<rt>ざんねん</rt></ruby>！ <ruby>被害<rt>ひがい</rt></ruby>によって お<ruby>金<rt>かね</rt></ruby>が <ruby>足<rt>た</rt></ruby>りず「${itemDisp}」を <ruby>買<rt>か</rt></ruby>うことが できませんでした…`
         }
       </p>
@@ -97,7 +95,7 @@ function calculateRank(correctCount, total) {
   if (rate >= 60) {
     return {
       rank: "B",
-      title: isElem ? "<ruby>防犯<rt>ぼうはん</rt></ruby><ruby>中級者<rt>ちゅうきゅうしゃ</rt></ruby>" : "防犯中級者",
+      title: isElem ? "<ruby>防犯<rt>ぼうはん</rt></ruby><ruby>中級者<rt>じょうきゅうしゃ</rt></ruby>" : "防犯中級者",
       class: "rank-b"
     };
   }
@@ -197,8 +195,8 @@ function showEnding() {
       <p class="damages-title">${isElem ? "⚠️ <ruby>発生<rt>はっせい</rt></ruby>した そのほかの <ruby>被害<rt>ひがい</rt></ruby>リスク" : "⚠️ 発生したその他の被害リスク"}</p>
       <ul>
         ${state.damages.personalInfo > 0 ? `<li>${isElem ? "<ruby>個人<rt>こじん</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby>が <ruby>漏<rt>も</rt></ruby>れるリスク" : "個人情報流出リスク"}: ${state.damages.personalInfo}${kaiUnit}</li>` : ""}
-        ${state.damages.account > 0 ? `<li>${isElem ? "アカウントを <ruby>乗<rt>の</rt></ruby>っ<ruby>取<rt>と</rt></ruby>られるリスク" : "アカウント乗っ取りリスク"}: ${state.damages.account}${kaiUnit}</li>` : ""}
-        ${state.damages.line > 0 ? `<li>${isElem ? "SNS・メッセージアプリを <ruby>乗<rt>の</rt></ruby>っ<ruby>取<rt>と</rt></ruby>られるリスク" : "SNS・メッセージアプリ乗っ取りリスク"}: ${state.damages.line}${kaiUnit}</li>` : ""}
+        ${state.damages.account > 0 ? `<li>${isElem ? "アカウントを <ruby>乗<rt>の</rt></ruby>っ<rt>と</rt></ruby>られるリスク" : "アカウント乗っ取りリスク"}: ${state.damages.account}${kaiUnit}</li>` : ""}
+        ${state.damages.line > 0 ? `<li>${isElem ? "SNS・メッセージアプリを <ruby>乗<rt>の</rt></ruby>っ<rt>と</rt></ruby>られるリスク" : "SNS・メッセージアプリ乗っ取りリスク"}: ${state.damages.line}${kaiUnit}</li>` : ""}
       </ul>
     </div>
   ` : "";
@@ -331,7 +329,8 @@ function showEnding() {
   showScreen("screen-ending");
 }
 
-function showOitaStatsScreen() {
+// 統計画面へ移動 ＆ スクロールトップを確実に強制リセット
+window.showOitaStatsScreen = function showOitaStatsScreen() {
   const isElem = state.mode === "elementary";
 
   const guideImg = document.getElementById("stats-guide-image");
@@ -344,12 +343,14 @@ function showOitaStatsScreen() {
     if (isElem) {
       commentEl.innerHTML = `
         1<ruby>週間<rt>しゅうかん</rt></ruby> お<ruby>疲<rt>つか</rt></ruby>れさま！<br>
-        <ruby>大分県<rt>おおいたけん</rt></ruby>や <ruby>全国<rt>ぜんこく</rt></ruby>の <ruby>警察<rt>けいさつ</rt></ruby><ruby>統計<rt>とうけい</rt></ruby>から、<ruby>現実<rt>げんじつ</rt></ruby>の <ruby>詐欺<rt>さぎ</rt></ruby><ruby>被害<rt>ひがい</rt></ruby>のトレンドを <ruby>確認<rt>かくにん</rt></ruby>しよう。
+        <ruby>大分県<rt>おおいたけん</rt></ruby>や <ruby>全国<rt>ぜんこく</rt></ruby>の <ruby>警察<rt>けいさつ</rt></ruby><ruby>統計<rt>とうけい</rt></ruby>から、<ruby>現実<rt>げんじつ</rt></ruby>の <ruby>詐欺<rt>さぎ</rt></ruby><ruby>被害<rt>ひがい</rt></ruby>のトレンドを <ruby>確認<rt>かくにん</rt></ruby>しよう。<br>
+        スマホの<ruby>安全<rt>あんぜん</rt></ruby>のために ぜったい <strong><ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>アプリ</strong>をいれておこうね！
       `;
     } else {
       commentEl.innerHTML = `
         1週間お疲れさまでした！<br>
-        大分県や全国の警察統計から、現実の詐欺被害のトレンドを確認しましょう。
+        大分県や全国の警察統計から、現実の詐欺被害のトレンドを確認しましょう。<br>
+        被害を防ぐため、<strong>警察庁推奨の詐欺対策アプリ</strong>の導入を強くおすすめします！
       `;
     }
   }
@@ -378,7 +379,7 @@ function showOitaStatsScreen() {
       }
       skipBtn.onclick = () => {
         if (state.isTestMode) {
-          exitTestMode();
+          if (typeof exitTestMode === "function") exitTestMode();
         } else {
           if (typeof commitFinalSession === "function") commitFinalSession(null);
           restartGame();
@@ -398,11 +399,87 @@ function showOitaStatsScreen() {
   }
 
   showScreen("screen-oita-stats");
+
+  // スクロール位置を確実に最上部にリセット
+  const screenArea = document.getElementById("screen-area");
+  if (screenArea) {
+    screenArea.scrollTop = 0;
+  }
+  window.scrollTo({ top: 0, behavior: "instant" });
+};
+
+window.showSurveyScreen = function showSurveyScreen() {
+  const form = document.getElementById("game-survey-form");
+  const thanksCard = document.getElementById("survey-thanks-card");
+  const alertMsg = document.getElementById("survey-validation-msg");
+
+  if (form) {
+    form.reset();
+    form.classList.remove("is-hidden");
+    form.querySelectorAll(".pill-btn").forEach(btn => btn.classList.remove("is-selected"));
+    form.querySelectorAll("input[type='hidden']").forEach(inp => inp.value = "");
+    form.querySelectorAll(".survey-q-item").forEach(item => item.classList.remove("is-invalid"));
+  }
+
+  if (thanksCard) thanksCard.classList.add("is-hidden");
+  if (alertMsg) alertMsg.classList.add("is-hidden");
+
+  showScreen("screen-survey");
+};
+
+function handleRetire() {
+  if (confirm("途中でリタイアして最初からやり直しますか？")) {
+    const slot = currentScheduleSlot();
+    const dropoutDay = slot ? slot.weekdayName : "月";
+
+    if (typeof recordAnalyticsDropout === "function") {
+      recordAnalyticsDropout();
+    }
+    if (typeof commitDropoutSession === "function") {
+      commitDropoutSession(dropoutDay);
+    }
+    restartGame();
+  }
 }
+window.handleRetire = handleRetire;
+
+window.restartGame = function restartGame() {
+  state.playerName = "";
+  state.money = 50000;
+  state.selectedItem = null;
+  state.weeklyQuestions = [];
+  state.daySchedule = [];
+  state.slotIndex = 0;
+  state.dialogueIndex = 0;
+  state.correctCount = 0;
+  state.fooledCount = 0;
+  state.preventedScamsCount = 0;
+  state.damages = { money: 0, personalInfo: 0, account: 0, line: 0 };
+  state.answeredQuestions = [];
+  state.isTestMode = false;
+  state.sessionId = null;
+  state.isSessionSubmitted = false;
+
+  const shell = document.getElementById("app-shell");
+  if (shell) {
+    shell.classList.remove("is-senior-mode");
+  }
+
+  const badge = document.getElementById("test-mode-badge");
+  const drawer = document.getElementById("test-controller-drawer");
+  if (badge) badge.classList.add("is-hidden");
+  if (drawer) drawer.classList.add("is-hidden");
+
+  document.getElementById("status-bar").classList.add("hidden");
+  showScreen("screen-title");
+  if (typeof renderTitleVisual === "function") {
+    renderTitleVisual();
+  }
+};
 
 function buildOitaStatsHTML(isElem) {
   const statsData = (typeof OITA_SCAM_STATS !== "undefined") ? OITA_SCAM_STATS : null;
-  if (!statsData) return "";
+  if (!statsData) return "<p>統計データが見つかりません。</p>";
 
   let seniorNoticeHTML = "";
   if (state.mode === "senior") {
@@ -411,7 +488,7 @@ function buildOitaStatsHTML(isElem) {
         <span class="senior-notice-icon">🔍</span>
         <div class="senior-notice-text">
           <strong class="senior-notice-head">【表示に関するご案内】</strong><br>
-          <span class="senior-notice-body">※以下の詐欺被害データや統計の文字が小さい場合は、お使いの端末やブラウザの拡大機能（画面をピンチアウトするなど）で大きくしてご覧ください。</span>
+          <span class="senior-notice-body">※以下の詐欺被害データや統計の文字が小さい場合は、お使いの端末やブラウザの拡大機能で大きくしてご覧ください。</span>
         </div>
       </div>
     `;
@@ -536,7 +613,6 @@ function buildOitaStatsHTML(isElem) {
     `;
   }).join("");
 
-  // 小学生モード時の太字見出し・解説文のルビ対応定義
   const h3Title = isElem ? "<ruby>日本<rt>にほん</rt></ruby>および<ruby>大分県<rt>おおいたけん</rt></ruby>における<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby>・SNS<ruby>型<rt>がた</rt></ruby><ruby>詐欺<rt>さぎ</rt></ruby>の<ruby>現実<rt>げんじつ</rt></ruby>" : "日本および大分県における特殊詐欺・SNS型詐欺の現実";
   const h4Title3 = isElem ? "③ 【<ruby>全国<rt>ぜんこく</rt></ruby>】SNS<ruby>型投資<rt>がたとうし</rt></ruby>・ロマンス<ruby>詐欺<rt>さぎ</rt></ruby>の<ruby>主な当初接触手段<rt>おもなとうしょせっしゅくしゅだん</rt></ruby>（<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>）" : "③ 【全国】SNS型投資・ロマンス詐欺の主な当初接触手段（令和7年）";
   const h4Title4 = isElem ? "④ 【<ruby>注意<rt>ちゅうい</rt></ruby>】<ruby>実際<rt>じっさい</rt></ruby>の<ruby>詐欺<rt>さぎ</rt></ruby>でよく<ruby>使<rt>つか</rt></ruby>われる<ruby>危険<rt>きけん</rt></ruby>な<ruby>誘<rt>さそ</rt></ruby>い<ruby>文句<rt>もんく</rt></ruby>" : "④ 【注意】実際の詐欺でよく使われる危険な誘い文句";
@@ -545,459 +621,217 @@ function buildOitaStatsHTML(isElem) {
   const h4Title7 = isElem ? "⑦ <ruby>詐欺<rt>さぎ</rt></ruby>に<ruby>遭<rt>あ</rt></ruby>いそうになったときの<ruby>対処方法<rt>たいしょほう</rt></ruby>" : "⑦ 詐欺に遭いそうになったときの対処方法";
   const h4Title8 = isElem ? "⑧ <ruby>詐欺<rt>さぎ</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>相談窓口<rt>そうだんまどぐち</rt></ruby>" : "⑧ 詐欺に関する相談窓口";
   const h4Title9 = isElem ? "⑨ 【<ruby>全国<rt>ぜんこく</rt></ruby>】<ruby>都道府県別<rt>とどうふけんべつ</rt></ruby>の<ruby>詐欺被害件数<rt>さぎひがいけんすう</rt></ruby>ランキング TOP5（<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>）" : "⑨ 【全国】都道府県別の詐欺被害件数ランキング TOP5（令和7年）";
-  const h4TitleApp = isElem ? "📱 警察庁推奨の特殊詐欺対策アプリのご案内" : "📱 警察庁推奨の特殊詐欺対策アプリのご案内";
+  const h4TitleApp = isElem ? "📱 ジョーくんからの<ruby>絶対<rt>ぜったい</rt></ruby>のお<ruby>願<rt>ねが</rt></ruby>い：<ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>アプリ" : "📱 ジョーくんからの絶対のお願い：警察庁推奨アプリ";
   const h4Title10 = isElem ? "⑩ <ruby>公式統計<rt>こうしきとうけい</rt></ruby>データ・<ruby>出典一覧<rt>しゅってんいちらん</rt></ruby>" : "⑩ 公式統計データ・出典一覧";
 
-  // 1枚目：警察庁推奨アプリブロックの小学生モード用完全ルビ対応定義
   const appLeadTxt = isElem
-    ? "<ruby>怪<rt>あや</rt></ruby>しい<ruby>電話<rt>でんわ</rt></ruby>を <ruby>自動<rt>じどう</rt></ruby>でブロック・<ruby>警告<rt>けいこく</rt></ruby>してくれる <ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>の <ruby>詐欺対策<rt>さぎたいさく</rt></ruby>アプリです。"
-    : "怪しい電話を自動でブロック・警告してくれる警察庁推奨の詐欺対策アプリです。";
+    ? "<ruby>実際<rt>じっさい</rt></ruby>にさぎから<ruby>身<rt>み</rt></ruby>をまもるために、ぜったい スマホに いれておこう！"
+    : "実際の詐欺被害からあなたと大切な家族を守るため、今すぐスマホに導入しましょう！";
   const appNameTxt = isElem
     ? "🛡️ <ruby>詐欺対策<rt>さぎたいさく</rt></ruby> by NTTタウンページ"
     : "🛡️ 詐欺対策 by NTTタウンページ";
   const appDescTxt = isElem
-    ? "<ruby>迷惑電話<rt>めいわくでんわ</rt></ruby>・<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby>の <ruby>疑<rt>うたが</rt></ruby>いがある <ruby>着信<rt>ちゃくしん</rt></ruby>を <ruby>自動<rt>じどう</rt></ruby>で <ruby>検知<rt>けんち</rt></ruby>し、<ruby>画面<rt>がめん</rt></ruby>に <ruby>警告<rt>けいこく</rt></ruby>を <ruby>表示<rt>ひょうじ</rt></ruby>して <ruby>防犯<rt>ぼうはん</rt></ruby>！"
-    : "迷惑電話・特殊詐欺の疑いがある着信を自動で検知し、画面に警告を表示して防犯！";
+    ? "あやしい<ruby>迷惑電話<rt>めいわくでんわ</rt></ruby>や<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby>の<ruby>着信<rt>ちゃくしん</rt></ruby>を<ruby>自動<rt>じどう</rt></ruby>で<ruby>検知<rt>けんち</rt></ruby>してブロック！<ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>だから<ruby>安心<rt>あんしん</rt></ruby>！"
+    : "迷惑電話・特殊詐欺の疑いがある着信を自動で検知し、画面に警告を表示して防犯！警察庁推奨の公式対策アプリです。";
   const appBtnTxt = isElem
-    ? "📱 <ruby>警察庁公式<rt>けいさつちょうこうしき</rt></ruby>ページで アプリを <ruby>詳<rt>くわ</rt></ruby>しく<ruby>見<rt>み</rt></ruby>る ▶"
-    : "📱 警察庁公式ページでアプリを詳しく見る ▶";
+    ? "📱 <ruby>警察庁公式<rt>けいさつちょうこうしき</rt></ruby>ページで アプリを <ruby>無料<rt>むりょう</rt></ruby>で<ruby>見<rt>み</rt></ruby>る ▶"
+    : "📱 警察庁公式ページでアプリを無料で詳しく見る ▶";
   const appSourceTxt = isElem
     ? "<ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>・SOS47 <ruby>特殊詐欺対策<rt>とくしゅさぎたいさく</rt></ruby>ページ"
     : "出典：警察庁・SOS47 特殊詐欺対策ページ";
 
-  // 警察アプリアイコン画像の取得
   const policeAppIconSrc = (typeof IMAGE_ASSETS !== "undefined" && IMAGE_ASSETS.icons && IMAGE_ASSETS.icons.policeApp)
     ? IMAGE_ASSETS.icons.policeApp
     : "resource/images/警察アプリ.png";
 
-  if (isElem) {
-    return `
-      ${seniorNoticeHTML}
-      <div class="oita-stats-panel">
-        <div class="oita-stats-header">
-          <span class="oita-stats-badge">📊 <ruby>警察庁<rt>けいさつちょう</rt></ruby>・<ruby>大分県警察<rt>おおいたけんけいさつ</rt></ruby> <ruby>公式統計<rt>こうしきとうけい</rt></ruby>データ</span>
-          <h3 class="oita-stats-title">${h3Title}</h3>
-        </div>
-
-        <div class="oita-summary-cards">
-          <div class="oita-summary-card">
-            <span class="oita-summary-label"><ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby> <ruby>大分県内<rt>おおいたけんない</rt></ruby>の<ruby>総被害<rt>そうひがい</rt></ruby></span>
-            <span class="oita-summary-val">747<ruby>件<rt>けん</rt></ruby> ／ <ruby>約<rt>やく</rt></ruby>23<ruby>億<rt>おく</rt></ruby>7,302<ruby>万円<rt>まんえん</rt></ruby></span>
-            <p class="oita-summary-note"><ruby>従来<rt>じゅうらい</rt></ruby>の<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby>とSNS<ruby>型<rt>がた</rt></ruby><ruby>投資<rt>とうし</rt></ruby>・ロマンス<ruby>詐欺<rt>さぎ</rt></ruby>の<ruby>合計<rt>ごうけい</rt></ruby>。</p>
-          </div>
-          <div class="oita-summary-card is-navy">
-            <span class="oita-summary-label">65<ruby>歳未満<rt>さいみまん</rt></ruby>の<ruby>被害割合<rt>ひがいわりあい</rt></ruby>（<ruby>大分県<rt>おおいたけん</rt></ruby>）</span>
-            <span class="oita-summary-val">62.4%</span>
-            <p class="oita-summary-note"><ruby>高齢者<rt>こうれいしゃ</rt></ruby>だけでなく、20代〜50代など<ruby>現役<rt>げんえき</rt></ruby>・<ruby>若年世代<rt>じゃくねんせだい</rt></ruby>が<ruby>被害<rt>ひがい</rt></ruby>の6<ruby>割<rt>わり</rt></ruby>を<ruby>占<rt>し</rt></ruby>める。</p>
-          </div>
-          <div class="oita-summary-card is-purple">
-            <span class="oita-summary-label">ニセ<ruby>警察<rt>けいさつ</rt></ruby><ruby>詐欺<rt>さぎ</rt></ruby>の<ruby>最多被害年代<rt>さいたひがいねんだい</rt></ruby>（<ruby>全国<rt>ぜんこく</rt></ruby>）</span>
-            <span class="oita-summary-val">20<ruby>代<rt>だい</rt></ruby>・30<ruby>代<rt>だい</rt></ruby>（<ruby>計<rt>けい</rt></ruby>3,957<ruby>件<rt>けん</rt></ruby>）</span>
-            <p class="oita-summary-note"><ruby>固定電話<rt>こていでんわ</rt></ruby>を<ruby>持<rt>も</rt></ruby>たない<ruby>若年層<rt>じゃくねんそう</rt></ruby>のスマホへ<ruby>直接<rt>ちょくせつ</rt></ruby><ruby>電話<rt>でんわ</rt></ruby>がかかり<ruby>被害<rt>ひがい</rt></ruby>が<ruby>集中<rt>しゅうちゅう</rt></ruby>。</p>
-          </div>
-        </div>
-
-        <!-- ① 大分県推移 -->
-        <div class="oita-chart-block">
-          <h4 class="oita-chart-subtitle">① <ruby>大分県内<rt>おおいたけんない</rt></ruby>の<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby> <ruby>被害件数<rt>ひがいけんすう</rt></ruby>・<ruby>被害額<rt>ひがいがく</rt></ruby>の<ruby>推移<rt>すいい</rt></ruby>（<ruby>令和<rt>れいわ</rt></ruby>3〜7<ruby>年<rt>ねん</rt></ruby>）</h4>
-          <p class="oita-chart-caption">5<ruby>年間<rt>ねんかん</rt></ruby>で<ruby>大分県内<rt>おおいたけんない</rt></ruby>の<ruby>被害額<rt>ひがいがく</rt></ruby>は<ruby>約<rt>やく</rt></ruby>10.5<ruby>倍<rt>ばい</rt></ruby>に<ruby>急増<rt>きゅうぞう</rt></ruby>。</p>
-          <div class="oita-bars-list">${trendRowsHTML}</div>
-          <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>大分県警察<rt>おおいたけんけいさつ</rt></ruby>「<ruby>安全<rt>あんぜん</rt></ruby>・<ruby>安心<rt>あんしん</rt></ruby>まちづくり<ruby>推進室通信<rt>すいしんしつしん</rt></ruby>」</p>
-        </div>
-
-        <!-- ② 年代別割合 -->
-        <div class="oita-chart-block">
-          <h4 class="oita-chart-subtitle">② <ruby>大分県内<rt>おおいたけんない</rt></ruby>の<ruby>被害者年代別割合<rt>ひがいしゃねんだいべつわりあい</rt></ruby>（<ruby>令和<rt>れいわ</rt></ruby>8<ruby>年<rt>ねん</rt></ruby>9<ruby>月末<rt>がつまつ</rt></ruby> <ruby>暫定値<rt>ざんていち</rt></ruby>）</h4>
-          <p class="oita-chart-caption"><ruby>若年層<rt>じゃくねんそう</rt></ruby>から<ruby>高齢者<rt>こうれいしゃ</rt></ruby>まで、<ruby>全世代<rt>ぜんせだい</rt></ruby>が<ruby>詐欺<rt>さぎ</rt></ruby>グループのターゲット。</p>
-          <div class="oita-bars-list">${ageRowsHTML}</div>
-          <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>大分県警察本部<rt>おおいたけんけいさつほんぶ</rt></ruby>「<ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>犯罪情勢<rt>はんざいじょうせい</rt></ruby>」</p>
-        </div>
-
-        <!-- ③ 接触手段 -->
-        <div class="oita-chart-block">
-          <h4 class="oita-chart-subtitle">${h4Title3}</h4>
-          <p class="oita-chart-caption">ネット<ruby>広告<rt>こうこく</rt></ruby>やDMから<ruby>巧妙<rt>こうみょう</rt></ruby>に<ruby>誘導<rt>ゆうどう</rt></ruby>されるケースが<ruby>多数<rt>たすう</rt></ruby>。</p>
-          <div class="oita-bars-list">${contactRowsHTML}</div>
-          <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>「<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>における<ruby>特殊詐欺等<rt>とくしゅさぎとう</rt></ruby>の<ruby>認知<rt>にんち</rt></ruby>・<ruby>検挙状況<rt>けんきょじょうきょう</rt></ruby>」</p>
-        </div>
-
-        <!-- ④ 危険な誘い文句 -->
-        <div class="oita-chart-block">
-          <h4 class="oita-chart-subtitle">${h4Title4}</h4>
-          <p class="oita-chart-caption">以下のようなフレーズは詐欺でよく使われるため、特に注意が必要です。</p>
-          <div class="stats-warning-cards-grid">
-            <div class="stats-warn-card">
-              <strong>「<ruby>絶対儲<rt>ぜったいもう</rt></ruby>かる」「<ruby>元本保証<rt>がんぽんほしょう</rt></ruby>」</strong>
-              <p><ruby>投資<rt>とうし</rt></ruby>に「<ruby>絶対<rt>ぜったい</rt></ruby>」はない。</p>
-            </div>
-            <div class="stats-warn-card">
-              <strong><ruby>著名人<rt>ちょめいじん</rt></ruby>を<ruby>利用<rt>りよう</rt></ruby>した<ruby>投資広告<rt>とうしこうこく</rt></ruby></strong>
-              <p><ruby>有名人<rt>ゆうめいじん</rt></ruby>の<ruby>画像<rt>がぞう</rt></ruby>を使った<ruby>偽広告<rt>にせこうこく</rt></ruby>に<ruby>注意<rt>ちゅうい</rt></ruby>。</p>
-            </div>
-            <div class="stats-warn-card">
-              <strong>「<ruby>今日中<rt>きょうじゅう</rt></ruby>に<ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>まないと<ruby>逮捕<rt>たいほ</rt></ruby>」</strong>
-              <p>警察官が捜査名目でSNSや電話を使い、金銭の振り込みを要求することはありません。</p>
-            </div>
-          </div>
-          <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>・<ruby>金融庁<rt>きんゆうちょう</rt></ruby></p>
-        </div>
-
-        <!-- ⑤ 手口別ランキング -->
-        <div class="oita-chart-block">
-          <h4 class="oita-chart-subtitle">${h4Title5}</h4>
-          <p class="oita-chart-caption"><ruby>全国<rt>ぜんこく</rt></ruby>で<ruby>多<rt>おお</rt></ruby>く<ruby>発生<rt>はっせい</rt></ruby>している<ruby>手口<rt>てぐち</rt></ruby>の<ruby>上位<rt>じょうい</rt></ruby>5<ruby>選<rt>せん</rt></ruby>。</p>
-          <div class="oita-bars-list">${rankingRowsHTML}</div>
-          <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>「<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>における<ruby>特殊詐欺等<rt>とくしゅさぎとう</rt></ruby>の<ruby>認知<rt>にんち</rt></ruby>・<ruby>検挙状況<rt>けんきょじょうきょう</rt></ruby>」</p>
-        </div>
-
-        <!-- ⑥ ニセ警察詐欺と闇バイト -->
-        <div class="oita-chart-block is-youth-block">
-          <h4 class="oita-chart-subtitle">${h4Title6}</h4>
-          <p class="oita-chart-caption">
-            「<ruby>警察<rt>けいさつ</rt></ruby>」を<ruby>騙<rt>だま</rt></ruby>す<ruby>詐欺<rt>さぎ</rt></ruby>は20〜30<ruby>代<rt>だい</rt></ruby>が<ruby>最多</ruby>。また<ruby>闇<rt>やみ</rt></ruby>バイトで<ruby>逮捕<rt>たいほ</rt></ruby>された<ruby>人<rt>ひと</rt></ruby>の<ruby>約<rt>やく</rt></ruby>6<ruby>割<rt>わり</rt></ruby>が10〜20<ruby>代<rt>だい</rt></ruby>の<ruby>若年層<rt>じゃくねんそう</rt></ruby>。
-          </p>
-          <div class="oita-sub-note is-purple-note">
-            💡 <strong><ruby>重要<rt>じゅうよう</rt></ruby>：</strong> 「<ruby>荷物<rt>にもつ</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>ぶだけ」のアルバイトは<ruby>犯罪<rt>はんざい</rt></ruby>の<ruby>実行役<rt>じっこうやく</rt></ruby>！
-          </div>
-          <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby></p>
-        </div>
-
-        <!-- ⑦ 対処方法 -->
-        <div class="oita-chart-block">
-          <h4 class="oita-chart-subtitle">${h4Title7}</h4>
-          <p class="oita-chart-caption"><ruby>詐欺<rt>さぎ</rt></ruby>に<ruby>遭<rt>あ</rt></ruby>いそうになったとき、あるいは<ruby>遭<rt>あ</rt></ruby>ってしまったときの<ruby>対処法<rt>たいしょほう</rt></ruby>。</p>
-          <div class="stats-warning-cards-grid">
-            <div class="stats-warn-card">
-              <strong>1. <ruby>怪<rt>あや</rt></ruby>しい<ruby>電話<rt>でんわ</rt></ruby>・DMへの<ruby>対応<rt>たいおう</rt></ruby></strong>
-              <p>すぐ電話を切る、またはリンクを開かずにブロック・削除する。</p>
-            </div>
-            <div class="stats-warn-card">
-              <strong>2. <ruby>金銭<rt>きんせん</rt></ruby>を<ruby>払<rt>はら</rt></ruby>う<ruby>前<rt>まえ</rt></ruby>の<ruby>確認<rt>かくにん</rt></ruby></strong>
-              <p>家族や友人、または警察（#9110）に必ず相談してから動く。</p>
-            </div>
-            <div class="stats-warn-card">
-              <strong>3. <ruby>情報<rt>じょうほう</rt></ruby>を<ruby>教<rt>おし</rt></ruby>えてしまったら</strong>
-              <p>すぐに金融機関や警察へ連絡し、口座の停止やカードの利用を止める。</p>
-            </div>
-          </div>
-          <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>・<ruby>消費者庁<rt>しょうひしゃちょう</rt></ruby></p>
-        </div>
-
-        <!-- ⑧ 相談窓口 -->
-        <div class="oita-chart-block">
-          <h4 class="oita-chart-subtitle">${h4Title8}</h4>
-          <p class="oita-chart-caption"><ruby>困<rt>こま</rt></ruby>ったときに<ruby>連絡<rt>れんらく</rt></ruby>できる<ruby>公的窓口<rt>こうてきまどぐち</rt></ruby>。</p>
-          <div class="stats-warning-cards-grid">
-            <div class="stats-warn-card">
-              <strong>🚨 <ruby>警察相談専用電話<rt>けいさつそうだんせんようんでんわ</rt></ruby> 「#9110」</strong>
-              <p>事件前のお金の相談や不審な電話の問い合わせに。</p>
-            </div>
-            <div class="stats-warn-card">
-              <strong>📞 <ruby>消費者<rt>しょうひしゃ</rt></ruby>ホットライン 「188」</strong>
-              <p>悪質商法や架空請求、契約トラブルの相談に。</p>
-            </div>
-            <div class="stats-warn-card">
-              <strong>☎️ <ruby>緊急時<rt>きんきゅうじ</rt></ruby>の 「110番」</strong>
-              <p>今まさに被害に遭っている、犯人が近くにいる場合の緊急通報に。</p>
-            </div>
-          </div>
-          <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>・<ruby>国民生活センター<rt>こくみんせいかつせんたー</rt></ruby></p>
-        </div>
-
-        <!-- ⑨ 都道府県別ランキング TOP5 -->
-        <div class="oita-chart-block">
-          <h4 class="oita-chart-subtitle">${h4Title9}</h4>
-          <p class="oita-chart-caption"><ruby>全国<rt>ぜんこく</rt></ruby>で<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby>の<ruby>被害<rt>ひがい</rt></ruby>が<ruby>多<rt>おお</rt></ruby>い<ruby>上位<rt>じょうい</rt></ruby>5<ruby>都府県<rt>とふけん</rt></ruby>と<ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>状況<rt>じょうこう</rt></ruby>。</p>
-          <div class="oita-bars-list">${prefRankingHTML}</div>
-          <div class="oita-sub-note is-purple-note" style="margin-top:10px;">
-            📍 <strong><ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>順位<rt>じゅんい</rt></ruby>：</strong> <ruby>全国<rt>ぜんこく</rt></ruby><strong>35位<rt>い</rt></ruby><ruby>前後<rt>ぜんご</rt></ruby></strong>（47都道府県中・<ruby>認知<rt>にんち</rt></ruby>400<ruby>件<rt>けん</rt></ruby>）
-          </div>
-          <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>「<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>における<ruby>特殊詐欺等<rt>とくしゅさぎとう</rt></ruby>の<ruby>認知<rt>にんち</rt></ruby>・<ruby>検挙状況<rt>けんきょじょうきょう</rt></ruby>」</p>
-        </div>
-
-        <!-- 📱 警察庁推奨アプリ紹介ブロック（小学生モード完全ふりがな対応） -->
-        <div class="oita-chart-block" style="border: 2.5px solid #2E9E82; background: #EAF8F4;">
-          <h4 class="oita-chart-subtitle" style="border-left-color: #2E9E82; color: #16654E;">${h4TitleApp}</h4>
-          <p class="oita-chart-caption">${appLeadTxt}</p>
-          
-          <div class="police-app-showcase-card">
-            <div class="police-app-icon-wrap">
-              <img src="${policeAppIconSrc}" alt="詐欺対策アプリ" class="police-app-icon-img" onerror="this.style.display='none';">
-            </div>
-            <div class="police-app-info-wrap">
-              <strong class="police-app-name">${appNameTxt}</strong>
-              <p class="police-app-desc">${appDescTxt}</p>
-            </div>
-          </div>
-
-          <div style="margin-top: 12px; text-align: center;">
-            <a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener" class="btn btn-primary" style="display: inline-block; width: auto; padding: 11px 24px; font-size: 14.5px; background: #2E9E82; border-radius: 999px;">
-              ${appBtnTxt}
-            </a>
-          </div>
-          <p class="oita-block-source" style="margin-top: 8px;">${appSourceTxt}</p>
-        </div>
-
-        <!-- ⑩ 公式統計データ・出典一覧 -->
-        <div class="oita-chart-block">
-          <h4 class="oita-chart-subtitle">${h4Title10}</h4>
-          <ul class="stats-sources-list">
-            <li><ruby>警察庁<rt>けいさつちょう</rt></ruby>：<a href="https://www.npa.go.jp/" target="_blank" rel="noopener"><ruby>特殊詐欺等<rt>とくしゅさぎとう</rt></ruby>の<ruby>認知<rt>にんち</rt></ruby>・<ruby>検挙状況<rt>けんきょじょうきょう</rt></ruby>（<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby><ruby>確定値<rt>かくていち</rt></ruby>）</a></li>
-            <li><ruby>大分県警察<rt>おおいたけんけいさつ</rt></ruby>：<a href="https://www.pref.oita.jp/site/oitakenkei/" target="_blank" rel="noopener"><ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>犯罪情勢<rt>はんざいじょうせい</rt></ruby>・<ruby>安全<rt>あんぜん</rt></ruby>・<ruby>安心<rt>あんしん</rt></ruby>まちづくり<ruby>推進室通信<rt>すいしんしつしん</rt></ruby></a></li>
-            <li><ruby>金融庁<rt>きんゆうちょう</rt></ruby>：<a href="https://www.fsa.go.jp/" target="_blank" rel="noopener"><ruby>投資詐欺<rt>とうしさぎ</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>注意喚起<rt>ちゅういかんき</rt></ruby>資料</a></li>
-            <li><ruby>国民生活センター<rt>こくみんせいかつせんたー</rt></ruby>：<a href="https://www.kokusen.go.jp/" target="_blank" rel="noopener"><ruby>消費者<rt>しょうひしゃ</rt></ruby>ホットライン188</a></li>
-            <li><ruby>警察庁SOS47<rt>けいさつちょうえすおーえす47</rt></ruby>：<a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener"><ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>アプリページ</a></li>
-          </ul>
-        </div>
-      </div>
-    `;
-  }
+  const joeCheerImg = (typeof IMAGE_ASSETS !== "undefined" && IMAGE_ASSETS.characters && IMAGE_ASSETS.characters.joeCheer)
+    ? IMAGE_ASSETS.characters.joeCheer
+    : "resource/images/ジョー君応援.png";
 
   return `
     ${seniorNoticeHTML}
     <div class="oita-stats-panel">
       <div class="oita-stats-header">
-        <span class="oita-stats-badge">📊 警察庁・大分県警察 公式統計データ</span>
-        <h3 class="oita-stats-title">日本および大分県における特殊詐欺・SNS型詐欺の現実</h3>
+        <span class="oita-stats-badge">📊 <ruby>警察庁<rt>けいさつちょう</rt></ruby>・<ruby>大分県警察<rt>おおいたけんけいさつ</rt></ruby> <ruby>公式統計<rt>こうしきとうけい</rt></ruby>データ</span>
+        <h3 class="oita-stats-title">${h3Title}</h3>
       </div>
 
       <div class="oita-summary-cards">
         <div class="oita-summary-card">
-          <span class="oita-summary-label">令和7年 大分県内の総被害</span>
-          <span class="oita-summary-val">747件 ／ 約23億7,302万円</span>
-          <p class="oita-summary-note">従来の特殊詐欺（400件・約8.6億円）とSNS型投資・ロマンス詐欺（347件・約15.1億円）の合計。</p>
+          <span class="oita-summary-label"><ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby> <ruby>大分県内<rt>おおいたけんない</rt></ruby>の<ruby>総被害<rt>そうひがい</rt></ruby></span>
+          <span class="oita-summary-val">747<ruby>件<rt>けん</rt></ruby> ／ <ruby>約<rt>やく</rt></ruby>23<ruby>億<rt>おく</rt></ruby>7,302<ruby>万円<rt>まんえん</rt></ruby></span>
+          <p class="oita-summary-note"><ruby>従来<rt>じゅうらい</rt></ruby>の<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby>とSNS<ruby>型<rt>がた</rt></ruby><ruby>投資<rt>とうし</rt></ruby>・ロマンス<ruby>詐欺<rt>さぎ</rt></ruby>の<ruby>合計<rt>ごうけい</rt></ruby>。</p>
         </div>
         <div class="oita-summary-card is-navy">
-          <span class="oita-summary-label">65歳未満の被害割合（大分県）</span>
+          <span class="oita-summary-label">65<ruby>歳未満<rt>さいみまん</rt></ruby>の<ruby>被害割合<rt>ひがいわりあい</rt></ruby>（<ruby>大分県<rt>おおいたけん</rt></ruby>）</span>
           <span class="oita-summary-val">62.4%</span>
-          <p class="oita-summary-note">高齢者だけでなく、20代〜50代など現役・若年世代が被害の6割以上を占める。</p>
+          <p class="oita-summary-note"><ruby>高齢者<rt>こうれいしゃ</rt></ruby>だけでなく、20代〜50代など<ruby>現役<rt>げんえき</rt></ruby>・<ruby>若年世代<rt>じゃくねんせだい</rt></ruby>が<ruby>被害<rt>ひがい</rt></ruby>の6<ruby>割<rt>わり</rt></ruby>を<ruby>占<rt>し</rt></ruby>める。</p>
         </div>
         <div class="oita-summary-card is-purple">
-          <span class="oita-summary-label">ニセ警察詐欺の最多被害年代（全国）</span>
-          <span class="oita-summary-val">20代・30代（計3,957件）</span>
-          <p class="oita-summary-note">固定電話を持たない若年層のスマホへ直接電話がかかり被害が集中。</p>
+          <span class="oita-summary-label">ニセ<ruby>警察<rt>けいさつ</rt></ruby><ruby>詐欺<rt>さぎ</rt></ruby>の<ruby>最多被害年代<rt>さいたひがいねんだい</rt></ruby>（<ruby>全国<rt>ぜんこく</rt></ruby>）</span>
+          <span class="oita-summary-val">20<ruby>代<rt>だい</rt></ruby>・30<ruby>代<rt>だい</rt></ruby>（<ruby>計<rt>けい</rt></ruby>3,957<ruby>件<rt>けん</rt></ruby>）</span>
+          <p class="oita-summary-note"><ruby>固定電話<rt>こていでんわ</rt></ruby>を<ruby>持<rt>も</rt></ruby>たない<ruby>若年層<rt>じゃくねんそう</rt></ruby>のスマホへ<ruby>直接<rt>ちょくせつ</rt></ruby><ruby>電話<rt>でんわ</rt></ruby>がかかり<ruby>被害<rt>ひがい</rt></ruby>が<ruby>集中<rt>しゅうちゅう</rt></ruby>。</p>
         </div>
       </div>
 
-      <!-- ブロック1: 大分県推移 -->
+      <!-- ① 大分県推移 -->
       <div class="oita-chart-block">
-        <h4 class="oita-chart-subtitle">① 大分県内の特殊詐欺 被害件数・被害額の推移（令和3年〜7年）</h4>
-        <p class="oita-chart-caption">5年間で大分県内の特殊詐欺被害額は約10.5倍に急増。</p>
+        <h4 class="oita-chart-subtitle">① <ruby>大分県内<rt>おおいたけんない</rt></ruby>の<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby> <ruby>被害件数<rt>ひがいけんすう</rt></ruby>・<ruby>被害額<rt>ひがいがく</rt></ruby>の<ruby>推移<rt>すいい</rt></ruby>（<ruby>令和<rt>れいわ</rt></ruby>3〜7<ruby>年<rt>ねん</rt></ruby>）</h4>
+        <p class="oita-chart-caption">5<ruby>年間<rt>ねんかん</rt></ruby>で<ruby>大分県内<rt>おおいたけんない</rt></ruby>の<ruby>被害額<rt>ひがいがく</rt></ruby>は<ruby>約<rt>やく</rt></ruby>10.5<ruby>倍<rt>ばい</rt></ruby>に<ruby>急増<rt>きゅうぞう</rt></ruby>。</p>
         <div class="oita-bars-list">${trendRowsHTML}</div>
-        <p class="oita-block-source">出典：大分県警察「安全・安心まちづくり推進室通信」・宇佐市「特殊詐欺発生状況」</p>
+        <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>大分県警察<rt>おおいたけんけいさつ</rt></ruby>「<ruby>安全<rt>あんぜん</rt></ruby>・<ruby>安心<rt>あんしん</rt></ruby>まちづくり<ruby>推進室通信<rt>すいしんしつしん</rt></ruby>」</p>
       </div>
 
-      <!-- ブロック2: 大分県年代別割合 -->
+      <!-- ② 年代別割合 -->
       <div class="oita-chart-block">
-        <h4 class="oita-chart-subtitle">② 大分県内の被害者年代別割合（令和8年9月末 暫定値）</h4>
-        <p class="oita-chart-caption">若年層から高齢者まで、全世代が詐欺グループのターゲット。</p>
+        <h4 class="oita-chart-subtitle">② <ruby>大分県内<rt>おおいたけんない</rt></ruby>の<ruby>被害者年代別割合<rt>ひがいしゃねんだいべつわりあい</rt></ruby>（<ruby>令和<rt>れいわ</rt></ruby>8<ruby>年<rt>ねん</rt></ruby>9<ruby>月末<rt>がつまつ</rt></ruby> <ruby>暫定値<rt>ざんていち</rt></ruby>）</h4>
+        <p class="oita-chart-caption"><ruby>若年層<rt>じゃくねんそう</rt></ruby>から<ruby>高齢者<rt>こうれいしゃ</rt></ruby>まで、<ruby>全世代<rt>ぜんせだい</rt></ruby>が<ruby>詐欺<rt>さぎ</rt></ruby>グループのターゲット。</p>
         <div class="oita-bars-list">${ageRowsHTML}</div>
-        <p class="oita-block-source">出典：大分県警察本部「大分県の犯罪情勢」</p>
+        <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>大分県警察本部<rt>おおいたけんけいさつほんぶ</rt></ruby>「<ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>犯罪情勢<rt>はんざいじょうせい</rt></ruby>」</p>
       </div>
 
-      <!-- ブロック3: 接触手段（グラフ付き） -->
+      <!-- ③ 接触手段 -->
       <div class="oita-chart-block">
-        <h4 class="oita-chart-subtitle">③ 【全国】SNS型投資・ロマンス詐欺の主な当初接触手段（令和7年）</h4>
-        <p class="oita-chart-caption">ネット広告やダイレクトメッセージから巧妙に誘導されるケースが多数。</p>
+        <h4 class="oita-chart-subtitle">${h4Title3}</h4>
+        <p class="oita-chart-caption">ネット<ruby>広告<rt>こうこく</rt></ruby>やDMから<ruby>巧妙<rt>こうみょう</rt></ruby>に<ruby>誘導<rt>ゆうどう</rt></ruby>されるケースが<ruby>多数<rt>たすう</rt></ruby>。</p>
         <div class="oita-bars-list">${contactRowsHTML}</div>
-        <p class="oita-block-source">出典：警察庁「令和7年における特殊詐欺及びSNS型投資・ロマンス詐欺の認知・検挙状況等について（確定値）」</p>
+        <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>「<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>における<ruby>特殊詐欺等<rt>とくしゅさぎとう</rt></ruby>の<ruby>認知<rt>にんち</rt></ruby>・<ruby>検挙状況<rt>けんきょじょうきょう</rt></ruby>」</p>
       </div>
 
-      <!-- ブロック4: 詐欺広告・誘い文句の特徴（表現改善版） -->
+      <!-- ④ 危険な誘い文句 -->
       <div class="oita-chart-block">
-        <h4 class="oita-chart-subtitle">④ 【注意】実際の詐欺でよく使われる危険な誘い文句</h4>
+        <h4 class="oita-chart-subtitle">${h4Title4}</h4>
         <p class="oita-chart-caption">以下のようなフレーズは詐欺でよく使われるため、特に注意が必要です。</p>
         <div class="stats-warning-cards-grid">
           <div class="stats-warn-card">
-            <strong>「絶対儲かる」「元本保証」</strong>
-            <p>投資に「絶対」はありません。金融庁に未登録の業者による勧誘は詐欺です。</p>
+            <strong>「<ruby>絶対儲<rt>ぜったいもう</rt></ruby>かる」「<ruby>元本保証<rt>がんぽんほしょう</rt></ruby>」</strong>
+            <p><ruby>投資<rt>とうし</rt></ruby>に「<ruby>絶対<rt>ぜったい</rt></ruby>」はない。</p>
           </div>
           <div class="stats-warn-card">
-            <strong>著名人を利用した投資広告</strong>
-            <p>有名人の画像を無断使用した偽広告からLINEグループへ誘導する手口が急増中。</p>
+            <strong><ruby>著名人<rt>ちょめいじん</rt></ruby>を<ruby>利用<rt>りよう</rt></ruby>した<ruby>投資広告<rt>とうしこうこく</rt></ruby></strong>
+            <p><ruby>有名人<rt>ゆうめいじん</rt></ruby>の<ruby>画像<rt>がぞう</rt></ruby>を使った<ruby>偽広告<rt>にせこうこく</rt></ruby>に<ruby>注意<rt>ちゅうい</rt></ruby>。</p>
           </div>
           <div class="stats-warn-card">
-            <strong>「今日中に振り込まないと逮捕」</strong>
+            <strong>「<ruby>今日中<rt>きょうじゅう</rt></ruby>に<ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>まないと<ruby>逮捕<rt>たいほ</rt></ruby>」</strong>
             <p>警察官が捜査名目でSNSや電話を使い、金銭の振り込みを要求することはありません。</p>
           </div>
         </div>
-        <p class="oita-block-source">出典：警察庁・金融庁 注意喚起資料</p>
+        <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>・<ruby>金融庁<rt>きんゆうちょう</rt></ruby></p>
       </div>
 
-      <!-- ブロック5: 特殊詐欺種類別ランキング TOP5（グラフ付き） -->
+      <!-- ⑤ 手口別ランキング -->
       <div class="oita-chart-block">
-        <h4 class="oita-chart-subtitle">⑤ 【全国】特殊詐欺の手口別認知件数ランキング TOP5（令和7年）</h4>
-        <p class="oita-chart-caption">全国で最も多く発生している特殊詐欺の手口上位5選。</p>
+        <h4 class="oita-chart-subtitle">${h4Title5}</h4>
+        <p class="oita-chart-caption"><ruby>全国<rt>ぜんこく</rt></ruby>で<ruby>多<rt>おお</rt></ruby>く<ruby>発生<rt>はっせい</rt></ruby>している<ruby>手口<rt>てぐち</rt></ruby>の<ruby>上位<rt>じょうい</rt></ruby>5<ruby>選<rt>せん</rt></ruby>。</p>
         <div class="oita-bars-list">${rankingRowsHTML}</div>
-        <p class="oita-block-source">出典：警察庁「令和7年における特殊詐欺及びSNS型投資・ロマンス詐欺の認知・検挙状況等について（確定値）」</p>
+        <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>「<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>における<ruby>特殊詐欺等<rt>とくしゅさぎとう</rt></ruby>の<ruby>認知<rt>にんち</rt></ruby>・<ruby>検挙状況<rt>けんきょじょうきょう</rt></ruby>」</p>
       </div>
 
-      <!-- ブロック6: ニセ警察詐欺＆闇バイト -->
+      <!-- ⑥ ニセ警察詐欺と闇バイト -->
       <div class="oita-chart-block is-youth-block">
-        <h4 class="oita-chart-subtitle">⑥ 【全国】ニセ警察詐欺の多発と「闇バイト」の現実</h4>
+        <h4 class="oita-chart-subtitle">${h4Title6}</h4>
         <p class="oita-chart-caption">
-          「警察」を騙る詐欺は30代・20代が最多。また闇バイトで逮捕された人の約6割が10代・20代の若年層です。
+          「<ruby>警察<rt>けいさつ</rt></ruby>」を<ruby>騙<rt>だま</rt></ruby>す<ruby>詐欺<rt>さぎ</rt></ruby>は20〜30<ruby>代<rt>だい</rt></ruby>が<ruby>最多</ruby>。また<ruby>闇<rt>やみ</rt></ruby>バイトで<ruby>逮捕<rt>たいほ</rt></ruby>された<ruby>人<rt>ひと</rt></ruby>の<ruby>約<rt>やく</rt></ruby>6<ruby>割<rt>わり</rt></ruby>が10〜20<ruby>代<rt>だい</rt></ruby>の<ruby>若年層<rt>じゃくねんそう</rt></ruby>。
         </p>
         <div class="oita-sub-note is-purple-note">
-          💡 <strong>ポイント:</strong> 「荷物を運ぶだけ」「口座を貸すだけ」のアルバイトは特殊詐欺の実行役です。一度個人情報を渡すと脅迫されて抜け出せなくなります！
+          💡 <strong><ruby>重要<rt>じゅうよう</rt></ruby>：</strong> 「<ruby>荷物<rt>にもつ</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>ぶだけ」のアルバイトは<ruby>犯罪<rt>はんざい</rt></ruby>の<ruby>実行役<rt>じっこうやく</rt></ruby>！
         </div>
-        <p class="oita-block-source">出典：警察庁「令和7年における特殊詐欺等の認知・検挙状況等」</p>
+        <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby></p>
       </div>
 
       <!-- ⑦ 対処方法 -->
       <div class="oita-chart-block">
-        <h4 class="oita-chart-subtitle">⑦ 詐欺に遭いそうになったときの対処方法</h4>
-        <p class="oita-chart-caption">詐欺に遭いそうになったとき、あるいは遭ってしまったときの対処法。</p>
+        <h4 class="oita-chart-subtitle">${h4Title7}</h4>
+        <p class="oita-chart-caption"><ruby>詐欺<rt>さぎ</rt></ruby>に<ruby>遭<rt>あ</rt></ruby>いそうになったとき、あるいは<ruby>遭<rt>あ</rt></ruby>ってしまったときの<ruby>対処法<rt>たいしょほう</rt></ruby>。</p>
         <div class="stats-warning-cards-grid">
           <div class="stats-warn-card">
-            <strong>1. 怪しい電話・DMへの対応</strong>
+            <strong>1. <ruby>怪<rt>あや</rt></ruby>しい<ruby>電話<rt>でんわ</rt></ruby>・DMへの<ruby>対応<rt>たいおう</rt></ruby></strong>
             <p>すぐ電話を切る、またはリンクを開かずにブロック・削除する。</p>
           </div>
           <div class="stats-warn-card">
-            <strong>2. 金銭を払う前の確認</strong>
+            <strong>2. <ruby>金銭<rt>きんせん</rt></ruby>を<ruby>払<rt>はら</rt></ruby>う<ruby>前<rt>まえ</rt></ruby>の<ruby>確認<rt>かくにん</rt></ruby></strong>
             <p>家族や友人、または警察（#9110）に必ず相談してから動く。</p>
           </div>
           <div class="stats-warn-card">
-            <strong>3. 情報を教えてしまったら</strong>
+            <strong>3. <ruby>情報<rt>じょうほう</rt></ruby>を<ruby>教<rt>おし</rt></ruby>えてしまったら</strong>
             <p>すぐに金融機関や警察へ連絡し、口座の停止やカードの利用を止める。</p>
           </div>
         </div>
-        <p class="oita-block-source">出典：警察庁・消費者庁</p>
+        <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>・<ruby>消費者庁<rt>しょうひしゃちょう</rt></ruby></p>
       </div>
 
       <!-- ⑧ 相談窓口 -->
       <div class="oita-chart-block">
-        <h4 class="oita-chart-subtitle">⑧ 詐欺に関する相談窓口</h4>
-        <p class="oita-chart-caption">困ったときに連絡できる公的窓口。</p>
+        <h4 class="oita-chart-subtitle">${h4Title8}</h4>
+        <p class="oita-chart-caption"><ruby>困<rt>こま</rt></ruby>ったときに<ruby>連絡<rt>れんらく</rt></ruby>できる<ruby>公的窓口<rt>こうてきまどぐち</rt></ruby>。</p>
         <div class="stats-warning-cards-grid">
           <div class="stats-warn-card">
-            <strong>🚨 警察相談専用電話 「#9110」</strong>
+            <strong>🚨 <ruby>警察相談専用電話<rt>けいさつそうだんせんようんでんわ</rt></ruby> 「#9110」</strong>
             <p>事件前のお金の相談や不審な電話の問い合わせに。</p>
           </div>
           <div class="stats-warn-card">
-            <strong>📞 消費者ホットライン 「188」</strong>
+            <strong>📞 <ruby>消費者<rt>しょうひしゃ</rt></ruby>ホットライン 「188」</strong>
             <p>悪質商法や架空請求、契約トラブルの相談に。</p>
           </div>
           <div class="stats-warn-card">
-            <strong>☎️ 緊急時の 「110番」</strong>
+            <strong>☎️ <ruby>緊急時<rt>きんきゅうじ</rt></ruby>の 「110番」</strong>
             <p>今まさに被害に遭っている、犯人が近くにいる場合の緊急通報に。</p>
           </div>
         </div>
-        <p class="oita-block-source">出典：警察庁・国民生活センター</p>
+        <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>・<ruby>国民生活センター<rt>こくみんせいかつせんたー</rt></ruby></p>
       </div>
 
       <!-- ⑨ 都道府県別ランキング TOP5 -->
       <div class="oita-chart-block">
-        <h4 class="oita-chart-subtitle">⑨ 【全国】都道府県別の詐欺被害件数ランキング TOP5（令和7年）</h4>
-        <p class="oita-chart-caption">全国で特殊詐欺の被害が多い上位5都府県と大分県の状況。</p>
+        <h4 class="oita-chart-subtitle">${h4Title9}</h4>
+        <p class="oita-chart-caption"><ruby>全国<rt>ぜんこく</rt></ruby>で<ruby>特殊詐欺<rt>とくしゅさぎ</rt></ruby>の<ruby>被害<rt>ひがい</rt></ruby>が<ruby>多<rt>おお</rt></ruby>い<ruby>上位<rt>じょうい</rt></ruby>5<ruby>都府県<rt>とふけん</rt></ruby>と<ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>状況<rt>じょうこう</rt></ruby>。</p>
         <div class="oita-bars-list">${prefRankingHTML}</div>
         <div class="oita-sub-note is-purple-note" style="margin-top:10px;">
-          📍 <strong>大分県の順位：</strong> 全国<strong>35位前後</strong>（47都道府県中・認知400件）
+          📍 <strong><ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>順位<rt>じゅんい</rt></ruby>：</strong> <ruby>全国<rt>ぜんこく</rt></ruby><strong>35位<rt>い</rt></ruby><ruby>前後<rt>ぜんご</rt></ruby></strong>（47都道府県中・<ruby>認知<rt>にんち</rt></ruby>400<ruby>件<rt>けん</rt></ruby>）
         </div>
-        <p class="oita-block-source">出典：警察庁「令和7年における特殊詐欺及びSNS型投資・ロマンス詐欺の認知・検挙状況等について（確定値）」</p>
+        <p class="oita-block-source"><ruby>出典<rt>しゅってん</rt></ruby>：<ruby>警察庁<rt>けいさつちょう</rt></ruby>「<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby>における<ruby>特殊詐欺等<rt>とくしゅさぎとう</rt></ruby>の<ruby>認知<rt>にんち</rt></ruby>・<ruby>検挙状況<rt>けんきょじょうきょう</rt></ruby>」</p>
       </div>
 
-      <!-- 📱 警察庁推奨アプリ紹介ブロック（画像アイコン組み込み） -->
-      <div class="oita-chart-block" style="border: 2.5px solid #2E9E82; background: #EAF8F4;">
-        <h4 class="oita-chart-subtitle" style="border-left-color: #2E9E82; color: #16654E;">📱 警察庁推奨の特殊詐欺対策アプリのご案内</h4>
-        <p class="oita-chart-caption">怪しい電話を自動でブロック・警告してくれる警察庁推奨の詐欺対策アプリです。</p>
+      <!-- 📱 ジョーくんが猛烈にアピールする警察庁推奨アプリ紹介ブロック -->
+      <div class="oita-chart-block" style="border: 3.5px solid #F5A623; background: linear-gradient(135deg, #FFF9EB 0%, #FFE8B6 100%);">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+          <img src="${joeCheerImg}" alt="ジョーくん" style="width: 56px; height: 56px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));">
+          <div>
+            <span style="background: #E85C4A; color: #FFFFFF; font-family: var(--font-display); font-size: 11px; font-weight: 900; padding: 2px 10px; border-radius: 999px;">🚨 ジョーくんからの強力プッシュ！</span>
+            <h4 class="oita-chart-subtitle" style="border-left-color: #E85C4A; color: #1B2A4A; margin-top: 4px; font-size: 17px;">${h4TitleApp}</h4>
+          </div>
+        </div>
+        <p class="oita-chart-caption" style="font-weight: 700; color: #1B2A4A; font-size: 14px;">${appLeadTxt}</p>
         
-        <div class="police-app-showcase-card">
+        <div class="police-app-showcase-card" style="background: #FFFFFF; border: 2.5px solid #2E9E82;">
           <div class="police-app-icon-wrap">
             <img src="${policeAppIconSrc}" alt="詐欺対策アプリ" class="police-app-icon-img" onerror="this.style.display='none';">
           </div>
           <div class="police-app-info-wrap">
-            <strong class="police-app-name">🛡️ 詐欺対策 by NTTタウンページ</strong>
-            <p class="police-app-desc">迷惑電話・特殊詐欺の疑いがある着信を自動で検知し、画面に警告を表示して防犯！</p>
+            <strong class="police-app-name" style="font-size: 15px;">${appNameTxt}</strong>
+            <p class="police-app-desc">${appDescTxt}</p>
           </div>
         </div>
 
-        <div style="margin-top: 12px; text-align: center;">
-          <a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener" class="btn btn-primary" style="display: inline-block; width: auto; padding: 11px 24px; font-size: 14.5px; background: #2E9E82; border-radius: 999px;">
-            📱 警察庁公式ページでアプリを詳しく見る ▶
+        <div style="margin-top: 14px; text-align: center;">
+          <a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener" class="btn btn-primary" style="display: inline-block; width: auto; padding: 13px 28px; font-size: 16px; font-weight: 900; background: #2E9E82; border-radius: 999px; box-shadow: 0 6px 20px rgba(46,158,130,0.4);">
+            ${appBtnTxt}
           </a>
         </div>
-        <p class="oita-block-source" style="margin-top: 8px;">出典：警察庁・SOS47 特殊詐欺対策ページ</p>
+        <p class="oita-block-source" style="margin-top: 8px;">${appSourceTxt}</p>
       </div>
 
       <!-- ⑩ 公式統計データ・出典一覧 -->
       <div class="oita-chart-block">
-        <h4 class="oita-chart-subtitle">⑩ 公式統計データ・出典一覧</h4>
+        <h4 class="oita-chart-subtitle">${h4Title10}</h4>
         <ul class="stats-sources-list">
-          <li>警察庁：<a href="https://www.npa.go.jp/" target="_blank" rel="noopener">「令和7年における特殊詐欺及びSNS型投資・ロマンス詐欺の認知・検挙状況等について（令和7年確定値）」</a></li>
-          <li>大分県警察：<a href="https://www.pref.oita.jp/site/oitakenkei/" target="_blank" rel="noopener">「大分県の犯罪情勢」・安全・安心まちづくり推進室通信</a></li>
-          <li>金融庁：<a href="https://www.fsa.go.jp/" target="_blank" rel="noopener">投資詐欺に関する注意喚起資料</a></li>
-          <li>国民生活センター：<a href="https://www.kokusen.go.jp/" target="_blank" rel="noopener">消費者ホットライン188</a></li>
-          <li>警察庁SOS47：<a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener">警察庁推奨アプリページ</a></li>
+          <li><ruby>警察庁<rt>けいさつちょう</rt></ruby>：<a href="https://www.npa.go.jp/" target="_blank" rel="noopener"><ruby>特殊詐欺等<rt>とくしゅさぎとう</rt></ruby>の<ruby>認知<rt>にんち</rt></ruby>・<ruby>検挙状況<rt>けんきょじょうきょう</rt></ruby>（<ruby>令和<rt>れいわ</rt></ruby>7<ruby>年<rt>ねん</rt></ruby><ruby>確定値<rt>かくていち</rt></ruby>）</a></li>
+          <li><ruby>大分県警察<rt>おおいたけんけいさつ</rt></ruby>：<a href="https://www.pref.oita.jp/site/oitakenkei/" target="_blank" rel="noopener"><ruby>大分県<rt>おおいたけん</rt></ruby>の<ruby>犯罪情勢<rt>はんざいじょうせい</rt></ruby>・<ruby>安全<rt>あんぜん</rt></ruby>・<ruby>安心<rt>あんしん</rt></ruby>まちづくり<ruby>推進室通信<rt>すいしんしつしん</rt></ruby></a></li>
+          <li><ruby>金融庁<rt>きんゆうちょう</rt></ruby>：<a href="https://www.fsa.go.jp/" target="_blank" rel="noopener"><ruby>投資詐欺<rt>とうしさぎ</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>注意喚起<rt>ちゅういかんき</rt></ruby>資料</a></li>
+          <li><ruby>国民生活センター<rt>こくみんせいかつせんたー</rt></ruby>：<a href="https://www.kokusen.go.jp/" target="_blank" rel="noopener"><ruby>消費者<rt>しょうひしゃ</rt></ruby>ホットライン188</a></li>
+          <li><ruby>警察庁SOS47<rt>けいさつちょうえすおーえす47</rt></ruby>：<a href="https://www.npa.go.jp/bureau/safetylife/sos47/apps/" target="_blank" rel="noopener"><ruby>警察庁推奨<rt>けいさつちょうすいしょう</rt></ruby>アプリページ</a></li>
         </ul>
       </div>
-
     </div>
   `;
-}
-
-function showSurveyScreen() {
-  const form = document.getElementById("game-survey-form");
-  const thanksCard = document.getElementById("survey-thanks-card");
-  const alertMsg = document.getElementById("survey-validation-msg");
-
-  if (form) {
-    form.reset();
-    form.classList.remove("is-hidden");
-    form.querySelectorAll(".pill-btn").forEach(btn => btn.classList.remove("is-selected"));
-    form.querySelectorAll("input[type='hidden']").forEach(inp => inp.value = "");
-    form.querySelectorAll(".survey-q-item").forEach(item => item.classList.remove("is-invalid"));
-  }
-
-  if (thanksCard) thanksCard.classList.add("is-hidden");
-  if (alertMsg) alertMsg.classList.add("is-hidden");
-
-  showScreen("screen-survey");
-}
-
-function handleRetire() {
-  if (confirm("途中でリタイアして最初からやり直しますか？")) {
-    const slot = currentScheduleSlot();
-    const dropoutDay = slot ? slot.weekdayName : "月";
-
-    if (typeof recordAnalyticsDropout === "function") {
-      recordAnalyticsDropout();
-    }
-    if (typeof commitDropoutSession === "function") {
-      commitDropoutSession(dropoutDay);
-    }
-    restartGame();
-  }
-}
-
-function restartGame() {
-  state.playerName = "";
-  state.money = 50000;
-  state.selectedItem = null;
-  state.weeklyQuestions = [];
-  state.daySchedule = [];
-  state.slotIndex = 0;
-  state.dialogueIndex = 0;
-  state.correctCount = 0;
-  state.fooledCount = 0;
-  state.preventedScamsCount = 0;
-  state.damages = { money: 0, personalInfo: 0, account: 0, line: 0 };
-  state.answeredQuestions = [];
-  state.isTestMode = false;
-  state.sessionId = null;
-  state.isSessionSubmitted = false;
-
-  const shell = document.getElementById("app-shell");
-  if (shell) {
-    shell.classList.remove("is-senior-mode");
-  }
-
-  const badge = document.getElementById("test-mode-badge");
-  const drawer = document.getElementById("test-controller-drawer");
-  if (badge) badge.classList.add("is-hidden");
-  if (drawer) drawer.classList.add("is-hidden");
-
-  document.getElementById("status-bar").classList.add("hidden");
-  showScreen("screen-title");
-  renderTitleVisual();
 }

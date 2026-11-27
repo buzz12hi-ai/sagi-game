@@ -1,16 +1,14 @@
 /* =========================================================
    test-mode.js
    製作者用パスコード認証 ＆ フルスクリーン管理コンソール ＆ 実演特化デバッグ制御
-   【パスコード表記削除版】
+   【exitTestMode グローバル強制直結版】
    ========================================================= */
 
-// 管理者アカウント情報（固定）
 const ADMIN_EMAIL = "maikerumuxia8@gmail.com";
 const ADMIN_FIREBASE_PASSWORD = "AA5158";
 
 let isDevAuthenticated = false;
 
-// 全角英数字を半角英数字・大文字に正規化する関数
 function normalizePasscode(input) {
   if (!input) return "";
   return input
@@ -35,7 +33,6 @@ function openAuthModal() {
   const errorEl = document.getElementById("auth-error-msg");
   const descEl = document.querySelector(".auth-modal-desc");
   
-  // パスコードのヒント表記を削除
   if (descEl) descEl.textContent = "製作者用パスコードを入力してください";
 
   if (input) {
@@ -120,6 +117,7 @@ function openDevDashboard() {
     screen.classList.remove("is-hidden");
   }
 }
+window.openDevDashboard = openDevDashboard;
 
 function closeDevDashboard() {
   const screen = document.getElementById("dev-dashboard-screen");
@@ -271,17 +269,24 @@ function testJumpEnding(type) {
     showEnding();
   }
 }
+window.testJumpEnding = testJumpEnding;
 
+// exitTestMode をグローバルへ確実に直結
 function exitTestMode() {
   if (confirm("テストプレイモードを終了し、製作者管理コンソールへ戻りますか？")) {
     state.isTestMode = false;
     state.showPrincipleTags = false;
-    restartGame();
+    if (typeof restartGame === "function") {
+      restartGame();
+    } else {
+      window.location.reload();
+    }
     if (isDevAuthenticated) {
       openDevDashboard();
     }
   }
 }
+window.exitTestMode = exitTestMode;
 
 document.addEventListener("DOMContentLoaded", () => {
   const btnOpenAuth = document.getElementById("btn-open-dev-auth");
